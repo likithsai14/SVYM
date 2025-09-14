@@ -1,72 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trainers</title>
-  <link rel="stylesheet" href="css/admin_dashboard.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-<aside class="side-menu" id="sideMenu">
-  <div class="logo">SVYM Admin Panel</div>
-  <nav>
-      <ul id="navLinks">
-          <li><a href="admin_dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-          <li><a href="admin_students.html" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a></li>
-          <li><a href="admin_trainers.html" class="nav-link active"><i class="fas fa-chalkboard-teacher"></i> Trainers</a></li>
-          <li><a href="admin_field_mobilisers.html" class="nav-link"><i class="fas fa-people-carry"></i> Field Mobilisers</a></li>
-          <li><a href="admin_courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a></li>
-          <li><a href="#" class="nav-link"><i class="fas fa-rupee-sign"></i> Fee Management</a></li>
-          <li><a href="admin_placements.html" class="nav-link"><i class="fas fa-briefcase"></i> Placements</a></li>
-          <li><a href="admin_reports.html" class="nav-link"><i class="fas fa-file-alt"></i> Reports</a></li>
-          <li><a href="admin_announcements.html" class="nav-link"><i class="fas fa-bullhorn"></i> Announcements</a></li>
-          <li><a href="login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-      </ul>
-  </nav>
-</aside>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trainers</title>
+    <link rel="stylesheet" href="css/admin_dashboard.css" />
+    <link rel="stylesheet" href="css/modal.css" />
+    <script src="./Javascripts/nav.js" defer></script>
+    <script src="./Javascripts/utils.js"></script>
+    <script src="./Javascripts/modal.js" defer></script>
+    <link rel="stylesheet" href="css/nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <aside class="side-menu" id="sideMenu"></aside>
 
-<div class="container main-content">
-    <div id="mainMessage" class="message"></div>
+    <div class="container main-content">
+      <div id="mainMessage" class="message"></div>
 
-    <h3 class="welcome-message">Trainers Management Data</h3>
+      <h3 class="welcome-message">Trainers Management Data</h3>
 
-    <div class="dashboard-card-section">
-        
+      <div class="dashboard-card-section">
         <div id="trainerRequestsCard" class="dashboard-card">
-            <h4><i class="fas fa-user-plus"></i>Trainer Requests</h4>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-number" id="totalRequests">10</span>
-                    <span class="stat-label">Total Requests</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="approvedRequests">4</span>
-                    <span class="stat-label">Approved Requests</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="rejectedRequests">4</span>
-                    <span class="stat-label">Rejected Requests</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="pendingRequests">2</span>
-                    <span class="stat-label">Pending Requests</span>
-                </div>
-                <div class="stat-item">
-                    <button class="add-student-button" id="addTrainer">Add Trainer</button>
-                </div>
-                <div class="stat-item">
-                    <button class="edit-student-button" id="editTrainer">View / Edit Trainer</button>
-                </div> 
-                <div class="stat-item">
-                    <button class="view-student-button" id="requestTrainer">View Trainer Requests</button>
-                </div>
+          <h4><i class="fas fa-user-plus"></i>Trainer Requests</h4>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-number" id="totalRequests">10</span>
+              <span class="stat-label">Total Requests</span>
             </div>
+            <div class="stat-item">
+              <span class="stat-number" id="approvedRequests">4</span>
+              <span class="stat-label">Approved Requests</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" id="rejectedRequests">4</span>
+              <span class="stat-label">Rejected Requests</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" id="pendingRequests">2</span>
+              <span class="stat-label">Pending Requests</span>
+            </div>
+            <div class="stat-item">
+              <button class="add-button" id="addTrainerBtn">Add Trainer</button>
+            </div>
+            <div class="stat-item">
+              <a href="/admin_viewtrainer.html">
+                <button class="edit-button" id="editTrainer">
+                  View / Edit Trainer
+                </button>
+              </a>
+            </div>
+            <div class="stat-item">
+              <button class="view-button" id="requestTrainer">
+                View Trainer Requests
+              </button>
+            </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
-<script src="Javascripts/admin_trainers.js"></script>
-</body>
+      <div class="modal hide" id="trainerFormModal">
+        <div class="modal-content">
+          <button class="close-btn">&times;</button>
+          <div class="modal-header">
+            <h2
+              class="form-subheading-main"
+              id="trainerModalTitle"
+              style="text-align: center"
+            >
+              Add Trainer Data
+            </h2>
+          </div>
+          <div class="modal-body">
+            <form id="trainerForm" novalidate>
+              <div class="form-group">
+                <label for="formTrainerId">Trainer Id:</label>
+                <input
+                  type="text"
+                  id="formTrainerId"
+                  name="formTrainerId"
+                  readonly
+                />
+                <span id="formTrainerIdError" class="error-message"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="formTrainerName">Name:</label>
+                <input
+                  type="text"
+                  id="formTrainerName"
+                  name="formTrainerName"
+                  required
+                />
+                <span id="formTrainerNameError" class="error-message"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="formTrainerExpertise">Expertise:</label>
+                <input
+                  type="text"
+                  id="formTrainerExpertise"
+                  name="formTrainerExpertise"
+                  required
+                />
+                <span
+                  id="formTrainerExpertiseError"
+                  class="error-message"
+                ></span>
+              </div>
+
+              <div class="form-group">
+                <label for="formTrainerContact"
+                  >Contact (Email or Phone):</label
+                >
+                <input
+                  type="text"
+                  id="formTrainerContact"
+                  name="formTrainerContact"
+                  required
+                />
+                <span id="formTrainerContactError" class="error-message"></span>
+              </div>
+
+              <div class="form-group" id="formTrainerPinGroup">
+                <label for="formTrainerPin">PIN (4-digit):</label>
+                <input
+                  type="password"
+                  id="formTrainerPin"
+                  name="formTrainerPin"
+                  required
+                  pattern="\d{4}"
+                  maxlength="4"
+                  title="PIN must be a 4-digit number"
+                />
+                <span id="formTrainerPinError" class="error-message"></span>
+              </div>
+
+              <div class="form-group" id="formTrainerConfirmPinGroup">
+                <label for="formTrainerConfirmPin">Confirm PIN:</label>
+                <input
+                  type="password"
+                  id="formTrainerConfirmPin"
+                  name="formTrainerConfirmPin"
+                  required
+                  pattern="\d{4}"
+                  maxlength="4"
+                  title="Confirm PIN must match PIN"
+                />
+                <span
+                  id="formTrainerConfirmPinError"
+                  class="error-message"
+                ></span>
+              </div>
+
+              <div class="form-group">
+                <label for="formTrainerSecurityQuestion"
+                  >Security Question:</label
+                >
+                <input
+                  type="text"
+                  id="formTrainerSecurityQuestion"
+                  name="formTrainerSecurityQuestion"
+                  required
+                />
+                <span
+                  id="formTrainerSecurityQuestionError"
+                  class="error-message"
+                ></span>
+              </div>
+
+              <div class="form-group">
+                <label for="formTrainerSecurityAnswer">Security Answer:</label>
+                <input
+                  type="text"
+                  id="formTrainerSecurityAnswer"
+                  name="formTrainerSecurityAnswer"
+                  required
+                />
+                <span
+                  id="formTrainerSecurityAnswerError"
+                  class="error-message"
+                ></span>
+              </div>
+
+              <div id="trainerFormMessage" class="form-message"></div>
+
+              <div
+                class="form-actions"
+                style="display: flex; flex-direction: column; gap: 5px"
+              >
+                <button type="submit" class="add-button">Save Trainer</button>
+                <button type="reset" class="view-button">Clear</button>
+              </div>
+            </form>
+          </div>
+          <div id="message" class="message" style="display: none"></div>
+          <div id="generatedUserId" style="display: none"></div>
+          <div
+            id="adminapprovalMessage"
+            class="message"
+            style="display: none"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="Javascripts/admin_trainer.js"></script>
+  </body>
 </html>

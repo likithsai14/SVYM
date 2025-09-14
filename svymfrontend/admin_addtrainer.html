@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Course Management</title>
+    <script src="./Javascripts/nav.js" defer></script>
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/admin_dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+    <div class="overlay" id="overlay"></div>
+    <aside class="side-menu" id="sideMenu"></aside>
+    <div class="container main-content" style="margin: 20px auto">
+      <h1 id="form-main-heading">SVYM Tech4Hope</h1>
+      <h2>Add Student Data</h2>
+      <div class="form-card">
+        <form id="signupForm" novalidate>
+          <div class="form-group">
+            <label for="candidateName">Candidate Name:</label>
+            <input
+              type="text"
+              id="candidateName"
+              name="candidateName"
+              required
+            />
+            <span id="candidateNameError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="fatherHusbandName">Father's / Husband's Name:</label>
+            <input
+              type="text"
+              id="fatherHusbandName"
+              name="fatherHusbandName"
+              required
+            />
+            <span id="fatherHusbandNameError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="districtName">District Name:</label>
+            <select id="districtName" name="districtName" required>
+              <option value="">Select District</option>
+            </select>
+            <span id="districtNameError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="talukName">Taluk Name:</label>
+            <select id="talukName" name="talukName" required disabled>
+              <option value="">Select Taluk</option>
+            </select>
+            <span id="talukNameError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="villageName">Village Name:</label>
+            <input type="text" id="villageName" name="villageName" required />
+            <span id="villageNameError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required />
+            <span id="dobError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" readonly required />
+            <span id="ageError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="familyMembers">Number of Family Members:</label>
+            <input
+              type="number"
+              id="familyMembers"
+              name="familyMembers"
+              min="1"
+              required
+            />
+            <span id="familyMembersError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="qualification">Qualification:</label>
+            <input
+              type="text"
+              id="qualification"
+              name="qualification"
+              required
+            />
+            <span id="qualificationError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="caste">Caste:</label>
+            <select id="caste" name="caste" required>
+              <option value="">Select Caste</option>
+              <option value="OBC">OBC</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
+              <option value="Minority">Minority</option>
+              <option value="Others">Others</option>
+            </select>
+            <span id="casteError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            <span id="genderError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="tribal">Tribal Status:</label>
+            <select id="tribal" name="tribal" required>
+              <option value="">Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span id="tribalError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Person with Disability (PWD):</label>
+            <select id="pwd" name="pwd" required>
+              <option value="">Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span id="pwdError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="aadharNumber">Aadhar Number:</label>
+            <input
+              type="text"
+              id="aadharNumber"
+              name="aadharNumber"
+              required
+              pattern="\d{12}"
+              maxlength="12"
+              title="Aadhar number must be 12 digits"
+            />
+            <span id="aadharNumberError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="candidatePhone">Candidate Phone Number:</label>
+            <input
+              type="tel"
+              id="candidatePhone"
+              name="candidatePhone"
+              required
+              pattern="\d{10}"
+              maxlength="10"
+              title="Phone number must be 10 digits"
+            />
+            <span class="error-message" id="candidatePhoneError"></span>
+          </div>
+          <div class="form-group">
+            <label for="parentPhone">Parent/Guardian Phone Number:</label>
+            <input
+              type="tel"
+              id="parentPhone"
+              name="parentPhone"
+              required
+              pattern="\d{10}"
+              maxlength="10"
+              title="Phone number must be 10 digits"
+            />
+            <span class="error-message" id="parentPhoneError"></span>
+          </div>
+          <div class="form-group">
+            <label for="mobiliserName">Mobiliser Name:</label>
+            <input
+              type="text"
+              id="mobiliserName"
+              name="mobiliserName"
+              required
+            />
+            <span class="error-message" id="mobiliserNameError"></span>
+          </div>
+          <div class="form-group">
+            <label for="supportedProject">Supported Project (Optional):</label>
+            <input type="text" id="supportedProject" name="supportedProject" />
+            <span id="supportedProjectError" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" required />
+            <span id="emailError" class="error-message"></span>
+          </div>
+          <button type="submit" class="add-button">Add Student Data</button>
+        </form>
+      </div>
+      <div id="message" class="message" style="display: none"></div>
+      <div id="generatedUserId" style="display: none"></div>
+      <div
+        id="adminapprovalMessage"
+        class="message"
+        style="display: none"
+      ></div>
+    </div>
+    <script src="Javascripts/admin_addTrainer.js"></script>
+  </body>
+</html>

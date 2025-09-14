@@ -1,5 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
+    
+    const roleButtons = document.querySelectorAll('.role-button');
+
+    let role = 'student'
+
+    roleButtons.forEach(button => { 
+        role = button.id;
+        button.addEventListener('click', function() {
+            roleButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    })
+
+
     const userIdInput = document.getElementById('userId');
     const passwordInput = document.getElementById('password');
     const newPasswordGroup = document.getElementById('newPasswordGroup');
@@ -11,11 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let isFirstLoginFlow = false;
 
-    // Redirect if already logged in
-    if (sessionStorage.getItem('role') === 'admin') {
-        window.location.href = 'admin_dashboard.html';
-    } else if (sessionStorage.getItem('role') === 'user') {
-        window.location.href = 'candidate_dashboard.html';
+    if(sessionStorage.getItem('isAdminLoggedIn') === 'true') {
+        if (sessionStorage.getItem('role') === 'admin') {
+            window.location.href = 'admin_dashboard.html';
+        } else if (sessionStorage.getItem('role') === 'user') {
+            window.location.href = 'candidate_dashboard.html';
+        }
     }
 
     // Initial setup
@@ -39,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             let endpoint = 'login';
+            if(role === 'admin') {}
             let body = { userId, password };
 
             if (isFirstLoginFlow) {

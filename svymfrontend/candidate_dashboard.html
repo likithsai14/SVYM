@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVYM Tech4Hope - Student Dashboard</title>
+    <script src="./Javascripts/nav.js" defer></script>
     <link rel="stylesheet" href="/svymfrontend/css/style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* General Body and Main Layout */
@@ -36,85 +37,6 @@
             height: calc(100vh - 40px); /* Fill remaining height, account for 20px top/bottom margin */
         }
         .container.main-content::-webkit-scrollbar { display: none; } /* Hide scrollbar for main content */
-
-
-        /* Side Menu (Sidebar) */
-        .side-menu {
-            width: 280px;
-            background: linear-gradient(180deg, #1E90FF, #007BFF);
-            color: white;
-            padding-top: 30px;
-            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.2);
-            position: sticky; /* Keep it sticky */
-            top: 0;
-            left: 0;
-            height: 100vh; /* Make sidebar fill viewport height */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
-            /* This is already correct for sidebar scrolling */
-            overflow-y: auto; /* Enable vertical scrolling for the sidebar itself */
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .side-menu::-webkit-scrollbar { display: none; }
-
-
-        .side-menu .logo {
-            font-size: 2.2em;
-            font-weight: 700;
-            margin-bottom: 40px;
-            color: #ffffff;
-            text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            flex-shrink: 0;
-        }
-
-        .side-menu nav {
-            flex-grow: 1;
-            width: 100%;
-            /* This is already correct for nav scrolling within sidebar */
-            overflow-y: auto; /* Enable scrolling specifically for the navigation list */
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        /* Hide scrollbar for Chrome, Safari and Opera for nav */
-        .side-menu nav::-webkit-scrollbar { display: none; }
-
-        .side-menu nav ul {
-            list-style: none;
-            padding: 0;
-            width: 90%;
-            margin: 0 auto;
-        }
-
-        .side-menu nav ul li { margin-bottom: 8px; }
-        .side-menu nav ul li a {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-size: 1.05em;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-        }
-
-        .side-menu nav ul li a .fas {
-            margin-right: 15px;
-            font-size: 1.3em;
-        }
-
-        .side-menu nav ul li a:hover,
-        .side-menu nav ul li a.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            transform: translateX(5px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
 
         .welcome-message {
             text-align: center;
@@ -393,14 +315,7 @@
 
         /* Existing responsive adjustments */
         @media (max-width: 768px) {
-            .side-menu {
-                position: fixed;
-                left: 0;
-                transform: translateX(-100%);
-                width: 280px;
-                z-index: 1000;
-            }
-            .side-menu.open { transform: translateX(0); }
+
             .hamburger { display: block; }
             body { flex-direction: column; }
             .container.main-content {
@@ -448,21 +363,7 @@
     </div>
     <div class="overlay" id="overlay"></div>
 
-    <aside class="side-menu" id="sideMenu">
-        <div class="logo">SVYM Tech4Hope</div>
-        <nav>
-            <ul>
-                <li><a href="candidate_dashboard.html" class="nav-link" id="dashboardOverviewLink"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="apply_course.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Apply for Course</a></li>
-                <li><a href="fee_details.html" class="nav-link" id="feeDetailsLink"><i class="fas fa-receipt"></i> Fee Details</a></li>
-                <li><a href="attendance_data.html" class="nav-link" id="attendanceDataLink"><i class="fas fa-calendar-check"></i> Attendance Data</a></li>
-                <li><a href="about_us.html" class="nav-link" id="aboutUsLink"><i class="fas fa-info-circle"></i> About Us</a></li>
-                <li><a href="contact.html" class="nav-link" id="contactLink"><i class="fas fa-headset"></i> Contact</a></li>
-                <li><a href="help_faqs.html" class="nav-link" id="helpLink"><i class="fas fa-question-circle"></i> Help & FAQs</a></li>
-                <li><a href="login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
-        </nav>
-    </aside>
+    <aside class="side-menu" id="sideMenu"></aside>
 
     <div class="container main-content">
         <h1 class="welcome-message" id="welcomeMessage">Welcome to SVYM, Student!</h1>

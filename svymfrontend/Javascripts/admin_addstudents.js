@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async function() {
-    const signupForm = document.getElementById('signupForm');
+    const studentForm = document.getElementById('studentForm');
     const messageDiv = document.getElementById('message');
     const generatedUserIdDiv = document.getElementById('generatedUserId');
       const all_response=await fetch('/.netlify/functions/allstudents');
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // Live validation for required fields
-    signupForm.querySelectorAll('input, select').forEach(input => {
+    studentForm.querySelectorAll('input, select').forEach(input => {
         if (input.hasAttribute('required')) {
             input.addEventListener('input', function() {
                 if (this.value.trim() !== '') {
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    signupForm.addEventListener('submit', async function(event) {
+    studentForm.addEventListener('submit', async function(event) {
         event.preventDefault(); // Prevent default form submission
 
         // Clear previous messages and errors
@@ -200,18 +200,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         Object.values(errorSpans).forEach(span => {
             if (span) span.textContent = '';
         });
-        signupForm.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+        studentForm.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 
         // Manual validation before submission
         let isValid = true;
-        const formData = new FormData(signupForm);
+        const formData = new FormData(studentForm);
         const data = {};
         for (let [key, value] of formData.entries()) {
             data[key] = value.trim();
         }
 
         // Re-validate all fields on submit
-        signupForm.querySelectorAll('input, select').forEach(input => {
+        studentForm.querySelectorAll('input, select').forEach(input => {
             if (input.hasAttribute('required') && input.value.trim() === '') {
                 showError(input, 'This field is required.');
                 isValid = false;
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showMessage('success', result.message || 'Sign up successful!');
                 generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
                 generatedUserIdDiv.style.display = 'block';
-                signupForm.reset(); // Clear the form
+                studentForm.reset(); // Clear the form
                 ageInput.value = ''; // Clear age field too
                 talukSelect.innerHTML = '<option value="">Select Taluk</option>'; // Reset taluk options
                 talukSelect.disabled = true; // Disable taluk dropdown

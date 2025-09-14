@@ -40,8 +40,9 @@ catch(error) {
 });
 
 addstudents.addEventListener('click', function() {
-    // Redirect to the add students page
-    window.location.href = 'admin_addstudents.html';
+    const studentModal = document.getElementById('studentFormModal');
+    studentModal.classList.add('show');
+    studentModal.querySelector('.form-subheading-main').textContent = 'Add New Student';
 });
 
 let editstudents=document.getElementById('editstudents');

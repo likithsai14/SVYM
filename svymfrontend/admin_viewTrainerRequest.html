@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVYM Tech4Hope - Admin Edit/View Student Data</title>
+    <title>SVYM Tech4Hope - Admin Edit/View FieldMobiliser Data</title>
     <!-- Google Fonts for a modern look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/modal.css">
-    <script src="Javascripts/nav.js"></script>
+    <script src="./Javascripts/nav.js" defer></script>
+    <script src="./Javascripts/modal.js" defer></script>
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -51,24 +54,11 @@
             box-shadow: var(--box-shadow);
             padding: 30px;
         }
-        .data-list-container h1{
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-         .data-list-container h1 .icon {
-            font-size: 1.5rem;
-        }
 
         /* Header and Search Bar */
         .header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             margin-bottom: 25px;
@@ -184,7 +174,16 @@
         .status.approved { background-color: var(--success-color); }
         .status.pending { background-color: var(--warning-color); color: var(--text-color); }
         .status.rejected { background-color: var(--danger-color); }
-
+         button:disabled {
+                /* Prevents the button from being clickable */
+                pointer-events: none; 
+                
+                /* Makes the button look greyed out */
+                opacity: 0.5; 
+                
+                /* Changes the cursor to show it's not active */
+                cursor: not-allowed; 
+                }
         /* Action Buttons */
         .actions {
             display: flex;
@@ -227,9 +226,18 @@
             border-color: var(--danger-color);
         }
         .delete-btn:hover { background-color: var(--danger-color); color: white; }
-        /* Modal Styles */
-        
-        /* Pagination Controls */
+        .approve-btn {
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        .approve-btn:hover { background-color: var(--success-color); color: white; }
+
+        .reject-btn {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        .reject-btn:hover { background-color: var(--danger-color); color: white; }
+
         .table-wrapper {
             overflow-x: auto;
             border-radius: 0.5rem;
@@ -305,21 +313,7 @@
             font-size: 1.125rem; /* 18px */
             font-weight: 500;
         }
-        /*Filter Table */
-        .filter-container
-        {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        .custom-select-filter {
-            width: 200px;
-            padding: 0.5rem; /* p-2 */
-            border: 1px solid #d1d5db; /* border border-gray-300 */
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
-            font-size: 1rem; /* text-base */
-         }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .data-list-container {
@@ -336,33 +330,23 @@
     </style>
 </head>
 <body>
-    <div class="hamburger" id="hamburger">
+        <div class="hamburger" id="hamburger">
       <i class="fas fa-bars"></i>
     </div>
     <div class="overlay" id="overlay"></div>
-
     <aside class="side-menu" id="sideMenu"></aside>
+
     <div class="data-list-container">
-            <h1>
-                SVYM Tech4Hope Students Data <i class="fas fa-file-alt"></i>
-            </h1>
         <div class="header">
+            <h1>
+                SVYM Tech4Hope FieldMobiliser Data <i class="fas fa-file-alt"></i>
+            </h1>
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search by Name or Course...">
+                <input type="text" id="searchInput" placeholder="Search by Name...">
                 <button id="searchBtn"><i class="fas fa-search"></i></button>
             </div>
-            <div class="filter-container">
-                <label for="statusFilter">Filter by Status:</label>
-           <select id="statusFilter" class="custom-select-filter">
-                    <option value="All">All Status</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Inactive">InActive</option>
-           </select>
-           </div>
         </div>
-
+        
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
@@ -370,12 +354,12 @@
                         <th>UserID</th>
                         <th>Name</th>
                         <th>Email Id</th>
-                        <th>Course</th>
+                        <th>Supported Project</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="studentTableBody">
+                <tbody id="fieldmobiliserTableBody">
                     <!-- Dynamic rows will be inserted here by JavaScript -->
                 </tbody>
             </table>
@@ -390,42 +374,6 @@
             </button>
         </div>
     </div>
-     <div id="viewModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="modal-header">
-                <h2 id="modalStudentName"></h2>
-            </div>
-            <div class="modal-body">
-                <p><strong>UserID:</strong> <span id="modalUserId"></span></p>
-                <p><strong>Name:</strong> <span id="modalUserName"></span></p>
-                <p><strong>Email:</strong> <span id="modalUserEmail"></span></p>
-                <p><strong>Course:</strong> <span id="modalUserCourse"></span></p>
-                <p><strong>Status:</strong> <span id="modalUserStatus"></span></p>
-                <p><strong>Father/Husband Name:</strong> <span id="modalUserFatherHusband"></span></p>
-                <p><strong>VillageName:</strong><span id="modalUserVillageName"></span></p>
-                <p><strong>TalukName:</strong><span id="modalUserTalukName"></span></p>
-                <p><strong>DistrictName:</strong><span id="modalUserDistrictName"></span></p>
-                <p><strong>Date of Birth:</strong> <span id="modalUserDob"></span></p>
-                <p><strong>Age:</strong> <span id="modalUserAge"></span></p>
-                <p><strong>Gender:</strong><span id="modalUserGender"></span></p>
-                <p><strong>Tribal:</strong><span id="modalUserTribal"></span></p>
-                <p><strong>Person With Disability:</strong><span id="modalUserPWD"></span></p>
-                <p><strong>AadharNumber:</strong><span id="modalUserAadharNumber"></span></p>
-                <p><strong>MobileNumber:</strong><span id="modalUserMobileNumber"></span></p>
-                <p><strong>ParentMobileNo:</strong><span id="modalUserParentMobileNo"></span></p>
-                <p><strong>Family Members:</strong> <span id="modalUserFamilyMembers"></span></p>
-                <p><strong>Qualification:</strong> <span id="modalUserQualification"></span ></p>
-                <p><strong>Caste:</strong> <span id="modalUserCaste"></span></p>    
-                <p><strong>MobiliserName:</strong><span id="modalUserMobiliserName"></span></p>
-               
-        
-            </div>
-        </div>
-        
-    </div>
-    
-     
-  <script src="/Javascripts/admin_editstudents.js"></script>
+  <script src="/Javascripts/admin_viewfieldmobiliserrequest.js"></script>
 </body>
 </html>

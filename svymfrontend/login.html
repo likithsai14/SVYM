@@ -1,38 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SVYM Tech4Hope - Login</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body
+    style="
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
     <div class="container">
-        <h2>Login to SVYM Tech4Hope</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="userId">User ID (SVYMXXXXX)</label>
-                <input type="text" id="userId" name="userId" placeholder="e.g., SVYM12345" required pattern="SVYM\d{5}" title="User ID must be SVYM followed by 5 digits">
-            </div>
-            <div class="form-group" id="passwordGroup">
-                <label for="password">Password/PIN</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div class="form-group" id="newPasswordGroup" style="display:none;">
-                <label for="newPassword">New 5-digit PIN</label>
-                <input type="password" id="newPassword" name="newPassword" maxlength="5" pattern="[0-9]{5}" title="Please enter a 5-digit PIN">
-            </div>
-            <div class="form-group" id="confirmNewPasswordGroup" style="display:none;">
-                <label for="confirmNewPassword">Confirm New 5-digit PIN</label>
-                <input type="password" id="confirmNewPassword" name="confirmNewPassword" maxlength="5" pattern="[0-9]{5}" >
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <p class="link-text"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
-        <p class="link-text">Don't have an account? <a href="signup.html">Sign Up</a></p>
-        <div id="message" style="display: none;"></div>
+      <h2 class="form-heading-main">Login to SVYM Tech4Hope</h2>
+      <div class="tabs">
+        <button id="admin" class="role-button tab-button active">Admin</button>
+        <button id="trainer" class="role-button tab-button">Trainer</button>
+        <button id="student" class="role-button tab-button">Student</button>
+        <button id="fieldMobilizer" class="role-button tab-button">Field Mobilizer</button>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="userId">User ID (SVYMXXXXX)</label>
+          <input
+            type="text"
+            id="userId"
+            name="userId"
+            placeholder="e.g., SVYM12345"
+            required
+            pattern="SVYM\d{5}"
+            title="User ID must be SVYM followed by 5 digits"
+          />
+        </div>
+        <div class="form-group" id="passwordGroup">
+          <label for="password">Password/PIN</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-group" id="newPasswordGroup" style="display: none">
+          <label for="newPassword">New 5-digit PIN</label>
+          <input
+            type="password"
+            id="newPassword"
+            name="newPassword"
+            maxlength="5"
+            pattern="[0-9]{5}"
+            title="Please enter a 5-digit PIN"
+          />
+        </div>
+        <div
+          class="form-group"
+          id="confirmNewPasswordGroup"
+          style="display: none"
+        >
+          <label for="confirmNewPassword">Confirm New 5-digit PIN</label>
+          <input
+            type="password"
+            id="confirmNewPassword"
+            name="confirmNewPassword"
+            maxlength="5"
+            pattern="[0-9]{5}"
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <p class="link-text">
+        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      </p>
+      <p class="link-text">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </p>
+      <div id="message" style="display: none"></div>
     </div>
     <script src="Javascripts/login.js"></script>
-</body>
+  </body>
 </html>

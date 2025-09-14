@@ -1,40 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if the user is an admin; if not, redirect to login.
-    const adminLoggedIn = sessionStorage.getItem('isAdminLoggedIn');
-    if (!adminLoggedIn || adminLoggedIn !== 'true') {
-        console.log('Admin not logged in, redirecting to login.html');
-        window.location.href = 'login.html';
-        return;
-    }
-
-    const adminLogoutBtn = document.getElementById('adminLogoutBtn');
-    const sidebar = document.getElementById('sidebar');
-    const hamburgerMenu = document.getElementById('hamburgerMenu');
-
-    // Toggle sidebar on hamburger menu click (for mobile)
-    if (hamburgerMenu) {
-        hamburgerMenu.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-    }
-
-    // --- Logout Functionality ---
-    if (adminLogoutBtn) {
-        adminLogoutBtn.addEventListener('click', function() {
-            sessionStorage.removeItem('adminLoggedIn');
-            sessionStorage.removeItem('loggedInAdminUsername');
-            window.location.href = 'login.html';
-        });
-    }
 
     // =========================================================
     // --- Trainer Management Logic (CRUD Operations) ---
     // =========================================================
     const trainersTableBody = document.getElementById('trainersTableBody');
-    const addTrainerBtn = document.getElementById('addTrainerBtn');
-    const trainerModal = document.getElementById('trainerModal');
-    const closeTrainerModalBtn = trainerModal ? trainerModal.querySelector('.close-button') : null;
-    const cancelTrainerButton = trainerModal ? trainerModal.querySelector('.cancel-button') : null;
+    const trainerModal = document.getElementById('trainerFormModal');
     const trainerModalTitle = document.getElementById('trainerModalTitle');
     const trainerForm = document.getElementById('trainerForm');
     const formTrainerId = document.getElementById('formTrainerId');
@@ -49,60 +19,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const formTrainerConfirmPinGroup = document.getElementById('formTrainerConfirmPinGroup');
     const formTrainerMessage = document.getElementById('trainerFormMessage');
 
-    // Utility function to show form-specific messages
-    function showFormMessage(messageElement, type, text) {
-        messageElement.textContent = text;
-        messageElement.className = `message ${type}`;
-        messageElement.style.display = 'block';
-        setTimeout(() => {
-            messageElement.style.display = 'none';
-        }, 3000);
+    const viewTrainerRequestButton = document.getElementById('requestTrainer');
+    const listTrainers = document.getElementById('editTrainer');
+    
+
+    const addTrainerBtn = document.getElementById('addTrainerBtn');
+    
+    addTrainerBtn.onclick = function() {
+        const addTrainerModal = document.getElementById('trainerFormModal');
+        addTrainerModal.classList.add('show');
+        openAddEditTrainerModal();
     }
 
-    function renderTrainersTable() {
-        console.log('renderTrainersTable called.');
-        const users = JSON.parse(sessionStorage.getItem('users')) || [];
-        const trainers = users.filter(user => user.role === 'trainer');
-        console.log('Filtered trainers:', trainers);
+    listTrainers.onclick = function() {
+        window.location.href = 'admin_listTrainer.html';
+    }
 
-        if (trainersTableBody) {
-            trainersTableBody.innerHTML = '';
-            if (trainers.length === 0) {
-                trainersTableBody.innerHTML = '<tr><td colspan="5">No trainer records found.</td></tr>';
-            } else {
-                trainers.forEach(trainer => {
-                    const row = `
-                        <tr>
-                            <td>${trainer.userId}</td>
-                            <td>${trainer.name || 'N/A'}</td>
-                            <td>${trainer.expertise || 'N/A'}</td>
-                            <td>${trainer.contact || 'N/A'}</td>
-                            <td>
-                                <button class="action-btn-primary edit-trainer-btn" data-user-id="${trainer.userId}">Edit</button>
-                                <button class="action-btn-danger delete-trainer-btn" data-user-id="${trainer.userId}">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    trainersTableBody.insertAdjacentHTML('beforeend', row);
-                });
-
-                trainersTableBody.querySelectorAll('.edit-trainer-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const userIdToEdit = this.dataset.userId;
-                        openAddEditTrainerModal(userIdToEdit);
-                    });
-                });
-
-                trainersTableBody.querySelectorAll('.delete-trainer-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const userIdToDelete = this.dataset.userId;
-                        deleteTrainer(userIdToDelete);
-                    });
-                });
-            }
-        } else {
-            console.error('trainersTableBody element not found!');
-        }
+    viewTrainerRequestButton.onclick = function() {
+        window.location.href = 'admin_viewTrainerrequest.html';
     }
 
     function openAddEditTrainerModal(userId = null) {
@@ -111,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showFormMessage(formTrainerMessage, '', '');
         trainerForm.reset();
 
-        if (userId) { // Edit mode
+        if (userId) { 
             trainerModalTitle.textContent = `Edit Trainer: ${userId}`;
             formTrainerId.value = userId;
             formTrainerPinGroup.style.display = 'none';
@@ -135,11 +69,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         } else { // Add mode
+            console.log('Opening modal for adding new trainer.');
             trainerModalTitle.textContent = 'Add New Trainer';
             formTrainerId.value = '';
-            formTrainerPinGroup.style.display = 'block';
+            formTrainerId.removeAttribute('required');
+            formTrainerId.setAttribute('disabled', 'disabled');
+            formTrainerId.placeholder = 'Auto-generated on Creation';
             formTrainerPin.setAttribute('required', 'required');
-            formTrainerConfirmPinGroup.style.display = 'block';
             formTrainerConfirmPin.setAttribute('required', 'required');
             console.log('Opening modal for new trainer.');
         }
@@ -162,6 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 securityAnswer: formTrainerSecurityAnswer.value
             };
 
+            console.log(newTrainerData);
+
             if (!isEditMode) { // Adding a new trainer
                 console.log('Attempting to add new trainer.');
                 if (formTrainerPin.value !== formTrainerConfirmPin.value) {
@@ -181,13 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                let newUserId;
-                do {
-                    newUserId = 'TRN' + Math.floor(100 + Math.random() * 900);
-                } while (users.some(u => u.userId === newUserId));
+                // send request to appropriate route here
 
                 const newTrainer = {
-                    userId: newUserId,
                     role: 'trainer',
                     ...newTrainerData,
                     pin: formTrainerPin.value,
@@ -195,8 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     status: 'Active'
                 };
 
-                users.push(newTrainer);
-                console.log('New trainer object created and added to array:', newTrainer);
+                // send request to appropriate route here
+
+
                 showFormMessage(formTrainerMessage, 'success', 'Trainer added successfully!');
 
             } else { // Editing an existing trainer
@@ -211,11 +146,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
 
-                    users[trainerIndex] = {
-                        ...users[trainerIndex],
-                        ...newTrainerData
-                    };
-                    console.log('Trainer updated in array:', users[trainerIndex]);
+                    // send request to appropriate route here
+
                     showFormMessage(formTrainerMessage, 'success', `Trainer ${userIdToEdit} updated successfully!`);
                 } else {
                     showFormMessage(formTrainerMessage, 'error', 'Error: Trainer not found for update.');
@@ -232,37 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function deleteTrainer(userId) {
-        if (confirm(`Are you sure you want to delete trainer ${userId}? This action cannot be undone.`)) {
-            console.log('Attempting to delete trainer:', userId);
-            let users = JSON.parse(sessionStorage.getItem('users')) || [];
-            const initialLength = users.length;
-            users = users.filter(user => user.userId !== userId);
 
-            if (users.length < initialLength) {
-                sessionStorage.setItem('users', JSON.stringify(users));
-                console.log('Trainer deleted from sessionStorage. Remaining users:', JSON.parse(sessionStorage.getItem('users')));
-                renderTrainersTable();
-                showMainMessage('success', `Trainer ${userId} deleted successfully.`);
-            } else {
-                showMainMessage('error', 'Error: Trainer not found for deletion.');
-                console.error('Trainer not found for deletion:', userId);
-            }
-        }
-    }
 
     // --- Modal Event Listeners ---
-    if (addTrainerBtn) addTrainerBtn.addEventListener('click', () => openAddEditTrainerModal());
-    if (closeTrainerModalBtn) closeTrainerModalBtn.addEventListener('click', () => trainerModal.style.display = 'none');
-    if (cancelTrainerButton) cancelTrainerButton.addEventListener('click', () => trainerModal.style.display = 'none');
-    if (trainerModal) {
-        window.addEventListener('click', (event) => {
-            if (event.target === trainerModal) {
-                trainerModal.style.display = 'none';
-            }
-        });
-    }
-
-    // Initial render
-    renderTrainersTable();
+// Initial render
+    // renderTrainersTable();
 });

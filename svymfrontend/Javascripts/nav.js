@@ -1,0 +1,57 @@
+fetch("../public/partials//nav.html")
+  .then((res) => res.text())
+  .then((data) => {
+    const activeLink = window.location.pathname;
+    document.getElementsByClassName("side-menu")[0].innerHTML = data;
+    const navLinks = document.querySelectorAll(".side-menu a.nav-link");
+    switch (activeLink) {
+      case "/admin_dashboard.html": {
+        navLinks[0].classList.add("active");
+        break;
+      }
+      case "/admin_students.html": {
+        navLinks[1].classList.add("active");
+        break;
+      }
+      case "/admin_trainers.html": {
+        navLinks[2].classList.add("active");
+        break;
+      }
+      case "/admin_field_mobilisers.html": {
+        navLinks[3].classList.add("active");
+        break;
+      }
+      case "/admin_courses.html": {
+        navLinks[4].classList.add("active");
+        break;
+      }
+      case "/admin_fee_management.html": {
+        navLinks[5].classList.add("active");
+        break;
+      }
+      case "/admin_placements.html": {
+        navLinks[6].classList.add("active");
+        break;
+      }
+      case "/admin_reports.html": {
+        navLinks[7].classList.add("active");
+        break;
+      }
+    }
+    const hamburgerMenu = document.getElementById("hamburgerMenu");
+    if (hamburgerMenu) {
+      hamburgerMenu.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+    }
+  })
+  .catch((err) => console.error("Failed to load nav:", err));
+
+const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+
+if (adminLogoutBtn) {
+  adminLogoutBtn.addEventListener("click", function () {
+    sessionStorage.removeItem("isAdminLoggedIn");
+    window.location.href = "login.html";
+  });
+}
