@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmNewPasswordGroup = document.getElementById('confirmNewPasswordGroup');
     const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
     const messageDiv = document.getElementById('message');
+    const submitButton = loginForm.querySelector('button[type="submit"]');
 
     let isFirstLoginFlow = false;
 
@@ -22,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     newPasswordInput.removeAttribute('required');
     confirmNewPasswordInput.removeAttribute('required');
 
-    // Login submit
     loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const newPassword = newPasswordInput.value.trim();
         const confirmNewPassword = confirmNewPasswordInput.value.trim();
 
-        // Validate User ID format
+        // Validate User ID
         if (!userId.startsWith('SVYM') || !/^\d{5}$/.test(userId.substring(4))) {
             showMessage('error', 'Invalid User ID format. It should be SVYM followed by 5 digits.');
             return;
@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
             let endpoint = 'login';
             let body = { userId, password };
 
-            // If in first-login PIN flow, switch to update-pin
             if (isFirstLoginFlow) {
+                // Validate new PIN
                 if (!newPassword || !confirmNewPassword) {
                     showMessage('error', 'Please enter and confirm your new 5-digit PIN.');
                     return;
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 endpoint = 'update-pin';
-                body = { userId, oldPin: password, newPin: newPassword };
+                body = { userId, newPin: newPassword }; // oldPin not needed for first login
             }
 
             const response = await fetch(`/.netlify/functions/${endpoint}`, {
@@ -75,21 +75,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     passwordInput.style.display = 'none';
                     newPasswordGroup.style.display = 'block';
                     confirmNewPasswordGroup.style.display = 'block';
-                    newPasswordInput.setAttribute('required', 'required');
-                    confirmNewPasswordInput.setAttribute('required', 'required');
+                    userIdInput.readOnly = true; // User ID readonly
+                    submitButton.textContent = 'Update PIN';
                     showMessage('info', 'This is your first login. Please set a new 5-digit PIN.');
                 } else {
-                    // Save session info
-                    sessionStorage.setItem('userId', data.user.userId);
-                    sessionStorage.setItem('role', data.user.role);
-
-                    // Redirect based on role
-                    if (data.user.role === 'admin') {
-                        showMessage('success', data.message || 'Admin login successful!');
-                        window.location.href = 'admin_dashboard.html';
+                    // Reset to normal login page after successful PIN update
+                    if (isFirstLoginFlow) {
+                        showMessage('success', 'PIN updated successfully! Please login with your new PIN.');
+                        setTimeout(() => window.location.reload(), 2000);
                     } else {
-                        showMessage('success', data.message || 'Login successful!');
-                        window.location.href = 'candidate_dashboard.html';
+                        // Normal login
+                        sessionStorage.setItem('userId', data.user.userId);
+                        sessionStorage.setItem('role', data.user.role);
+
+                        if (data.user.role === 'admin') {
+                            window.location.href = 'admin_dashboard.html';
+                        } else {
+                            window.location.href = 'candidate_dashboard.html';
+                        }
                     }
                 }
             } else {
