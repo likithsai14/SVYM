@@ -15,14 +15,15 @@
                 }
                 const fetchedData = await response.json();
 
-                console.log('Fetched student data:', typeof(fetchedData.students));
+                //console.log('Fetched student data:', typeof(fetchedData.students));
                 for (const student of fetchedData.students) {
                     studentsData.push({
                         id: student._id,
+                        userId: student.userId,
                         name: student.candidateName,
                         email: student.email,
                         course: student.supportedProject,
-                        status: student.isAppRejPen === 0 ? 'Pending' : (student.isAppRejPen === 1 ? 'Approved' : 'Rejected'),
+                        status: student.approvalStatus,
                         fatherHusbandName: student.fatherHusbandName,
                         villageName: student.villageName,
                         talukName: student.talukName,
@@ -74,7 +75,7 @@
 
                 // Set the inner HTML of the row with all the student details
                 row.innerHTML = `
-                    <td>${student.id}</td>
+                    <td>${student.userId}</td>
                     <td>${student.name}</td>
                     <td>${student.email}</td>
                     <td>${student.course}</td>

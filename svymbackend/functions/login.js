@@ -20,14 +20,8 @@ exports.handler = async (event) => {
 
     /** ---------- 1. CHECK ADMIN ---------- **/
     const adminDoc = await Admin.findOne({ username: userId });
-    console.log(adminDoc);
     if (adminDoc) {
-      const hash = await bcrypt.hash('password', 10);
-      console.log(hash);
-      const isMatching = await bcrypt.compare('password', adminDoc.password);
-      console.log(isMatching);
       const isMatch = await bcrypt.compare(password, adminDoc.password);
-      console.log(isMatch);
       if (!isMatch) {
         return { statusCode: 401, body: JSON.stringify({ message: 'Invalid Admin ID or Password.' }) };
       }
@@ -59,9 +53,26 @@ exports.handler = async (event) => {
       return { statusCode: 401, body: JSON.stringify({ message: 'Invalid User ID or Password.' }) };
     }
 
+    // Update login info
     userDoc.loginCount = (userDoc.loginCount || 0) + 1;
     userDoc.lastLoginAt = new Date();
     await userDoc.save();
+
+    // Check for first login to trigger PIN update prompt
+    if (userDoc.isFirstLogin) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          message: 'First login detected. Please update your PIN.',
+          isFirstLoginPrompt: true,
+          user: {
+            userId: userDoc.userId,
+            email: userDoc.email,
+            role: 'user'
+          }
+        })
+      };
+    }
 
     return {
       statusCode: 200,
@@ -70,7 +81,7 @@ exports.handler = async (event) => {
         user: {
           userId: userDoc.userId,
           email: userDoc.email,
-          role: 'user' // normal users always "user"
+          role: 'user'
         }
       })
     };

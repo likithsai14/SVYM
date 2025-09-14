@@ -27,7 +27,7 @@ exports.handler = async (event) => {
       return { statusCode: 403, body: JSON.stringify({ message: `Cannot update PIN. Current status: ${userDoc.approvalStatus}` }) };
     }
 
-    // Verify old PIN
+    // Verify old PIN against stored password
     const isMatch = await bcrypt.compare(oldPin, userDoc.password);
     if (!isMatch) {
       return { statusCode: 401, body: JSON.stringify({ message: 'Old PIN is incorrect.' }) };
@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     // Hash and update new PIN
     const hashedNewPin = await bcrypt.hash(newPin, 10);
     userDoc.password = hashedNewPin;
-    userDoc.isFirstLogin = false; // After first update
+    userDoc.isFirstLogin = false; // Mark first login as complete
     await userDoc.save();
 
     return {

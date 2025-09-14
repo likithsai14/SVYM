@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
         // Fetch all users whose userId starts with 'SVYM'
         const students = await User.find({ userId: { $regex: /^SVYM/ } });
 
-        console.log(students);
+        //console.log(students);
 
         return {
             statusCode: 200,
