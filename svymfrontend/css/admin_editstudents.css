@@ -1,0 +1,203 @@
+/* This file is intended to be used alongside admin_dashboard.css for a consistent look */
+
+/* General Card Styling */
+.dashboard-card.wide-card {
+    width: 100%;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.card-header h4 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.card-header h4 i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+/* "Add New Student" Button */
+.add-student-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.add-student-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+/* Search Bar */
+.search-bar-container {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+#studentSearchInput {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-right: none;
+    padding: 12px;
+    border-radius: 8px 0 0 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#studentSearchInput:focus {
+    border-color: #007bff;
+}
+
+#studentSearchBtn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-radius: 0 8px 8px 0;
+    transition: background-color 0.3s ease;
+}
+
+#studentSearchBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Table and Responsive Container */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px; /* Ensures table doesn't get too small on mobile */
+}
+
+.data-table thead {
+    background-color: #f8f9fa;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.data-table th {
+    font-weight: 600;
+    color: #555;
+    white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Status Badges */
+.status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: white;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.status.approved { background-color: #28a745; }
+.status.pending { background-color: #ffc107; color: #333; }
+.status.rejected { background-color: #dc3545; }
+
+/* Action Buttons */
+.action-btn {
+    background-color: transparent;
+    border: 1px solid;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-btn i {
+    font-size: 1rem;
+}
+
+.view-btn {
+    color: #007bff;
+    border-color: #007bff;
+}
+.view-btn:hover { background-color: #007bff; color: white; }
+
+.edit-btn {
+    color: #ffc107;
+    border-color: #ffc107;
+}
+.edit-btn:hover { background-color: #ffc107; color: #333; }
+
+.delete-btn {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+.delete-btn:hover { background-color: #dc3545; color: white; }
+
+.approve-btn {
+    color: #28a745;
+    border-color: #28a745;
+}
+.approve-btn:hover { background-color: #28a745; color: white; }
+
+.reject-btn {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+.reject-btn:hover { background-color: #dc3545; color: white; }
+
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .add-student-button {
+        width: 100%;
+        justify-content: center;
+    }
+    .search-bar-container {
+        max-width: 100%;
+    }
+}

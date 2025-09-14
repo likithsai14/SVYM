@@ -1,0 +1,16 @@
+{
+  "name": "netlify-couchdb-functions",
+  "version": "1.0.0",
+  "description": "Backend functions for secure CouchDB interaction via Netlify",
+  "main": "signup.js",
+  "scripts": {
+    "install": "npm install"
+  },
+  "keywords": [],
+  "author": "Nirmal J",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "pouchdb-node": "^8.0.1"
+  }
+}

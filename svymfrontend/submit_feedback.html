@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVYM Tech4Hope - Submit Feedback</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General page styling (similar to other content pages) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .feedback-intro {
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .feedback-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .feedback-form input[type="text"],
+        .feedback-form input[type="email"],
+        .feedback-form select,
+        .feedback-form textarea {
+            width: calc(100% - 20px); /* Adjust for padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .feedback-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .feedback-form button {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #28a745; /* Green submit button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .feedback-form button:hover {
+            background-color: #218838;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SVYM Tech4Hope</h1>
+        <h2>Submit Feedback</h2>
+        <div class="content-section">
+            <p class="feedback-intro">Your feedback is important to us! Please share your thoughts, suggestions, or report any issues you've encountered. This helps us improve our services.</p>
+
+            <form class="feedback-form" id="feedbackForm">
+                <label for="feedbackType">Type of Feedback:</label>
+                <select id="feedbackType" name="feedbackType" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="suggestion">Suggestion</option>
+                    <option value="bug">Bug Report</option>
+                    <option value="compliment">Compliment</option>
+                    <option value="course_content">Course Content</option>
+                    <option value="platform_usability">Platform Usability</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" placeholder="e.g., Suggestion for new course" required>
+
+                <label for="message">Your Message:</label>
+                <textarea id="message" name="message" placeholder="Please describe your feedback in detail..." required></textarea>
+
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+        <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
+    </div>
+    <script src="Javascripts/submit_feedback.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVYM Tech4Hope - Student Forum</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General page styling (similar to other content pages) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .forum-intro {
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .forum-list .forum-topic {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .forum-list .forum-topic:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .forum-list .forum-topic h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #007bff;
+            font-size: 1.2em;
+        }
+
+        .forum-list .forum-topic p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0;
+        }
+
+        .forum-list .forum-topic .meta {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .forum-list .forum-topic .meta span {
+            margin-right: 15px;
+        }
+
+        .forum-list .forum-topic .meta .fas {
+            margin-right: 5px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SVYM Tech4Hope</h1>
+        <h2>Student Forum</h2>
+        <div class="content-section">
+            <p class="forum-intro">Welcome to the Tech4Hope Student Forum! Connect with fellow students, ask questions, share knowledge, and discuss various topics related to your courses and skill development.</p>
+
+            <div class="forum-list" id="forumTopics">
+                <div class="forum-topic">
+                    <h3>General Discussion: Introduction & Welcome</h3>
+                    <p>A place to introduce yourself, say hello, and get started with the forum.</p>
+                    <div class="meta">
+                        <span><i class="fas fa-user"></i> Admin</span>
+                        <span><i class="fas fa-comments"></i> 15 replies</span>
+                        <span><i class="fas fa-clock"></i> Last active: Today</span>
+                    </div>
+                </div>
+                <div class="forum-topic">
+                    <h3>Course Q&A: Mobile Repair & Service</h3>
+                    <p>Discuss challenges, share tips, and ask questions specific to the Mobile Repair course.</p>
+                    <div class="meta">
+                        <span><i class="fas fa-user"></i> Student A</span>
+                        <span><i class="fas fa-comments"></i> 8 replies</span>
+                        <span><i class="fas fa-clock"></i> Last active: 2 days ago</span>
+                    </div>
+                </div>
+                <div class="forum-topic">
+                    <h3>Job Opportunities & Placements</h3>
+                    <p>Share and discuss job openings, interview tips, and placement assistance.</p>
+                    <div class="meta">
+                        <span><i class="fas fa-user"></i> Career Services</span>
+                        <span><i class="fas fa-comments"></i> 22 replies</span>
+                        <span><i class="fas fa-clock"></i> Last active: Yesterday</span>
+                    </div>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px; font-style: italic; color: #777;">
+                More features coming soon, including creating new topics and replying!
+            </p>
+        </div>
+        <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
+    </div>
+    <script src="Javascripts/student_forum.js"></script>
+</body>
+</html>

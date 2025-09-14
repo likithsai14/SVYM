@@ -1,0 +1,13 @@
+# netlify.toml
+
+[build]
+  publish = "svymfrontend/"
+  functions = "svymbackend/functions/"
+  command = ""
+
+# --- Add this section ---
+[[redirects]]
+  from = "/"           # When a user visits the root URL (e.g., http://localhost:8888/)
+  to = "/login.html"   # Redirect them to this page
+  status = 302         # Use a 302 status for a temporary redirect (good for development)
+                       # For production, you might consider 301 for a permanent redirect

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SVYM Tech4Hope - Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body>
+  <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="side-menu" id="sideMenu">
+    <div class="logo">SVYM Admin</div>
+    <nav>
+      <ul>
+        <li><a href="admin_students.html" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a></li>
+        <li><a href="admin_trainers.html" class="nav-link"><i class="fas fa-chalkboard-teacher"></i> Trainers</a></li>
+        <li><a href="admin_field_mobilisers.html" class="nav-link"><i class="fas fa-people-carry"></i> Field Mobilisers</a></li>
+        <li><a href="admin_courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a></li>
+        <li><a href="admin_attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+        <li><a href="admin_fees.html" class="nav-link"><i class="fas fa-rupee-sign"></i> Fee Management</a></li>
+        <li><a href="login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="container main-content">
+    <h1 class="welcome-message">Welcome Admin!</h1>
+    <div class="dashboard-card-section">
+      <div class="dashboard-card">
+        <h4><i class="fas fa-user-graduate"></i> Total Students</h4>
+        <p>View and manage enrolled students.</p>
+        <a href="admin_students.html" class="card-link">Manage Students</a>
+      </div>
+
+      <div class="dashboard-card">
+        <h4><i class="fas fa-chalkboard-teacher"></i> Trainers</h4>
+        <p>List and assign trainers to courses.</p>
+        <a href="admin_trainers.html" class="card-link">Manage Trainers</a>
+      </div>
+
+      <div class="dashboard-card">
+        <h4><i class="fas fa-people-carry"></i> Field Mobilisers</h4>
+        <p>Track outreach staff and field updates.</p>
+        <a href="admin_field_mobilisers.html" class="card-link">Manage Mobilisers</a>
+      </div>
+
+      <div class="dashboard-card">
+        <h4><i class="fas fa-book"></i> Courses</h4>
+        <p>Manage course modules and content.</p>
+        <a href="admin_courses.html" class="card-link">Manage Courses</a>
+      </div>
+
+      <div class="dashboard-card">
+        <h4><i class="fas fa-calendar-check"></i> Attendance</h4>
+        <p>Monitor attendance records.</p>
+        <a href="admin_attendance.html" class="card-link">View Attendance</a>
+      </div>
+
+      <div class="dashboard-card">
+        <h4><i class="fas fa-rupee-sign"></i> Fees</h4>
+        <p>Track fee payments and dues.</p>
+        <a href="admin_fees.html" class="card-link">Manage Fees</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="Javascripts/admin_dashboard.js"></script>
+</body>
+</html>

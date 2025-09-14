@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVYM Tech4Hope- Fee Details</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* General styling for pages */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 900px; /* Adjusted max-width for better table display */
+            width: 90%;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        .content-section p {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+        .content-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .content-section th, .content-section td {
+            border: 1px solid #ddd;
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .content-section th {
+            background-color: #eaf6ff;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .content-section tr:nth-child(even) {
+            background-color: #f6fbff;
+        }
+        .content-section tr:hover {
+            background-color: #e0f7fa;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
+        /* Fee Details Specific Styles */
+        .fee-summary {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .fee-card {
+            background-color: #eaf6ff;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .fee-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .fee-card h3 {
+            color: #007bff;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .fee-card .amount {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #28a744; /* Green for paid/total */
+        }
+        .fee-card.pending .amount {
+            color: #dc3545; /* Red for pending */
+        }
+
+        .fee-card p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 5px 0 0;
+        }
+
+        .download-button-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .download-button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .download-button .fas {
+            margin-right: 10px;
+        }
+
+        .download-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Specific styles for tables inside content section */
+        #paymentHistoryTable thead th {
+            background-color: #007bff;
+            color: white;
+        }
+        #paymentHistoryTable tbody td {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SVYM Tech4Hope</h1>
+        <h2>Fee Details</h2>
+        <div class="content-section">
+            <p>Here you can find a summary of your course fees, pending payments, and a detailed payment history. You can also download your receipts.</p>
+
+            <div class="fee-summary">
+                <div class="fee-card">
+                    <h3>Total Course Fees</h3>
+                    <div class="amount" id="totalFees">INR 0.00</div>
+                    <p>Sum of all your enrolled course fees.</p>
+                </div>
+                <div class="fee-card pending">
+                    <h3>Pending Fees</h3>
+                    <div class="amount" id="pendingFees">INR 0.00</div>
+                    <p>Amount still due for your courses.</p>
+                </div>
+                <div class="fee-card">
+                    <h3>Completed Payments</h3>
+                    <div class="amount" id="completedFees">INR 0.00</div>
+                    <p>Total amount paid so far.</p>
+                </div>
+            </div>
+
+            <div class="download-button-container">
+                <button id="downloadReceiptsBtn" class="download-button">
+                    <i class="fas fa-download"></i> Download All Receipts (PDF)
+                </button>
+            </div>
+
+            <h3>Payment History</h3>
+            <table id="paymentHistoryTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Course Name</th>
+                        <th>Payment ID</th>
+                        <th>Amount Paid</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentHistoryTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No payment history available.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 20px;">For any discrepancies or to make a payment, please contact your respective center administration.</p>
+        </div>
+        <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
+    </div>
+    <script src="/Javascripts/fee_details.js"></script>
+</body>
+</html>

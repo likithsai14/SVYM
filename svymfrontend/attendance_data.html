@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVYM Tech4Hope - Attendance Data</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General styling for pages */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        .content-section p {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+        .content-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .content-section th, .content-section td {
+            border: 1px solid #ddd;
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .content-section th {
+            background-color: #eaf6ff;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .content-section tr:nth-child(even) {
+            background-color: #f6fbff;
+        }
+        .content-section tr:hover {
+            background-color: #e0f7fa;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
+        /* Attendance Specific Styles */
+        .attendance-summary {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .attendance-card {
+            background-color: #eaf6ff;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .attendance-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .attendance-card h3 {
+            color: #007bff;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .attendance-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #28a745; /* Green for good values */
+        }
+        .attendance-card.warning .value {
+            color: #ffc107; /* Orange for warnings */
+        }
+        .attendance-card.danger .value {
+            color: #dc3545; /* Red for low values */
+        }
+        .attendance-card p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 5px 0 0;
+        }
+
+        .chart-container {
+            width: 80%; /* Adjust width of chart */
+            max-width: 400px; /* Max width for consistency */
+            margin: 20px auto; /* Center the chart */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        /* Make canvas responsive within its container */
+        .chart-container canvas {
+            display: block; /* Remove extra space below canvas */
+            width: 100% !important; /* Override default inline styles */
+            height: auto !important; /* Maintain aspect ratio */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SVYM Tech4Hope</h1>
+        <h2>Attendance Data</h2>
+        <div class="content-section">
+            <p>Here you can view your detailed attendance records and a summary of your presence in classes. Regular attendance is crucial for your skill development.</p>
+
+            <div class="attendance-summary">
+                <div class="attendance-card">
+                    <h3>Overall Attendance Rate</h3>
+                    <div class="value" id="overallAttendanceRate">0%</div>
+                    <p>Your average presence across all classes.</p>
+                </div>
+                <div class="attendance-card">
+                    <h3>Days Present</h3>
+                    <div class="value" id="daysPresent">0</div>
+                    <p>Total days you were marked present.</p>
+                </div>
+                <div class="attendance-card danger">
+                    <h3>Days Absent</h3>
+                    <div class="value" id="daysAbsent">0</div>
+                    <p>Total days you were marked absent.</p>
+                </div>
+            </div>
+
+            <h3>Overall Attendance Distribution</h3>
+            <div class="chart-container">
+                <canvas id="attendancePieChart"></canvas>
+            </div>
+
+            <h3>Detailed Attendance Log</h3>
+            <table id="attendanceLogTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Course Name</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceLogTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center;">No attendance data available.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 20px;">If you have any concerns regarding your attendance records, please contact your course instructor or administration.</p>
+        </div>
+        <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
+    </div>
+    <script src="Javascripts/attendace_data.js"></script>
+</body>
+</html>

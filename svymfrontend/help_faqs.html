@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVYM Tech4Hope - Help & FAQs</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General page styling (similar to other content pages) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .faq-intro {
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .faq-item {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden; /* For smooth collapse */
+        }
+
+        .faq-question {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+            background-color: #eaf6ff;
+            transition: background-color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background-color: #d0e8f7;
+        }
+
+        .faq-question .toggle-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-question {
+            background-color: #c1e7f0; /* Darker blue when active */
+        }
+
+        .faq-item.active .faq-question .toggle-icon {
+            transform: rotate(180deg); /* Rotate arrow when open */
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Adjust as needed for content, or use a JS calculation */
+            padding: 15px 20px;
+        }
+        /* Add a bit of bottom padding to answer paragraph */
+        .faq-answer p {
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SVYM Tech4Hope</h1>
+        <h2>Help & FAQs</h2>
+        <div class="content-section">
+            <p class="faq-intro">Find answers to common questions about Tech4Hope courses, application process, fees, and more. If you can't find what you're looking for, please contact our support team.</p>
+
+            <div class="faq-list" id="faqList">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I apply for a course?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can apply for any available course directly from your dashboard by navigating to the "Apply for Course" section. Browse the list of courses, read their descriptions, and click "Apply Now" for your desired program. Our team will then reach out to you for further steps.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What are the eligibility criteria for courses?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Eligibility criteria vary by course. Generally, candidates should have completed their 10th grade. Some advanced technical courses might require specific prior knowledge or qualifications. Please check the individual course descriptions on the "Apply for Course" page or contact us for details.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How can I check my fee details and make payments?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Your dashboard provides a "Fee Details" section where you can view your total course fees, paid amounts, and outstanding dues. Currently, payments are handled offline at our centers. Please visit your nearest Tech4Hope center or contact administration for payment instructions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How is attendance recorded?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Attendance is recorded daily by your instructors at the training center. You can view your attendance records and overall attendance rate in the "Attendance Data" section of your dashboard. Regular attendance is mandatory for course completion and certification.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I change my course after applying?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Course changes are subject to availability and administrative approval. Please contact your center's administration as soon as possible if you wish to change your enrolled course. Terms and conditions may apply.</p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px; font-style: italic; color: #777;">
+                Still have questions? Visit our <a href="contact.html">Contact Us</a> page for direct support.
+            </p>
+        </div>
+        <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
+    </div>
+    <script src="Javascripts/help_faqs.js"></script>
+</body>
+</html>

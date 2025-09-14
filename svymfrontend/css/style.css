@@ -1,0 +1,211 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+    background: linear-gradient(to right, #e0f7fa, #bbdefb); /* Soft gradient background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* Add some padding for small screens */
+    box-sizing: border-box; /* Ensure padding is included in element's total width/height */
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 35px 30px; /* Increased padding */
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+    width: 100%;
+    max-width: 500px; /* Maximum width for larger screens */
+    box-sizing: border-box;
+    margin: auto; /* Center the container */
+}
+
+h1 {
+    text-align: center;
+    color: #007bff; /* Primary color */
+    margin-bottom: 10px;
+    font-size: 1em; /* Larger title */
+    letter-spacing: 0.5px;
+}
+
+h2, h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px; /* More space below headings */
+    font-size: 0.8em;
+}
+
+.form-group {
+    margin-bottom: 20px; /* More space between form groups */
+}
+
+label {
+    display: block;
+    margin-bottom: 4px; /* More space below labels */
+    color: #555;
+    font-weight: 600; /* Slightly bolder labels */
+    font-size: 0.8em;
+}
+
+/* New CSS for required field asterisk */
+label:has(+ input[required])::after,
+label:has(+ select[required])::after {
+    content: ' *';
+    color: #dc3545; /* Red color for asterisk */
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+input[type="tel"],
+select {
+    width: 100%; /* Changed from fixed 500px */
+    max-width: calc(100% - 20px); /* Max width for smaller screens, accounting for padding */
+    padding: 4px; /* Adjusted padding */
+    margin-top: 5px;
+    border: 1px solid #cceeff; /* Lighter border color */
+    border-radius: 3px; /* Slightly more rounded input corners */
+    box-sizing: border-box;
+    font-size: 10px; /* Standard font size */
+    transition: border-color 0.3s ease-in-out; /* Smooth transition for focus */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+select:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Soft blue glow on focus */
+}
+
+
+button {
+    width: 100%;
+    padding: 10px; /* Larger button */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px; /* More rounded button */
+    cursor: pointer;
+    font-size: 0.9em; /* Adjusted to 0.9em */
+    font-weight: lighter;
+    margin-top: 15px; /* More space above button */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+p {
+    text-align: center;
+    margin-top: 25px; /* More space above paragraphs */
+    color: #666;
+    font-size: 0.8em;
+}
+
+p a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+#forgotPasswordSection, #securityQuestionsSection, #resetPasswordSection {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #eee;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px; /* Reduce margin on very small screens */
+        padding: 25px 20px; /* Reduce padding */
+    }
+
+    h1 {
+        font-size: 1.2em; /* Adjusted for mobile */
+    }
+
+    h2, h3 {
+        font-size: 1em; /* Adjusted for mobile */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    input[type="number"],
+    input[type="tel"],
+    select {
+        width: calc(100% - 20px); /* Make inputs full width on small screens */
+    }
+
+    button {
+        padding: 10px; /* Adjusted padding */
+        font-size: 0.9em; /* Adjusted font size */
+    }
+}
+
+/* Styles for error messages and generated ID */
+.error-message { /* Style for inline validation errors */
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 4px;
+    display: block; /* Ensures it's on a new line */
+}
+
+#message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: none; /* Hide by default */
+    font-size: 0.9em; /* Consistent with other text */
+}
+#message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+#message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+#message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+#generatedUserId {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e0f7fa;
+    border: 1px solid #00bcd4;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #00796b;
+    display: none;
+    word-break: break-all;
+    font-size: 1em; /* Adjusted size */
+}
+#generatedUserId strong {
+    color: #1d3557;
+    font-size: 1.1em;
+}
