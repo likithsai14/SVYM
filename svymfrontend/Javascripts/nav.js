@@ -1,4 +1,21 @@
-fetch("../public/partials//nav.html")
+// if(!sessionStorage.getItem("user")) return;
+
+const user = JSON.parse(sessionStorage.getItem("user"));
+let url = "../public/partials//admin_nav.html";
+
+if (user) {
+  if (user.role === "admin") {
+    url = "../public/partials//admin_nav.html";
+  } else if (user.role === "trainer") {
+    url = "../public/partials//trainer_nav.html";
+  } else if (user.role === "field_mobiliser") {
+    url = "../public/partials//field_mobilizer_nav.html";
+  } else if (user.role === "student") {
+    url = "../public/partials//student_nav.html";
+  }
+}
+
+fetch(url)
   .then((res) => res.text())
   .then((data) => {
     const activeLink = window.location.pathname;
@@ -47,7 +64,10 @@ fetch("../public/partials//nav.html")
   })
   .catch((err) => console.error("Failed to load nav:", err));
 
-const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+const logout = () => {
+  sessionStorage.clear();
+  window.location.href = "login.html";
+};
 
 if (adminLogoutBtn) {
   adminLogoutBtn.addEventListener("click", function () {

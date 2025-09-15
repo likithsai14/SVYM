@@ -12,6 +12,8 @@ exports.handler = async (event, context) => {
       _id: { $regex: /^SVYMFM/ }
     }).lean();
 
+
+
     console.log(fieldmobilisers);
 
     return {

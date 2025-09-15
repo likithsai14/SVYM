@@ -2,9 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sideMenu = document.getElementById('sideMenu');
     const hamburger = document.getElementById('hamburger');
     const overlay = document.getElementById('overlay');
-    const navLinks = document.getElementById('navLinks');
-
-    const ullinks = navLinks.getElementsByTagName('li');
 
     
     // Toggle sidebar visibility on mobile

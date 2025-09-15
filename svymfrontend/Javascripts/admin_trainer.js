@@ -35,9 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'admin_listTrainer.html';
     }
 
-    viewTrainerRequestButton.onclick = function() {
-        window.location.href = 'admin_viewTrainerrequest.html';
-    }
 
     function openAddEditTrainerModal(userId = null) {
         if (!trainerModal) return;

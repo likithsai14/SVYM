@@ -1,7 +1,5 @@
-const adminLoggedIn = sessionStorage.getItem('isLoggedIn');
-if (!adminLoggedIn || adminLoggedIn !== 'true') {
-    console.log('Admin not logged in, redirecting to login.html');
-    window.location.href = 'login.html';
-    return;
+if (!sessionStorage.getItem("userId") || !sessionStorage.getItem("role")) {
+  sessionStorage.clear();
+  console.log("inside")
+  window.location.href = "/login.html";
 }
-

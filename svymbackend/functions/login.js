@@ -1,6 +1,8 @@
 const { connectDB } = require('./utils/mongodb');
 const User = require('./models/User');
 const Admin = require('./models/Admin');
+const Trainer = require('./models/Trainer');
+const FieldMobiliser = require('./models/FieldMobiliser');
 const bcrypt = require('bcrypt');
 
 exports.handler = async (event) => {
