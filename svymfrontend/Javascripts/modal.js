@@ -6,6 +6,5 @@ modals.forEach(modal => {
     modal.querySelector('.close-btn').onclick = function() {
         console.log("Close button clicked");
         modal.classList.remove('show');
-        modal.style.display = 'none';
     }
 })
