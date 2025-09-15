@@ -69,9 +69,3 @@ const logout = () => {
   window.location.href = "login.html";
 };
 
-if (adminLogoutBtn) {
-  adminLogoutBtn.addEventListener("click", function () {
-    sessionStorage.removeItem("isAdminLoggedIn");
-    window.location.href = "login.html";
-  });
-}

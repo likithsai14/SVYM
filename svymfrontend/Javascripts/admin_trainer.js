@@ -10,13 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const formTrainerId = document.getElementById('formTrainerId');
     const formTrainerName = document.getElementById('formTrainerName');
     const formTrainerExpertise = document.getElementById('formTrainerExpertise');
-    const formTrainerContact = document.getElementById('formTrainerContact');
-    const formTrainerPin = document.getElementById('formTrainerPin');
-    const formTrainerConfirmPin = document.getElementById('formTrainerConfirmPin');
+    const formTrainerContact = document.getElementById('formTrainerMobile');
+    const formTrainerEmail = document.getElementById('formTrainerEmail');
     const formTrainerSecurityQuestion = document.getElementById('formTrainerSecurityQuestion');
     const formTrainerSecurityAnswer = document.getElementById('formTrainerSecurityAnswer');
-    const formTrainerPinGroup = document.getElementById('formTrainerPinGroup');
-    const formTrainerConfirmPinGroup = document.getElementById('formTrainerConfirmPinGroup');
     const formTrainerMessage = document.getElementById('trainerFormMessage');
 
     const viewTrainerRequestButton = document.getElementById('requestTrainer');
@@ -45,10 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (userId) { 
             trainerModalTitle.textContent = `Edit Trainer: ${userId}`;
             formTrainerId.value = userId;
-            formTrainerPinGroup.style.display = 'none';
-            formTrainerPin.removeAttribute('required');
-            formTrainerConfirmPinGroup.style.display = 'none';
-            formTrainerConfirmPin.removeAttribute('required');
 
             const users = JSON.parse(sessionStorage.getItem('users')) || [];
             const trainerToEdit = users.find(u => u.userId === userId);
@@ -57,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formTrainerName.value = trainerToEdit.name || '';
                 formTrainerExpertise.value = trainerToEdit.expertise || '';
                 formTrainerContact.value = trainerToEdit.contact || '';
+                formTrainerEmail.value = trainerToEdit.email || '';
                 formTrainerSecurityQuestion.value = trainerToEdit.securityQuestion || '';
                 formTrainerSecurityAnswer.value = trainerToEdit.securityAnswer || '';
                 console.log('Populated trainer data for edit:', trainerToEdit);
@@ -72,25 +66,30 @@ document.addEventListener('DOMContentLoaded', function() {
             formTrainerId.removeAttribute('required');
             formTrainerId.setAttribute('disabled', 'disabled');
             formTrainerId.placeholder = 'Auto-generated on Creation';
-            formTrainerPin.setAttribute('required', 'required');
-            formTrainerConfirmPin.setAttribute('required', 'required');
             console.log('Opening modal for new trainer.');
         }
         trainerModal.style.display = 'flex';
     }
 
     if (trainerForm) {
-        trainerForm.addEventListener('submit', function(event) {
+        trainerForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             console.log('Trainer form submitted.');
 
             const isEditMode = !!formTrainerId.value;
-            let users = JSON.parse(sessionStorage.getItem('users')) || [];
+
+            if(!formTrainerContact.value && !formTrainerEmail.value){
+                showFormMessage(formTrainerMessage, 'error', 'Please provide at least one contact detail: Email or Phone.');
+                console.warn('No contact detail provided.');
+                return;
+            }
+
 
             const newTrainerData = {
                 name: formTrainerName.value,
                 expertise: formTrainerExpertise.value,
-                contact: formTrainerContact.value,
+                mobile: formTrainerContact.value,
+                email: formTrainerEmail.value,
                 securityQuestion: formTrainerSecurityQuestion.value,
                 securityAnswer: formTrainerSecurityAnswer.value
             };
@@ -99,34 +98,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!isEditMode) { // Adding a new trainer
                 console.log('Attempting to add new trainer.');
-                if (formTrainerPin.value !== formTrainerConfirmPin.value) {
-                    showFormMessage(formTrainerMessage, 'error', 'PIN and Confirm PIN do not match.');
-                    console.warn('Trainer PIN mismatch.');
-                    return;
-                }
-                if (formTrainerPin.value.length !== 4 || !/^\d{4}$/.test(formTrainerPin.value)) {
-                    showFormMessage(formTrainerMessage, 'error', 'PIN must be a 4-digit number.');
-                    console.warn('Invalid Trainer PIN format.');
-                    return;
-                }
-
-                if (users.some(u => u.contact && u.contact.toLowerCase() === newTrainerData.contact.toLowerCase())) {
-                    showFormMessage(formTrainerMessage, 'error', 'A trainer with this Contact (Email/Phone) already exists.');
-                    console.warn('Duplicate trainer contact:', newTrainerData.contact);
-                    return;
-                }
-
-                // send request to appropriate route here
 
                 const newTrainer = {
                     role: 'trainer',
                     ...newTrainerData,
-                    pin: formTrainerPin.value,
                     isFirstLogin: true,
                     status: 'Active'
                 };
 
-                // send request to appropriate route here
+                const response = await fetch('/.netlify/functions/createTrainer',{
+                    body:JSON.stringify(newTrainer),
+                    method:'POST'
+                }); 
+
+                const data = await response.json();
+
+                if(response.ok){
+                    if(response.status==200){
+                        showFormMessage(formTrainerMessage, 'success', `Trainer ${data.trainer.id} updated successfully!`);
+                    }
+                }
 
 
                 showFormMessage(formTrainerMessage, 'success', 'Trainer added successfully!');
@@ -143,9 +134,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
 
-                    // send request to appropriate route here
+                    const response = await fetch('/.netlify/functions/editTrainer',{
+                        body:JSON.stringify(newTrainer),
+                        method:'POST'
+                    }); 
 
-                    showFormMessage(formTrainerMessage, 'success', `Trainer ${userIdToEdit} updated successfully!`);
+                    const data = response.json();
+
+                    if(response.ok){
+                        if(response.status==200){
+                            showFormMessage(formTrainerMessage, 'success', `Trainer ${data.trainer.id} updated successfully!`);
+                        }
+                    }
+
                 } else {
                     showFormMessage(formTrainerMessage, 'error', 'Error: Trainer not found for update.');
                     console.error('Trainer not found for update, userId:', userIdToEdit);
@@ -154,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             sessionStorage.setItem('users', JSON.stringify(users));
             console.log('Users array saved to sessionStorage. Current sessionStorage users:', JSON.parse(sessionStorage.getItem('users')));
-            renderTrainersTable();
+            
             setTimeout(() => {
                 if (trainerModal) trainerModal.style.display = 'none';
             }, 1500);
