@@ -1,19 +1,39 @@
-// netlify/functions/utils/mongodb.js
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-// Connection URI
-const uri = process.env.MONGODB_URI || 
-  "mongodb+srv://nagendrababutorlikonda_db_user:8NvWN2yYEdkSXpHE@tech4hopecluster.y7mlwdk.mongodb.net/tech4hope_db?retryWrites=true&w=majority&appName=tech4hopeCluster";
+const uri =
+  process.env.MONGODB_URI ||
+  'mongodb+srv://nagendrababutorlikonda_db_user:8NvWN2yYEdkSXpHE@tech4hopecluster.y7mlwdk.mongodb.net/tech4hope_db?retryWrites=true&w=majority&appName=tech4hopeCluster';
 
-const clientOptions = {
-  serverApi: { version: "1", strict: true, deprecationErrors: true },
-};
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 async function connectDB() {
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(uri, clientOptions);
-    console.log("✅ Connected to MongoDB Atlas: tech4hope_db");
+  if (cached.conn) {
+    console.log('✅ Using cached MongoDB connection');
+    return cached.conn;
   }
+
+  if (!cached.promise) {
+    console.log('🔌 Connecting to MongoDB...');
+    cached.promise = mongoose
+      .connect(uri, {
+        bufferCommands: false,
+        serverApi: { version: '1', strict: true, deprecationErrors: true },
+      })
+      .then((mongoose) => {
+        console.log('✅ Connected to MongoDB Atlas');
+        return mongoose;
+      })
+      .catch((err) => {
+        console.error('❌ Connection error:', err);
+        throw err;
+      });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
 
 module.exports = { connectDB };
