@@ -24,4 +24,4 @@ TrainerSchema.pre('validate', function (next) {
   next();
 });
 
-module.exports = mongoose.model('Trainer', TrainerSchema);
+module.exports = mongoose.models.Trainer || mongoose.model('Trainer', TrainerSchema);

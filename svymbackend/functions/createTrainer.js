@@ -41,11 +41,11 @@ exports.handler = async (event) => {
     const hashedPassword = await bcrypt.hash(uniqueSuffix, 10);
     trainer.userId = userId;
     trainer.password = hashedPassword;
-    await Trainer.save();
+    await trainer.save();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ fieldmobilisers }),
+      body: JSON.stringify({ trainer }),
     };
   } catch (error) {
     console.error("Netlify Function error:", error);

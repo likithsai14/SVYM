@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+console.log("inside the file")
 const uri =
   process.env.MONGODB_URI ||
   'mongodb+srv://nagendrababutorlikonda_db_user:8NvWN2yYEdkSXpHE@tech4hopecluster.y7mlwdk.mongodb.net/tech4hope_db?retryWrites=true&w=majority&appName=tech4hopeCluster';

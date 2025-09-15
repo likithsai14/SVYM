@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'admin_listTrainer.html';
     }
 
-
     function openAddEditTrainerModal(userId = null) {
         if (!trainerModal) return;
 
@@ -118,49 +117,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         showFormMessage(formTrainerMessage, 'success', `Trainer ${data.trainer.id} updated successfully!`);
                     }
                 }
-
-
                 showFormMessage(formTrainerMessage, 'success', 'Trainer added successfully!');
-
             } else { // Editing an existing trainer
                 console.log('Attempting to edit existing trainer.');
                 const userIdToEdit = formTrainerId.value;
-                const trainerIndex = users.findIndex(u => u.userId === userIdToEdit);
-
-                if (trainerIndex !== -1) {
-                    if (users.some((u, idx) => u.contact && u.contact.toLowerCase() === newTrainerData.contact.toLowerCase() && idx !== trainerIndex)) {
-                        showFormMessage(formTrainerMessage, 'error', 'A trainer with this Contact (Email/Phone) already exists.');
-                        console.warn('Duplicate trainer contact during edit:', newTrainerData.contact);
-                        return;
-                    }
-
-                    const response = await fetch('/.netlify/functions/editTrainer',{
+                const response = await fetch('/.netlify/functions/editTrainer',{
                         body:JSON.stringify(newTrainer),
                         method:'POST'
-                    }); 
+                }); 
 
-                    const data = response.json();
+                const data = response.json();
 
-                    if(response.ok){
-                        if(response.status==200){
-                            showFormMessage(formTrainerMessage, 'success', `Trainer ${data.trainer.id} updated successfully!`);
-                        }
+                if(response.ok){
+                    if(response.status==200){
+                        showFormMessage(formTrainerMessage, 'success', `Trainer ${data.trainer.id} updated successfully!`);
                     }
-
-                } else {
-                    showFormMessage(formTrainerMessage, 'error', 'Error: Trainer not found for update.');
-                    console.error('Trainer not found for update, userId:', userIdToEdit);
                 }
+                else {
+                showFormMessage(formTrainerMessage, 'error', 'Error: Trainer not found for update.');
+                console.error('Trainer not found for update, userId:', userIdToEdit);
             }
-
-            sessionStorage.setItem('users', JSON.stringify(users));
-            console.log('Users array saved to sessionStorage. Current sessionStorage users:', JSON.parse(sessionStorage.getItem('users')));
-            
-            setTimeout(() => {
-                if (trainerModal) trainerModal.style.display = 'none';
-            }, 1500);
-        });
-    }
+        }
+    });
+}
 
 
 
