@@ -1,30 +1,42 @@
+let addfieldmobiliser=document.getElementById('addfieldmobiliser');
+
+addfieldmobiliser.addEventListener('click', function() {
+    console.log("Add Field Mobiliser button clicked");
+    const fieldMobiliserFormModal = document.getElementById('fieldMobilizerFormModal');
+    fieldMobiliserFormModal.classList.add('show');
+});
+
+let editfieldmobiliser=document.getElementById('editfieldmobiliser');
+editfieldmobiliser.addEventListener('click', function() {
+    // Redirect to the edit students page
+    window.location.href = 'admin_editstudents.html';
+});
+
 document.addEventListener('DOMContentLoaded', async function() {
 
-    const signupForm = document.getElementById('signupForm');
+    const signupForm = document.getElementById('fieldMobileForm');
     const messageDiv = document.getElementById('message');
     const generatedUserIdDiv = document.getElementById('generatedUserId');
 
-    const errorSpans={
+    const errorSpans = {
         FieldMobiliserName: document.getElementById('FieldMobiliserNameError'),
         FieldMobiliserEmailID: document.getElementById('FieldMobiliserEmailIDError'),
         FieldMobiliserMobileNo: document.getElementById('FieldMobiliserMobileNoError'),
         FieldMobiliserRegion: document.getElementById('FieldMobiliserRegionError'),
         FieldMobiliserSupportedProject: document.getElementById('FieldMobiliserSupportedProjectError'),
-    }
-     
-     // Helper to show error messages next to fields
+    };
+
+    // Helper to show error messages next to fields
     function showError(inputElement, message) {
-        const errorSpanId = inputElement.id + 'Error';
         const errorSpan = errorSpans[inputElement.id];
         if (errorSpan) {
             errorSpan.textContent = message;
-            inputElement.classList.add('input-error'); // Add a class for visual error styling
+            inputElement.classList.add('input-error');
         }
     }
 
     // Helper to clear error messages
     function clearError(inputElement) {
-        const errorSpanId = inputElement.id + 'Error';
         const errorSpan = errorSpans[inputElement.id];
         if (errorSpan) {
             errorSpan.textContent = '';
@@ -35,9 +47,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     signupForm.querySelectorAll('input, select').forEach(input => {
         if (input.hasAttribute('required')) {
             input.addEventListener('input', function() {
-                if (this.value.trim() !== '') {
-                    clearError(this);
-                }
+                if (this.value.trim() !== '') clearError(this);
             });
             input.addEventListener('blur', function() {
                 if (this.value.trim() === '') {
@@ -47,7 +57,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             });
         }
-        // Specific pattern validation (e.g., Aadhar, Phone)
         if (input.hasAttribute('pattern')) {
             input.addEventListener('input', function() {
                 if (!this.validity.valid) {
@@ -65,29 +74,33 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         }
     });
-    
+
     signupForm.addEventListener('submit', async function(event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
 
         // Clear previous messages and errors
         messageDiv.style.display = 'none';
         generatedUserIdDiv.style.display = 'none';
         messageDiv.className = '';
-        Object.values(errorSpans).forEach(span => {
-            if (span) span.textContent = '';
-        });
+        Object.values(errorSpans).forEach(span => { if (span) span.textContent = ''; });
         signupForm.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 
-        // Manual validation before submission
         let isValid = true;
         const formData = new FormData(signupForm);
         const data = {};
         for (let [key, value] of formData.entries()) {
-            console.log(`Field: ${key}, Value: ${value}`);
             data[key] = value.trim();
         }
 
-        // Re-validate all fields on submit
+        // Attach addedBy from sessionStorage
+        const adminUserId = sessionStorage.getItem('userId');
+        if (!adminUserId) {
+            showMessage('error', 'Admin session expired. Please log in again.');
+            return;
+        }
+        data.addedBy = adminUserId;
+
+        // Re-validate before submit
         signupForm.querySelectorAll('input, select').forEach(input => {
             if (input.hasAttribute('required') && input.value.trim() === '') {
                 showError(input, 'This field is required.');
@@ -104,14 +117,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             showMessage('error', 'Please correct the errors in the form.');
             return;
         }
-
+        console.log("In frontend add field mobil file ", data);
         try {
-            // CALLING NETLIFY FUNCTION DIRECTLY: Change from '/api/...'
             const response = await fetch('/.netlify/functions/fieldmobilisersignup', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
@@ -121,11 +131,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showMessage('success', result.message || 'Sign up successful!');
                 generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
                 generatedUserIdDiv.style.display = 'block';
-                signupForm.reset(); // Clear the form
-                let v=document.getElementById('adminapprovalMessage');
-                v.style.display = 'block';
-                v.className = 'message success';
-                v.textContent = 'Your request has been sent for admin approval. You will be notified once approved.'; 
+                signupForm.reset();
+
+                let v = document.getElementById('adminapprovalMessage');
+                if (v) {
+                    v.style.display = 'block';
+                    v.className = 'message success';
+                    v.textContent = 'Your request has been sent for admin approval. You will be notified once approved.';
+                }
             } else {
                 showMessage('error', result.message || 'Sign up failed. Please try again.');
             }
@@ -135,16 +148,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-
-
-
-
     function showMessage(type, text) {
         messageDiv.textContent = text;
-        messageDiv.className = ''; // Clear existing classes
+        messageDiv.className = '';
         messageDiv.classList.add('message', type);
         messageDiv.style.display = 'block';
     }
-
-
 });

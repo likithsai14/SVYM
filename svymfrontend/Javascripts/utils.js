@@ -2,7 +2,4 @@ function showFormMessage(messageElement, type, text) {
     messageElement.textContent = text;
     messageElement.className = `message ${type}`;
     messageElement.style.display = 'block';
-    setTimeout(() => {
-        messageElement.style.display = 'none';
-    }, 3000);
 }

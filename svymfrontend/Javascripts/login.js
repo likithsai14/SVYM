@@ -26,7 +26,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const confirmNewPassword = confirmNewPasswordInput.value.trim();
 
     // Validate User ID
-    if (!userId.startsWith("SVYM") || !/^\d{5}$/.test(userId.substring(4))) {
+    if (
+      !userId.startsWith("SVYM") ||
+      !/^(SVYM|SVYMA|SVYMS|SVYMFS|SVYMT)\d{5}$/.test(userId)
+    ) {
       showMessage(
         "error",
         "Invalid User ID format. It should be SVYM followed by 5 digits."
@@ -96,7 +99,11 @@ document.addEventListener("DOMContentLoaded", function () {
             sessionStorage.setItem("user", JSON.stringify(data.user));
             if (data.user.role === "admin") {
               window.location.href = "admin_dashboard.html";
-            } else {
+            } else if (data.user.role === "trainer") {
+              window.location.href = "trainer_dashboard.html";
+            }else if (data.user.role === "field_mobiliser") {
+              window.location.href = "field_mobiliser_dashboard.html";
+            } else if (data.user.role === "user") {
               // check if user is student or trainer or field_mobiliser
               window.location.href = "candidate_dashboard.html";
             }

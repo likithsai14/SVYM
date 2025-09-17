@@ -8,9 +8,19 @@ const fieldMobiliserSchema = new mongoose.Schema({
   FieldMobiliserMobileNo: { type: String, required: true },
   FieldMobiliserRegion: { type: String, required: true },
   FieldMobiliserSupportedProject: { type: String, required: true },
+  addedBy: { type: String, required: true },
+  password: { type: String, required: true },
+  isFirstLogin: { type: Boolean, default: true },
+  accountStatus: {
+    type: String,
+    enum: ["active", "inActive"],
+    default: "active",
+  },
+  loginCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
-const FieldMobiliser = mongoose.model("FieldMobiliser", fieldMobiliserSchema);
-
-module.exports = FieldMobiliser;
+// ✅ Prevent OverwriteModelError in Netlify hot reload
+module.exports =
+  mongoose.models.FieldMobiliser ||
+  mongoose.model("FieldMobiliser", fieldMobiliserSchema);
