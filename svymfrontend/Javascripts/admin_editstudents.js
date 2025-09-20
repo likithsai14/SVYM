@@ -93,8 +93,8 @@
                 tableBody.appendChild(row);
                      row.querySelector('.view-btn').addEventListener('click', function() {
                         // Populate the modal with the current student's data
-                        document.getElementById('modalStudentName').textContent = student.id + " " + student.name;
-                        document.getElementById('modalUserId').textContent = student.id;
+                        document.getElementById('modalStudentName').textContent = student.userId + " " + student.name;
+                        document.getElementById('modalUserId').textContent = student.userId;
                         document.getElementById('modalUserName').textContent = student.name;
                         document.getElementById('modalUserEmail').textContent = student.email;
                         document.getElementById('modalUserCourse').textContent = student.course;

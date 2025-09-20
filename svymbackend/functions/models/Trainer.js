@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const TrainerSchema = new mongoose.Schema({
-  userId: { type: String, required: true, unique: true, trim: true },
+  trainerId: { type: String, required: true, unique: true, trim: true },
   password: { type: String, required: true},
   isFirstLogin: { type: Boolean, default: true },
   loginCount: { type: Number, default: 0 },

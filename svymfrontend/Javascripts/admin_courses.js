@@ -1,80 +1,144 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const addModuleBtn = document.getElementById("addModuleBtn");
-  const modulesList = document.getElementById("modulesList");
-  const totalModules = document.getElementById("totalModules");
+document.addEventListener("DOMContentLoaded", () => {
+  const addCourseBtn = document.getElementById("openAddCourseModal");
+  const modal = document.getElementById("addCourseModal");
+  const closeModal = document.getElementById("closeModal");
+  const cancelModal = document.getElementById("cancelModal");
+  const searchInput = document.getElementById("courseSearch");
+  const coursesContainer = document.getElementById("coursesContainer");
 
-  // Redirect to add_module.html when button is clicked
-  if (addModuleBtn) {
-    addModuleBtn.addEventListener("click", () => {
-      window.location.href = "add_module.html";
-    });
+  // Assign Trainer modal
+  const assignModal = document.getElementById("assignTrainerModal");
+  const closeAssignModal = document.getElementById("closeAssignModal");
+  const cancelAssignModal = document.getElementById("cancelAssignModal");
+  const trainerSelect = document.getElementById("trainerSelect");
+  const assignTrainerForm = document.getElementById("assignTrainerForm");
+
+  let courses = [];
+  let selectedCourseId = null;
+
+  // Fetch courses from DB
+  async function fetchCourses() {
+    try {
+      const response = await fetch("/.netlify/functions/allCourses");
+      if (!response.ok) throw new Error("Failed to fetch courses");
+      courses = await response.json();
+      renderCourses();
+    } catch (err) {
+      console.error(err);
+      coursesContainer.innerHTML = `<p style="color:red;">Error loading courses</p>`;
+    }
   }
 
-  // Use the same DB as add_module.html
-  const db = new PouchDB("svym_courses");
+  // Render courses
+  function renderCourses(filter = "") {
+    coursesContainer.innerHTML = "";
+    const filtered = courses.filter(c =>
+      c.courseName.toLowerCase().includes(filter.toLowerCase()) ||
+      c.courseId.toLowerCase().includes(filter.toLowerCase())
+    );
 
-  // Fetch and render modules
-  async function renderModules() {
-    const result = await db.allDocs({ include_docs: true });
-    const modules = result.rows
-      .map(row => row.doc)
-      .filter(doc => doc.type === "module"); // only modules
-
-    totalModules.textContent = modules.length;
-
-    if (modules.length === 0) {
-      modulesList.innerHTML = "<p>No modules added yet.</p>";
+    if (filtered.length === 0) {
+      coursesContainer.innerHTML = "<p>No courses found.</p>";
       return;
     }
 
-    // Create table
-    modulesList.innerHTML = `
-      <table class="module-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Training Name</th>
-            <th>Module Name</th>
-            <th>Duration</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${modules.map((module, index) => `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${module.trainingName}</td>
-              <td>${module.moduleName}</td>
-              <td>${module.startDate} → ${module.endDate}</td>
-              <td>${module.status}</td>
-              <td>
-                <button class="edit-btn" data-id="${module._id}"><i class="fas fa-edit"></i> Edit</button>
-                <button class="delete-btn" data-id="${module._id}"><i class="fas fa-trash"></i> Delete</button>
-              </td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
-
-    // Attach event listeners
-    document.querySelectorAll(".delete-btn").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        const id = e.target.closest("button").dataset.id;
-        const doc = await db.get(id);
-        await db.remove(doc);
-        renderModules(); // refresh
-      });
+    filtered.forEach(course => {
+      const card = document.createElement("div");
+      card.className = "course-card";
+      card.innerHTML = `
+        <div class="card-header">
+          <h3>${course.courseId} - ${course.courseName}</h3>
+          <div class="course-price">INR ${course.price.toLocaleString('en-IN')}</div>
+        </div>
+        <div class="card-body">
+          <p>${course.description}</p>
+          <div class="course-details-grid">
+            <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>
+            <p><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</p>
+            <p><strong>Duration:</strong> ${course.durationMonths} months</p>
+            <p class="full-width"><strong>Center:</strong> ${course.location}</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="footer-actions">
+            <button class="edit-btn" data-id="${course.courseId}">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="delete-button" data-id="${course.courseId}">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+          ${
+            !course.trainerId
+              ? `<div class="assign-trainer">
+                   <button class="assign-button" data-id="${course.courseId}">
+                     <i class="fas fa-user-plus"></i> Assign Trainer
+                   </button>
+                 </div>`
+              : ""
+          }
+        </div>
+      `;
+      coursesContainer.appendChild(card);
     });
 
-    document.querySelectorAll(".edit-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const id = e.target.closest("button").dataset.id;
-        window.location.href = `add_module.html?id=${id}`;
+    // Assign Trainer button click
+    document.querySelectorAll(".assign-button").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        selectedCourseId = e.target.dataset.id;
+        trainerSelect.innerHTML = `<option value="">Loading trainers...</option>`;
+        assignModal.classList.add("show");
+
+        try {
+          const res = await fetch("/.netlify/functions/allTrainers");
+          const data = await res.json();
+          const trainers = data.trainers.filter(t => t.status === "Active");
+          console.log(trainers);
+          trainerSelect.innerHTML = trainers.map(t => `<option value="${t.userId}">${t.name}</option>`).join("");
+        } catch (err) {
+          console.error(err);
+          trainerSelect.innerHTML = `<option value="">Error loading trainers</option>`;
+        }
       });
     });
   }
 
-  renderModules();
+  // Search filter
+  searchInput.addEventListener("input", (e) => renderCourses(e.target.value));
+
+  // Open/Close Add Course Modal
+  addCourseBtn.addEventListener("click", () => modal.classList.add("show"));
+  closeModal.addEventListener("click", () => modal.classList.remove("show"));
+  cancelModal.addEventListener("click", () => modal.classList.remove("show"));
+  window.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("show"); });
+
+  // Close Assign Trainer Modal
+  closeAssignModal.addEventListener("click", () => assignModal.classList.remove("show"));
+  cancelAssignModal.addEventListener("click", () => assignModal.classList.remove("show"));
+  window.addEventListener("click", e => { if (e.target === assignModal) assignModal.classList.remove("show"); });
+
+  // Assign Trainer form submit
+  assignTrainerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const trainerId = trainerSelect.value;
+    if (!trainerId) return alert("Select a trainer");
+
+    try {
+      const res = await fetch("/.netlify/functions/assignTrainer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseId: selectedCourseId, trainerId })
+      });
+      if (!res.ok) throw new Error("Failed to assign trainer");
+      alert("Trainer assigned successfully!");
+      assignModal.classList.remove("show");
+      fetchCourses(); // Refresh courses
+    } catch (err) {
+      console.error(err);
+      alert("Error assigning trainer");
+    }
+  });
+
+  // Initial load
+  fetchCourses();
 });

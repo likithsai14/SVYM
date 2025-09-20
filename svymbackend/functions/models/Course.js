@@ -5,20 +5,30 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^\d{5}$/ // must be 5-digit
+    match: /^\d{5}$/, // must be 5-digit
   },
   courseName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
   },
   startDate: {
     type: Date,
-    required: true
+    required: true,
   },
   endDate: {
     type: Date,
-    required: true
+    required: true,
+  },
+  durationMonths: {
+    type: Number,
+    required: true,
+    min: 1,
   },
   moduleNames: {
     type: [String],
@@ -27,23 +37,36 @@ const courseSchema = new mongoose.Schema({
       validator: function (arr) {
         return arr.length > 0;
       },
-      message: "At least one module name is required"
-    }
+      message: "At least one module name is required",
+    },
   },
   trainerId: {
     type: String,
-    default: null
+    default: null,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    trim: true,
+    required: true,
   },
   addedBy: {
     type: String, // userId of admin
-    required: true
+    required: true,
   },
   courseStatus: {
     type: String,
     enum: ["Upcoming", "Ongoing", "Completed"],
-    required: true
-    }
-
+    default: "Upcoming",
+  },
+  studentsEnrolled: {
+    type: Number,
+    default: 0, // starts with 0 students enrolled
+    min: 0,
+  },
 }, { timestamps: true });
 
 const Course = mongoose.model("Course", courseSchema);

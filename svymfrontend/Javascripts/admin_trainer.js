@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
           showFormMessage(
             generatedUserId,
             "info",
-            `Generated User ID: ${trainer.userId}. \n Please share this with the trainer along with the initial password (same as User ID) for first login.`
+            `Generated User ID: ${trainer.trainerId}. \n Please share this with the trainer along with the initial password (same as User ID) for first login.`
           );
         } else {
           showFormMessage(

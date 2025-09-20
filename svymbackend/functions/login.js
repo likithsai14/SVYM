@@ -25,7 +25,7 @@ exports.handler = async (event) => {
     }
 
     if (userId.startsWith("SVYMT")) {
-      const trainerDoc = await Trainer.findOne({ userId });
+      const trainerDoc = await Trainer.findOne({ trainerId : userId });
       console.log(trainerDoc);
       if (!trainerDoc)
         return {
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
             message: "First login detected. Please update your PIN.",
             isFirstLoginPrompt: true,
             user: {
-              userId: trainerDoc.userId,
+              userId: trainerDoc.trainerId,
               email: trainerDoc.email,
               role: "trainer",
             },

@@ -25,23 +25,23 @@ async function fetchTrainers() {
 }
 
 // ✅ Generic function to update trainer status
-async function updateTrainerStatus(userId, newStatus) {
+async function updateTrainerStatus(trainerId, newStatus) {
   const actionText = newStatus === "Active" ? "activate" : "deactivate";
 
-  if (!confirm(`Are you sure you want to ${actionText} trainer ${userId}?`)) return;
+  if (!confirm(`Are you sure you want to ${actionText} trainer ${trainerId}?`)) return;
 
   try {
     const response = await fetch("/.netlify/functions/updateTrainerStatus", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, status: newStatus }),
+      body: JSON.stringify({ trainerId, status: newStatus }),
     });
 
     const result = await response.json();
     if (!response.ok) throw new Error(result.message || "Failed to update");
 
     // Update local array
-    const trainer = allTrainers.find((t) => t.userId === userId);
+    const trainer = allTrainers.find((t) => t.trainerId === trainerId);
     if (trainer) trainer.status = newStatus;
 
     renderTrainersTable();
@@ -81,7 +81,7 @@ function renderTrainersTable() {
   paginated.forEach((trainer) => {
     const row = `
       <tr>
-        <td>${trainer.userId}</td>
+        <td>${trainer.trainerId}</td>
         <td>${trainer.name || "N/A"}</td>
         <td>${trainer.email || "N/A"}</td>
         <td>${trainer.expertise || "N/A"}</td>
@@ -90,11 +90,11 @@ function renderTrainersTable() {
           ${
             trainer.status === "Active"
               ? `
-                <button class="action-btn edit-btn edit-trainer-btn" data-user-id="${trainer.userId}">Edit</button>
-                <button class="action-btn delete-btn deactivate-trainer-btn" data-user-id="${trainer.userId}">Deactivate</button>
+                <button class="action-btn edit-btn edit-trainer-btn" data-user-id="${trainer.trainerId}">Edit</button>
+                <button class="action-btn delete-btn deactivate-trainer-btn" data-user-id="${trainer.trainerId}">Deactivate</button>
               `
               : `
-                <button class="action-btn view-btn activate-trainer-btn" data-user-id="${trainer.userId}">Activate</button>
+                <button class="action-btn view-btn activate-trainer-btn" data-user-id="${trainer.trainerId}">Activate</button>
               `
           }
         </td>
@@ -105,15 +105,15 @@ function renderTrainersTable() {
 
   // ✅ Attach button listeners after rendering
   trainersTableBody.querySelectorAll(".deactivate-trainer-btn").forEach((btn) =>
-    btn.addEventListener("click", () => updateTrainerStatus(btn.dataset.userId, "Inactive"))
+    btn.addEventListener("click", () => updateTrainerStatus(btn.dataset.trainerId, "Inactive"))
   );
 
   trainersTableBody.querySelectorAll(".activate-trainer-btn").forEach((btn) =>
-    btn.addEventListener("click", () => updateTrainerStatus(btn.dataset.userId, "Active"))
+    btn.addEventListener("click", () => updateTrainerStatus(btn.dataset.trainerId, "Active"))
   );
 
   trainersTableBody.querySelectorAll(".edit-trainer-btn").forEach((btn) =>
-    btn.addEventListener("click", () => openAddEditTrainerModal(btn.dataset.userId))
+    btn.addEventListener("click", () => openAddEditTrainerModal(btn.dataset.trainerId))
   );
 }
 

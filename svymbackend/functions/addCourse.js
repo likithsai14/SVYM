@@ -7,15 +7,23 @@ exports.handler = async (event) => {
       return { statusCode: 405, body: JSON.stringify({ message: "Method Not Allowed" }) };
     }
 
-    // Ensure DB connection before any query
+    // Connect to DB
     await connectDB();
-    //await Course.init(); // ensures indexes like unique: true are created
 
     const body = JSON.parse(event.body);
-    const { courseName, startDate, endDate, moduleNames, addedBy } = body;
+    const { courseName, price, startDate, endDate, duration, moduleNames, location, description, addedBy } = body;
 
-    if (!courseName || !startDate || !endDate || !moduleNames || moduleNames.length === 0 || !addedBy) {
+    // Validation
+    if (!courseName || !price || !startDate || !endDate || !moduleNames || moduleNames.length === 0 ||
+        !location || !description || !addedBy || !duration) {
       return { statusCode: 400, body: JSON.stringify({ message: "All fields are required" }) };
+    }
+
+    // Check if startDate is not in the past
+    const today = new Date();
+    const start = new Date(startDate);
+    if (start < today.setHours(0,0,0,0)) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Start date cannot be in the past" }) };
     }
 
     // Generate unique 5-digit courseId
@@ -23,27 +31,32 @@ exports.handler = async (event) => {
     let existing;
     do {
       courseId = Math.floor(10000 + Math.random() * 90000).toString();
-      //existing = await Course.findOne({ courseId });
+      existing = await Course.findOne({ courseId });
     } while (existing);
 
     // Determine courseStatus
-    const today = new Date();
     let courseStatus = "Upcoming";
-    if (today >= new Date(startDate) && today <= new Date(endDate)) {
+    const end = new Date(endDate);
+    if (today >= start && today <= end) {
       courseStatus = "Ongoing";
-    } else if (today > new Date(endDate)) {
+    } else if (today > end) {
       courseStatus = "Completed";
     }
 
     const newCourse = new Course({
       courseId,
       courseName,
+      price,
       startDate,
       endDate,
+      durationMonths: duration,
       moduleNames,
+      location,
+      description,
       addedBy,
       courseStatus,
-      trainerId: null, // initially unassigned
+      trainerId: null,         // initially unassigned
+      studentsEnrolled: 0,     // initially 0
     });
 
     await newCourse.save();

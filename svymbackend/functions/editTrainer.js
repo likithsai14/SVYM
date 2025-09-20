@@ -26,7 +26,7 @@ exports.handler = async (event) => {
     const uniqueSuffix = Math.floor(10000 + Math.random() * 90000).toString();
     const userId = `SVYMT${uniqueSuffix}`;
     const hashedPassword = await bcrypt.hash(uniqueSuffix, 10);
-    trainer.userId = userId;
+    trainer.trianerId = userId;
     trainer.password = hashedPassword;
     await Trainer.save();
 

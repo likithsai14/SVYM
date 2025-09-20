@@ -22,7 +22,7 @@ exports.handler = async (event) => {
     }
 
     if (userId.startsWith("SVYMT")) {
-      doc = await require("./models/Trainer").findOne({ userId });
+      doc = await require("./models/Trainer").findOne({ trainerId : userId });
       if (!doc)
         return {
           statusCode: 404,

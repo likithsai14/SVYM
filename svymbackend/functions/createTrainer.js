@@ -14,16 +14,12 @@ exports.handler = async (event) => {
     await connectDB();
 
     const body = JSON.parse(event.body);
-
     const filter = {};
     if (body.email) {
       filter.email = body.email;
     } else if (body.mobile) {
       filter.mobile = body.mobile;
     }
-
-    console.log(filter);
-    console.log(body);
     const trainers = await Trainer.find(filter);
 
     if (trainers.length !== 0) {
@@ -39,13 +35,14 @@ exports.handler = async (event) => {
     const uniqueSuffix = Math.floor(10000 + Math.random() * 90000).toString();
     const userId = `SVYMT${uniqueSuffix}`;
     const hashedPassword = await bcrypt.hash(uniqueSuffix, 10);
-    trainer.userId = userId;
+    trainer.trainerId = userId;
     trainer.password = hashedPassword;
+
     await trainer.save();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ trainer, userId: userId, role: "trainer" }),
+      body: JSON.stringify({ trainer, trainerId: userId, role: "trainer" }),
     };
   } catch (error) {
     console.error("Netlify Function error:", error);

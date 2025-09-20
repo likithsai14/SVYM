@@ -10,9 +10,9 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { userId, status } = JSON.parse(event.body);
+    const { trainerId, status } = JSON.parse(event.body);
 
-    if (!userId || !["Active", "Inactive"].includes(status)) {
+    if (!trainerId || !["Active", "Inactive"].includes(status)) {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "Invalid input" }),
@@ -21,7 +21,7 @@ exports.handler = async (event) => {
 
     await connectDB();
     const updatedTrainer = await Trainer.findOneAndUpdate(
-      { userId },
+      { trainerId },
       { status },
       { new: true }
     );
@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: `Trainer ${userId} updated successfully`,
+        message: `Trainer ${trainerId} updated successfully`,
         trainer: updatedTrainer,
       }),
     };
