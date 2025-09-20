@@ -71,6 +71,7 @@ exports.handler = async (event) => {
     // Check Admin
     const adminDoc = await Admin.findOne({ username: userId });
     if (adminDoc) {
+      console.log(adminDoc);
       const isMatch = await bcrypt.compare(password, adminDoc.password);
       if (!isMatch)
         return {

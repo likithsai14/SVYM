@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
     await connectDB();
 
     const data = JSON.parse(event.body);
-
+    console.log(data);
     // Required fields
     const requiredFields = [
       "FieldMobiliserName",

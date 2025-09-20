@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-console.log("inside the file")
+
 const uri =
   process.env.MONGODB_URI ||
   'mongodb+srv://nagendrababutorlikonda_db_user:8NvWN2yYEdkSXpHE@tech4hopecluster.y7mlwdk.mongodb.net/tech4hope_db?retryWrites=true&w=majority&appName=tech4hopeCluster';
@@ -19,7 +19,8 @@ async function connectDB() {
     console.log('🔌 Connecting to MongoDB...');
     cached.promise = mongoose
       .connect(uri, {
-        bufferCommands: false,
+        bufferCommands: false, // disable buffering
+        serverSelectionTimeoutMS: 10000, // fail if cannot connect in 10s
         serverApi: { version: '1', strict: true, deprecationErrors: true },
       })
       .then((mongoose) => {

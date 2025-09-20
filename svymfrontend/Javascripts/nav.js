@@ -10,7 +10,7 @@ if (user) {
     url = "../public/partials//trainer_nav.html";
   } else if (user.role === "field_mobiliser") {
     url = "../public/partials//field_mobilizer_nav.html";
-  } else if (user.role === "student") {
+  } else if (user.role === "user") {
     url = "../public/partials//student_nav.html";
   }
 }

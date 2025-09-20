@@ -14,7 +14,7 @@ editfieldmobiliser.addEventListener('click', function() {
 
 document.addEventListener('DOMContentLoaded', async function() {
 
-    const signupForm = document.getElementById('fieldMobileForm');
+    const signupForm = document.getElementById('fieldMobilizerForm'); //fieldMobileForm
     const messageDiv = document.getElementById('message');
     const generatedUserIdDiv = document.getElementById('generatedUserId');
 

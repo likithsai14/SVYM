@@ -13,12 +13,7 @@
   align-items: center;
   flex-shrink: 0;
   transition: transform 0.3s ease;
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.side-menu::-webkit-scrollbar {
-  display: none;
+  overflow: hidden; /* prevent double scroll */
 }
 
 .side-menu .logo-container {
@@ -36,7 +31,7 @@
 }
 
 .side-menu nav {
-  flex-grow: 1;
+  flex: 1;
   width: 100%;
   overflow-y: auto;
   -ms-overflow-style: none;
@@ -80,22 +75,27 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Logout Button - fixed bottom */
+.logout-container {
+  width: 100%;
+  padding: 0 15px;
+  margin-bottom: 50px; /* gap from bottom */
+  flex-shrink: 0;
+}
 .logout-link {
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: transparent;
-  margin-top: 10px;
-  padding: 15px 20px;
+  padding: 10px 15px; /* smaller button */
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   font-size: 1.05em;
-  justify-content: center;
   border: 2px solid rgba(255, 255, 255, 0.7);
   width: 100%;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
-
 .logout-link:hover {
   background-color: rgba(255, 255, 255, 0.2);
   color: #ffffff;
@@ -103,10 +103,9 @@
   transform: translateX(5px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-
 .logout-link .fas {
   margin-right: 10px;
-  font-size: 1.2em;
+  font-size: 1.1em;
 }
 
 /* Hamburger menu for mobile */
@@ -152,11 +151,9 @@
     width: 280px;
     z-index: 1000;
   }
-
   .side-menu.open {
     transform: translateX(0);
   }
-
   .modal {
     height: 100vh;
   }
@@ -192,8 +189,8 @@ body {
   padding: 10px;
   border-radius: 8px;
   font-weight: 500;
-  display: none; /* Hide by default */
-  font-size: 0.9em; /* Consistent with other text */
+  display: none;
+  font-size: 0.9em;
 }
 #message.success {
   background-color: #d4edda;
@@ -220,7 +217,7 @@ body {
   color: #00796b;
   display: none;
   word-break: break-all;
-  font-size: 1em; /* Adjusted size */
+  font-size: 1em;
 }
 #generatedUserId strong {
   color: #1d3557;
