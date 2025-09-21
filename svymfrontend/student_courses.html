@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | Course Management</title>
+  <title>Student Dashboard | Courses</title>
   <script src="./Javascripts/nav.js" defer></script>
   <script src="./Javascripts/auth.js" defer></script>
   <script src="./Javascripts/modal.js" defer></script>
@@ -127,7 +127,7 @@
   <main class="main-content">
     <!-- Header row -->
     <div class="header-row">
-      <h2>My Courses </h2>
+      <h2>All Courses</h2>
     </div>
 
     <!-- Search row -->
@@ -141,7 +141,31 @@
     </div>
   </main>
 
-  <script src="Javascripts/trainer_courses.js" defer></script>
+  <!-- Apply Course & Payment Modal -->
+<div class="modal" id="applyCourseModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeApplyModal">&times;</span>
+    <h3>Apply for Course</h3>
+    <p>Total Cost: <span id="totalCost"></span></p>
+    <div class="form-group">
+      <label for="amountPaid">Amount Paying Now:</label>
+      <input type="number" id="amountPaid" min="0" />
+    </div>
+    <div class="form-group">
+      <label for="paymentMethod">Payment Method:</label>
+      <select id="paymentMethod">
+        <option value="">Select Payment Method</option>
+        <option value="Net Banking">Net Banking</option>
+        <option value="UPI">UPI</option>
+        <option value="Cash">Cash</option>
+        <option value="Card">Card</option>
+      </select>
+    </div>
+    <button class="save-btn" id="payApplyBtn">Pay & Apply</button>
+  </div>
+</div>
 
+
+  <script src="Javascripts/student_courses.js" defer></script>
 </body>
 </html>

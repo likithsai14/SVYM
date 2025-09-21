@@ -60,7 +60,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           message: "Login successful!",
           user: {
-            userId: trainerDoc.userId,
+            userId: trainerDoc.trainerId,
             email: trainerDoc.email,
             role: "trainer",
           },

@@ -13,9 +13,9 @@ exports.handler = async (event, context) => {
 
     await connectDB();
 
-    const { courseId, trainerId } = JSON.parse(event.body);
+    const { courseId, trainerId, trainerName } = JSON.parse(event.body);
 
-    if (!courseId || !trainerId) {
+    if (!courseId || !trainerId || !trainerName) {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'courseId and trainerId are required' })
@@ -24,10 +24,11 @@ exports.handler = async (event, context) => {
 
     // Update the course with the trainerId
     const updatedCourse = await Course.findOneAndUpdate(
-      { courseId },
-      { trainerId },
-      { new: true } // return the updated document
+      { courseId },                              // filter
+      { $set: { trainerId, trainerName } },      // update
+      { new: true }                              // options
     );
+
 
     if (!updatedCourse) {
       return {

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVYM Tech4Hope- Fee Details</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/modal.css" />
     <script src="Javascripts/auth.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -13,14 +15,12 @@
     <style>
         /* General styling for pages */
         body {
+            overflow-y: auto;
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+            padding: 0; /* optional: can keep padding for spacing */
+            /* display: flex; justify-content: center; align-items: flex-start; min-height: 100vh;  <-- remove these */
         }
 
         .container {
@@ -28,10 +28,12 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 30px;
-            margin: 30px auto;
-            max-width: 900px; /* Adjusted max-width for better table display */
+            margin: 30px auto; /* centers horizontally */
+            max-width: 900px;
             width: 90%;
         }
+
+
 
         h1, h2 {
             text-align: center;
@@ -172,6 +174,13 @@
     </style>
 </head>
 <body>
+
+    <!-- Navigation structure added -->
+    <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+    <div class="overlay" id="overlay"></div>
+    <aside class="side-menu" id="sideMenu"></aside>
+
+    <!-- Main content container -->
     <div class="container">
         <h1>SVYM Tech4Hope</h1>
         <h2>Fee Details</h2>
@@ -225,6 +234,12 @@
         </div>
         <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
     </div>
-    <script src="/Javascripts/fee_details.js"></script>
+
+    <!-- Fee details JS -->
+    <script src="/Javascripts/fee_details.js" defer></script>
+
+    <!-- Navigation JS -->
+    <script src="/Javascripts/nav.js" defer></script>
+    <script src="/Javascripts/modal.js" defer></script>
 </body>
 </html>

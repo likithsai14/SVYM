@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let courses = [];
   let selectedCourseId = null;
+  let currentTrainers = []; // store fetched trainers
 
   // Fetch courses from DB
   async function fetchCourses() {
@@ -71,12 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
           ${
             !course.trainerId
               ? `<div class="assign-trainer">
-                   <button class="assign-button" data-id="${course.courseId}">
-                     <i class="fas fa-user-plus"></i> Assign Trainer
-                   </button>
-                 </div>`
-              : ""
+                  <button class="assign-button" data-id="${course.courseId}">
+                    <i class="fas fa-user-plus"></i> Assign Trainer
+                  </button>
+                </div>`
+              : `<div class="assigned-trainer">
+                  <strong>Trainer:</strong> ${course.trainerName || "N/A"}
+                </div>`
           }
+
         </div>
       `;
       coursesContainer.appendChild(card);
@@ -92,9 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           const res = await fetch("/.netlify/functions/allTrainers");
           const data = await res.json();
-          const trainers = data.trainers.filter(t => t.status === "Active");
-          console.log(trainers);
-          trainerSelect.innerHTML = trainers.map(t => `<option value="${t.userId}">${t.name}</option>`).join("");
+          currentTrainers = data.trainers.filter(t => t.status === "Active");
+          trainerSelect.innerHTML = currentTrainers
+            .map(t => `<option value="${t.trainerId}">${t.name}</option>`)
+            .join("");
         } catch (err) {
           console.error(err);
           trainerSelect.innerHTML = `<option value="">Error loading trainers</option>`;
@@ -121,13 +126,19 @@ document.addEventListener("DOMContentLoaded", () => {
   assignTrainerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const trainerId = trainerSelect.value;
+    console.log("trainer Id: ", trainerId);
     if (!trainerId) return alert("Select a trainer");
+
+    // Find trainer's name
+    const trainer = currentTrainers.find(t => t.trainerId === trainerId);
+    console.log(trainer);
+    const trainerName = trainer ? trainer.name : "";
 
     try {
       const res = await fetch("/.netlify/functions/assignTrainer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId: selectedCourseId, trainerId })
+        body: JSON.stringify({ courseId: selectedCourseId, trainerId, trainerName })
       });
       if (!res.ok) throw new Error("Failed to assign trainer");
       alert("Trainer assigned successfully!");

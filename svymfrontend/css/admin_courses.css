@@ -215,6 +215,13 @@ body {
   font-size: 14px;
 }
 
+.fill-row {
+  width: 100%;       /* Take full width of parent */
+  display: block;    /* Ensure it behaves as a block element */
+  text-align: center; /* Optional: center the text/icon inside the button */
+}
+
+
 /* Mobile responsiveness */
 @media (max-width: 600px) {
   .card-footer {

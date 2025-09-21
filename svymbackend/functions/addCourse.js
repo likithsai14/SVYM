@@ -55,7 +55,8 @@ exports.handler = async (event) => {
       description,
       addedBy,
       courseStatus,
-      trainerId: null,         // initially unassigned
+      trainerId: null,  
+      trainerName: null,       // initially unassigned
       studentsEnrolled: 0,     // initially 0
     });
 

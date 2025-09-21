@@ -27,7 +27,7 @@ async function fetchTrainers() {
 // ✅ Generic function to update trainer status
 async function updateTrainerStatus(trainerId, newStatus) {
   const actionText = newStatus === "Active" ? "activate" : "deactivate";
-
+  console.log("new data : ", trainerId, newStatus);
   if (!confirm(`Are you sure you want to ${actionText} trainer ${trainerId}?`)) return;
 
   try {
@@ -79,6 +79,7 @@ function renderTrainersTable() {
   }
 
   paginated.forEach((trainer) => {
+    console.log(trainer.trainerId);
     const row = `
       <tr>
         <td>${trainer.trainerId}</td>
@@ -90,13 +91,14 @@ function renderTrainersTable() {
           ${
             trainer.status === "Active"
               ? `
-                <button class="action-btn edit-btn edit-trainer-btn" data-user-id="${trainer.trainerId}">Edit</button>
-                <button class="action-btn delete-btn deactivate-trainer-btn" data-user-id="${trainer.trainerId}">Deactivate</button>
+                <button class="action-btn edit-btn edit-trainer-btn" data-trainer-id="${trainer.trainerId}">Edit</button>
+                <button class="action-btn delete-btn deactivate-trainer-btn" data-trainer-id="${trainer.trainerId}">Deactivate</button>
               `
               : `
-                <button class="action-btn view-btn activate-trainer-btn" data-user-id="${trainer.trainerId}">Activate</button>
+                <button class="action-btn view-btn activate-trainer-btn" data-trainer-id="${trainer.trainerId}">Activate</button>
               `
           }
+
         </td>
       </tr>
     `;

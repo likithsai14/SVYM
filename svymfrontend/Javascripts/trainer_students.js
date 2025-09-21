@@ -12,38 +12,60 @@ document.addEventListener("DOMContentLoaded", async () => {
   const rowsPerPage = 5;
   let currentPage = 1;
   let studentsData = [];
+  let trainerCourses = [];
+  let enrollments = [];
 
-  // Example dummy data (replace with backend fetch)
-  studentsData = [
-    {
-      id: 1, userId: "STU001", name: "Rahul Kumar", email: "rahul@example.com",
-      course: "Java", status: "Approved", fatherHusbandName: "Ramesh Kumar",
-      villageName: "Village A", talukName: "Taluk A", districtName: "District A",
-      dob: "2000-01-01", age: 23, gender: "Male", tribal: "No", pwd: "No",
-      aadharNumber: "123456789012", candidatePhone: "9876543210", parentPhone: "9123456780",
-      familyMembers: 5, qualification: "B.Tech", caste: "General", mobiliserName: "Mobiliser 1"
-    },
-    {
-      id: 2, userId: "STU002", name: "Priya Sharma", email: "priya@example.com",
-      course: "Python", status: "Pending", fatherHusbandName: "Shyam Sharma",
-      villageName: "Village B", talukName: "Taluk B", districtName: "District B",
-      dob: "2001-05-12", age: 22, gender: "Female", tribal: "No", pwd: "No",
-      aadharNumber: "234567890123", candidatePhone: "9876543211", parentPhone: "9123456781",
-      familyMembers: 4, qualification: "B.Sc", caste: "OBC", mobiliserName: "Mobiliser 2"
+  // ✅ Fetch students & courses from backend
+  async function fetchTrainerData() {
+    try {
+      const trainerId = sessionStorage.getItem("userId");
+      if (!trainerId) throw new Error("Trainer ID not found in sessionStorage");
+
+      const response = await fetch("/.netlify/functions/getTrainerStudentsData", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trainerId })
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const { courses, students, enrollments: enrollData } = await response.json();
+      studentsData = students || [];
+      trainerCourses = courses || [];
+      enrollments = enrollData || [];
+
+      populateFilters();
+      applyFilters();
+    } catch (error) {
+      console.error("Error fetching trainer data:", error);
+      studentTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Failed to load students</td></tr>`;
     }
-    // Add more as needed
-  ];
-
-  const allStatuses = ["All", "Approved", "Pending", "Rejected", "Inactive"];
-  const allCourses = ["All", "Java", "Python", "Web Development", "Data Science", "AI/ML", "Cloud Computing"];
-
-  // Populate dropdowns
-  function populateFilters() {
-    statusFilter.innerHTML = allStatuses.map(s => `<option value="${s}">${s}</option>`).join("");
-    courseFilter.innerHTML = allCourses.map(c => `<option value="${c}">${c}</option>`).join("");
   }
 
-  // Render simple table
+  const allStatuses = ["All", "Approved", "Pending", "Rejected", "Inactive"];
+
+  // ✅ Populate filters dynamically
+  function populateFilters() {
+    statusFilter.innerHTML = allStatuses.map(s => `<option value="${s}">${s}</option>`).join("");
+
+    courseFilter.innerHTML = [
+      `<option value="All">All</option>`,
+      ...trainerCourses.map(c => `<option value="${c.courseId}">${c.courseName}</option>`)
+    ].join("");
+  }
+
+  // Helper: get course name by studentId
+  function getStudentCourses(studentId) {
+    const enrolledCourses = enrollments
+      .filter(e => e.studentIds.includes(studentId))
+      .map(e => {
+        const course = trainerCourses.find(c => c.courseId === e.courseId);
+        return course ? course.courseName : e.courseId;
+      });
+    return enrolledCourses.join(", ") || "N/A";
+  }
+
+  // ✅ Render table
   function renderTable(data) {
     studentTableBody.innerHTML = "";
     if (data.length === 0) {
@@ -56,26 +78,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     const paginated = data.slice(start, end);
 
     paginated.forEach(student => {
+      const statusClass = (student.approvalStatus || student.accountStatus || "").toLowerCase();
       const row = document.createElement("tr");
-      const statusClass = student.status.toLowerCase();
+      const courseNames = getStudentCourses(student.userId);
       row.innerHTML = `
-        <td>${student.userId}</td>
-        <td>${student.name}</td>
-        <td>${student.email}</td>
-        <td>${student.course}</td>
-        <td><span class="status ${statusClass}">${student.status}</span></td>
+        <td>${student.userId || "N/A"}</td>
+        <td>${student.candidateName || "N/A"}</td>
+        <td>${student.email || "N/A"}</td>
+        <td>${courseNames}</td>
+        <td><span class="status ${statusClass}">${student.approvalStatus || student.accountStatus || "N/A"}</span></td>
         <td><button class="action-btn view-btn"><i class="fas fa-eye"></i> View</button></td>
       `;
       studentTableBody.appendChild(row);
 
       // View modal
       row.querySelector(".view-btn").addEventListener("click", () => {
-        document.getElementById("modalStudentName").textContent = `${student.userId} ${student.name}`;
-        document.getElementById("modalUserId").textContent = student.userId;
-        document.getElementById("modalUserName").textContent = student.name;
-        document.getElementById("modalUserEmail").textContent = student.email;
-        document.getElementById("modalUserCourse").textContent = student.course;
-        document.getElementById("modalUserStatus").textContent = student.status;
+        document.getElementById("modalStudentName").textContent = `${student.userId || ""} ${student.candidateName || ""}`;
+        document.getElementById("modalUserId").textContent = student.userId || "N/A";
+        document.getElementById("modalUserName").textContent = student.candidateName || "N/A";
+        document.getElementById("modalUserEmail").textContent = student.email || "N/A";
+        document.getElementById("modalUserCourse").textContent = courseNames;
+        document.getElementById("modalUserStatus").textContent = student.approvalStatus || student.accountStatus || "N/A";
         document.getElementById("modalUserFatherHusband").textContent = student.fatherHusbandName || "N/A";
         document.getElementById("modalUserVillageName").textContent = student.villageName || "N/A";
         document.getElementById("modalUserTalukName").textContent = student.talukName || "N/A";
@@ -94,7 +117,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("modalUserMobiliserName").textContent = student.mobiliserName || "N/A";
 
         const mus = document.getElementById("modalUserStatus");
-        mus.style.color = student.status === "Approved" ? "green" : student.status === "Rejected" ? "red" : "orange";
+        const status = student.approvalStatus || student.accountStatus;
+        mus.style.color = status === "approved" ? "green" :
+                          status === "rejected" ? "red" :
+                          status === "inactive" ? "gray" : "orange";
         mus.style.fontWeight = "bold";
 
         viewModal.style.display = "flex";
@@ -109,15 +135,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
   }
 
+  // ✅ Apply search, status & course filters
   function applyFilters() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const statusValue = statusFilter.value;
+    const searchTerm = (searchInput.value || "").toLowerCase();
+    const statusValue = statusFilter.value.toLowerCase();
     const courseValue = courseFilter.value;
 
     const filtered = studentsData.filter(s => {
-      const matchesSearch = s.name.toLowerCase().includes(searchTerm) || s.course.toLowerCase().includes(searchTerm);
-      const matchesStatus = statusValue === "All" || s.status === statusValue;
-      const matchesCourse = courseValue === "All" || s.course === courseValue;
+      const courseNames = getStudentCourses(s.userId).toLowerCase();
+      const matchesSearch =
+        (s.candidateName || "").toLowerCase().includes(searchTerm) ||
+        courseNames.includes(searchTerm);
+
+      const matchesStatus =
+        statusValue === "all" ||
+        (s.accountStatus.toLowerCase() === statusValue || s.approvalStatus.toLowerCase() === statusValue);
+
+      const matchesCourse =
+        courseValue === "All" || getStudentCourses(s.userId).split(", ").some(c => trainerCourses.find(tc => tc.courseName === c && tc.courseId === courseValue));
+
       return matchesSearch && matchesStatus && matchesCourse;
     });
 
@@ -130,7 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderTable(data);
   }
 
-  // Pagination buttons
+  // ✅ Pagination buttons
   prevBtn.addEventListener("click", () => {
     if (currentPage > 1) currentPage--;
     applyFilters();
@@ -143,7 +179,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     applyFilters();
   });
 
-  // Filters
   searchInput.addEventListener("input", applyFilters);
   statusFilter.addEventListener("change", applyFilters);
   courseFilter.addEventListener("change", applyFilters);
@@ -151,7 +186,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Close modal
   closeBtn.addEventListener("click", () => viewModal.style.display = "none");
 
-  // Initial load
-  populateFilters();
-  applyFilters();
+  // ✅ Initial load
+  fetchTrainerData();
 });
