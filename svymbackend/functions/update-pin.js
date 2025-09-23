@@ -28,7 +28,7 @@ exports.handler = async (event) => {
           statusCode: 404,
           body: JSON.stringify({ message: "Trainer not found." }),
         };
-    } else if (userId.startsWith("SVYMS")) {
+    } else if (userId.startsWith("SVYM")) {
       doc = await User.findOne({ userId });
       if (!doc)
         return {

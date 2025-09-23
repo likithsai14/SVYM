@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | Course Management</title>
+  <title>Trainer Dashboard | Course Management</title>
   <script src="./Javascripts/nav.js" defer></script>
   <script src="./Javascripts/auth.js" defer></script>
   <script src="./Javascripts/modal.js" defer></script>
@@ -140,6 +140,70 @@
       <!-- Dynamic course cards go here -->
     </div>
   </main>
+
+  <!-- Update Course Modal -->
+<div id="updateCourseModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeUpdateModal">&times;</span>
+    <h3 class="welcome-message"><i class="fas fa-edit"></i> Update Course</h3>
+
+    <div class="form-card">
+      <form id="updateCourseForm">
+        <input type="hidden" id="updateCourseId" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="updateCourseName">Course Name:</label>
+            <input type="text" id="updateCourseName" disabled />
+          </div>
+          <div class="form-group">
+            <label for="updatePrice">Price (₹):</label>
+            <input type="number" id="updatePrice" disabled />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="updateStartDate">Start Date:</label>
+            <input type="date" id="updateStartDate" required />
+          </div>
+          <div class="form-group">
+            <label for="updateEndDate">End Date:</label>
+            <input type="date" id="updateEndDate" required />
+          </div>
+          <div class="form-group">
+            <label for="updateDuration">Duration (months):</label>
+            <input type="text" id="updateDuration" readonly />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Modules:</label>
+            <div id="updateModulesWrapper"></div>
+            <button type="button" id="addMoreUpdateModuleBtn" class="icon-btn">+</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="updateLocation">Location:</label>
+            <select id="updateLocation" disabled></select>
+          </div>
+
+          <div class="form-group">
+            <label for="updateDescription">Description:</label>
+            <textarea id="updateDescription" rows="4"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="save-btn">Save Changes</button>
+        <button type="button" class="cancel-btn" id="cancelUpdateModal">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 
   <script src="Javascripts/trainer_courses.js" defer></script>
 

@@ -7,11 +7,11 @@ const attendanceSchema = new mongoose.Schema({
   students: [
     {
       studentId: { type: String, required: true },     // links to users.userId
+      studentName: { type: String, required: true },   // store name for quick reporting
       present: { type: Boolean, default: false },
       remarks: { type: String, trim: true, default: "" },
     }
   ],
 }, { timestamps: true });
 
-const Attendance = mongoose.model("Attendance", attendanceSchema);
-module.exports = Attendance;
+module.exports = mongoose.models.Attendance || mongoose.model("Attendance", attendanceSchema);

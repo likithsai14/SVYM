@@ -23,7 +23,7 @@ body {
     border-radius: 12px; /* More rounded corners */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
     width: 100%;
-    max-width: 500px; /* Maximum width for larger screens */
+    /* max-width: 500px; Maximum width for larger screens */
     box-sizing: border-box;
     margin: auto; /* Center the container */
 }
