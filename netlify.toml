@@ -3,7 +3,7 @@
 [build]
   publish = "svymfrontend/"
   functions = "svymbackend/functions/"
-  command = "npm run build"
+  command = "npm install"
 
 # --- Add this section ---
 [[redirects]]
