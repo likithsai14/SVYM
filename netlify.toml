@@ -1,9 +1,9 @@
 # netlify.toml
 
 [build]
-  publish = "svymfrontend/"
-  functions = "svymbackend/functions/"
-  command = "npm install"
+  command = ""                 # still no build for frontend
+  publish = "svymfrontend"
+  directory = "svymbackend/functions"
 
 # --- Add this section ---
 [[redirects]]
