@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Validate User ID
     if (
       !userId.startsWith("SVYM") ||
-      !/^(SVYM|SVYMA|SVYMS|SVYMFS|SVYMT)\d{5}$/.test(userId)
+      !/^(SVYM|SVYMA|SVYMS|SVYMFM|SVYMT)\d{5}$/.test(userId)
     ) {
       showMessage(
         "error",
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
               window.location.href = "admin_dashboard.html";
             } else if (data.user.role === "trainer") {
               window.location.href = "trainer_dashboard.html";
-            }else if (data.user.role === "field_mobiliser") {
+            }else if (data.user.role === "fieldMobiliser") {
               window.location.href = "field_mobiliser_dashboard.html";
             } else if (data.user.role === "user") {
               // check if user is student or trainer or field_mobiliser

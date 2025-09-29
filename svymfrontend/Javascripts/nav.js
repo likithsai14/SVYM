@@ -8,7 +8,7 @@ if (user) {
     url = "../public/partials//admin_nav.html";
   } else if (user.role === "trainer") {
     url = "../public/partials//trainer_nav.html";
-  } else if (user.role === "field_mobiliser") {
+  } else if (user.role === "fieldMobiliser") {
     url = "../public/partials//field_mobilizer_nav.html";
   } else if (user.role === "user") {
     url = "../public/partials//student_nav.html";

@@ -9,7 +9,7 @@ addfieldmobiliser.addEventListener('click', function() {
 let editfieldmobiliser=document.getElementById('editfieldmobiliser');
 editfieldmobiliser.addEventListener('click', function() {
     // Redirect to the edit students page
-    window.location.href = 'admin_editstudents.html';
+    window.location.href = 'admin_viewfieldmobiliserrequest.html';
 });
 
 document.addEventListener('DOMContentLoaded', async function() {

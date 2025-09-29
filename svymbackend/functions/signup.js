@@ -10,14 +10,20 @@ exports.handler = async (event) => {
 
   try {
     await connectDB();
-
     const data = JSON.parse(event.body);
+
+    // --- Map frontend mobiliser fields to backend fields ---
+    if (data.mobiliserName) {
+      data.fieldMobiliserId = data.mobiliserName; // value of dropdown
+      // If your frontend also sends selected text, you can map it, otherwise fetch it from dropdown text
+      data.fieldMobiliserName = data.mobiliserNameText || 'Unknown Mobiliser';
+    }
 
     // --- Validation ---
     const requiredFields = [
       'candidateName', 'email', 'dob', 'age', 'familyMembers', 'qualification',
       'caste', 'referralSource', 'gender', 'tribal', 'pwd', 'aadharNumber',
-      'candidatePhone', 'parentPhone', 'mobiliserName', 'supportedProject'
+      'candidatePhone', 'parentPhone', 'fieldMobiliserName', 'fieldMobiliserId', 'supportedProject'
     ];
 
     for (const field of requiredFields) {
@@ -29,10 +35,10 @@ exports.handler = async (event) => {
     if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email)) {
       return { statusCode: 400, body: JSON.stringify({ message: 'Invalid email address.' }) };
     }
-    if (!/^\d{12}$/.test(data.aadharNumber)) {
+    if (!/^\d{12}$/.test(data.aadharNumber.trim())) {
       return { statusCode: 400, body: JSON.stringify({ message: 'Aadhar Number must be 12 digits.' }) };
     }
-    if (!/^\d{10}$/.test(data.candidatePhone) || !/^\d{10}$/.test(data.parentPhone)) {
+    if (!/^\d{10}$/.test(data.candidatePhone.trim()) || !/^\d{10}$/.test(data.parentPhone.trim())) {
       return { statusCode: 400, body: JSON.stringify({ message: 'Phone numbers must be 10 digits.' }) };
     }
     if (isNaN(data.age) || data.age < 0) {
@@ -41,7 +47,6 @@ exports.handler = async (event) => {
     if (isNaN(data.familyMembers) || data.familyMembers < 1) {
       return { statusCode: 400, body: JSON.stringify({ message: 'Family members must be at least 1.' }) };
     }
-    // --- End Validation ---
 
     // Check if email already exists
     const existingUser = await User.findOne({ email: data.email });
@@ -52,7 +57,9 @@ exports.handler = async (event) => {
     // Generate unique 5-digit suffix for userId
     const uniqueSuffix = Math.floor(10000 + Math.random() * 90000).toString();
     const userId = `SVYM${uniqueSuffix}`;
-    const hashedPassword = await bcrypt.hash(uniqueSuffix, 10); // initial PIN hashed
+
+    // Hash initial PIN (same as userId suffix)
+    const hashedPassword = await bcrypt.hash(uniqueSuffix, 10);
 
     const newUser = new User({
       userId,
@@ -60,7 +67,7 @@ exports.handler = async (event) => {
       password: hashedPassword,
       isFirstLogin: true,
       loginCount: 0,
-      approvalStatus: 'pending', // Newly registered users are pending
+      approvalStatus: 'pending',
       createdAt: new Date()
     });
 

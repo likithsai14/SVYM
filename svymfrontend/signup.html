@@ -26,14 +26,14 @@
                 <label for="districtName">District Name:</label>
                 <select id="districtName" name="districtName" required>
                     <option value="">Select District</option>
-                    </select>
+                </select>
                 <span id="districtNameError" class="error-message"></span>
             </div>
             <div class="form-group">
                 <label for="talukName">Taluk Name:</label>
                 <select id="talukName" name="talukName" required disabled>
                     <option value="">Select Taluk</option>
-                    </select>
+                </select>
                 <span id="talukNameError" class="error-message"></span>
             </div>
             <div class="form-group">
@@ -62,7 +62,7 @@
                 <span id="qualificationError" class="error-message"></span>
             </div>
             <div class="form-group">
-                 <label for="caste">Caste:</label>
+                <label for="caste">Caste:</label>
                 <select id="caste" name="caste" required>
                     <option value="">Select Caste</option>
                     <option value="OBC">OBC</option>
@@ -70,7 +70,7 @@
                     <option value="ST">ST</option>
                     <option value="Minority">Minority</option>
                     <option value="Others">Others</option>
-                    </select>
+                </select>
                 <span id="casteError" class="error-message"></span>
             </div>
             <div class="form-group">
@@ -139,11 +139,19 @@
                 <input type="tel" id="parentPhone" name="parentPhone" required pattern="\d{10}" maxlength="10" title="Phone number must be 10 digits">
                 <span class="error-message" id="parentPhoneError"></span>
             </div>
+            
+            <!-- Replaced text input with Field Mobiliser dropdown -->
             <div class="form-group">
-                <label for="mobiliserName">Mobiliser Name:</label>
-                <input type="text" id="mobiliserName" name="mobiliserName" required>
+                <label for="mobiliserName">Field Mobiliser:</label>
+                <select id="mobiliserName" name="mobiliserName" required>
+                    <option value="">Select Mobiliser</option>
+                    <!-- Options populated dynamically via JS -->
+                </select>
                 <span class="error-message" id="mobiliserNameError"></span>
             </div>
+
+            <input type="hidden" name="mobiliserNameText" id="mobiliserNameText">
+
             <div class="form-group">
                 <label for="referralSource">How do you know about this training program?</label>
                 <select id="referralSource" name="referralSource" class="form-control" required>
@@ -163,14 +171,13 @@
                     <option value="SVYM Staff">SVYM Staff</option>
                 </select>
                 <span id="referralSourceError" class="error-message"></span>
-                </div>
+            </div>
 
-                <div class="form-group" id="staffNameDiv" style="display: none;">
-                    <label for="staffName">Staff Name </label>
-                    <input type="text" id="staffName" name="staffName" placeholder="Enter staff name">
-                    <span id="staffNameError" class="error-message"></span>
-                </div>
-
+            <div class="form-group" id="staffNameDiv" style="display: none;">
+                <label for="staffName">Staff Name </label>
+                <input type="text" id="staffName" name="staffName" placeholder="Enter staff name">
+                <span id="staffNameError" class="error-message"></span>
+            </div>
 
             <div class="form-group">
                 <label for="supportedProject">Supported Project (Optional):</label>

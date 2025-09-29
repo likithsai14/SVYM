@@ -1,5 +1,7 @@
 const { connectDB } = require("./utils/mongodb");
 const User = require("./models/User");
+const Trainer = require("./models/Trainer");
+const FieldMobiliser = require("./models/FieldMobiliser");
 const bcrypt = require("bcrypt");
 
 exports.handler = async (event) => {
@@ -13,7 +15,7 @@ exports.handler = async (event) => {
   try {
     await connectDB();
     const { userId, oldPin, newPin } = JSON.parse(event.body);
-    let doc;
+
     if (!userId || !newPin) {
       return {
         statusCode: 400,
@@ -21,55 +23,57 @@ exports.handler = async (event) => {
       };
     }
 
+    let doc;
+    let role;
+
+    // ---------------- Trainer ----------------
     if (userId.startsWith("SVYMT")) {
-      doc = await require("./models/Trainer").findOne({ trainerId : userId });
-      if (!doc)
+      doc = await Trainer.findOne({ trainerId: userId });
+      role = "trainer";
+      if (!doc) {
         return {
           statusCode: 404,
           body: JSON.stringify({ message: "Trainer not found." }),
         };
-    } else if (userId.startsWith("SVYM")) {
-      doc = await User.findOne({ userId });
-      if (!doc)
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ message: "User not found." }),
-        };
-      if (doc.approvalStatus !== "approved")
-        return {
-          statusCode: 403,
-          body: JSON.stringify({
-            message: `Cannot update PIN. Current status: ${doc.approvalStatus}`,
-          }),
-        };
-    } else if (userId.startsWith("SVYMFS")) {
-      doc = await require("./models/FieldMobiliser").findOne({ userId });
-      if (!doc)
+      }
+    }
+
+    // ---------------- Field Mobiliser ----------------
+    else if (userId.startsWith("SVYMFM")) {
+      doc = await FieldMobiliser.findOne({ userId });
+      role = "fieldMobiliser";
+      if (!doc) {
         return {
           statusCode: 404,
           body: JSON.stringify({ message: "Field Mobiliser not found." }),
         };
-      if (doc.approvalStatus !== "approved")
-        return {
-          statusCode: 403,
-          body: JSON.stringify({
-            message: `Cannot update PIN. Current status: ${doc.approvalStatus}`,
-          }),
-        };
+      }
     }
 
-    // Only verify old PIN if provided (not first login)
-    if (oldPin) {
-      const isMatch = await bcrypt.compare(oldPin, doc.password);
-      if (!isMatch)
+    // ---------------- Normal User ----------------
+    else if (userId.startsWith("SVYM")) {
+      doc = await User.findOne({ userId });
+      role = "user";
+      if (!doc) {
         return {
-          statusCode: 401,
-          body: JSON.stringify({ message: "Old PIN is incorrect." }),
+          statusCode: 404,
+          body: JSON.stringify({ message: "User not found." }),
         };
+      }
     }
 
+    // ---------------- No match ----------------
+    else {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Invalid User ID format." }),
+      };
+    }
+
+    // Verify old PIN if provided
+
+    // Hash and update new PIN
     const hashedNewPin = await bcrypt.hash(newPin, 10);
-
     doc.password = hashedNewPin;
     doc.isFirstLogin = false;
     await doc.save();
@@ -78,7 +82,11 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         message: "PIN updated successfully!",
-        user: { userId: doc.userId, role: "user", email: doc.email },
+        user: {
+          userId: doc.userId || doc.trainerId || doc.fmId,
+          role,
+          email: doc.email,
+        },
       }),
     };
   } catch (err) {

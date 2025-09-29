@@ -8,10 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const ageInput = document.getElementById('age');
     const districtSelect = document.getElementById('districtName');
     const talukSelect = document.getElementById('talukName');
-    const caste=document.getElementById('caste');
-    const referralSource=document.getElementById('referralSource');
+    const caste = document.getElementById('caste');
+    const referralSource = document.getElementById('referralSource');
     const staffNameDiv = document.getElementById('staffNameDiv');
     const staffNameInput = document.getElementById('staffName');
+    const mobiliserSelect = document.getElementById('mobiliserName'); // dropdown
+    const mobiliserNameText = document.getElementById('mobiliserNameText');
+
+    mobiliserSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        mobiliserNameText.value = selectedOption ? selectedOption.text : '';
+    });
+
 
     // Error message spans
     const errorSpans = {
@@ -45,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "Haveri", "Kalaburagi (Gulbarga)", "Kodagu", "Kolar", "Koppal",
         "Mandya", "Mysuru", "Raichur", "Ramanagara", "Shivamogga (Shimoga)",
         "Tumakuru", "Udupi", "Uttara Kannada (Karwar)", "Vijayapura (Bijapur)", "Yadgir"
-    ].sort(); // Sort alphabetically for better UX
+    ].sort();
 
     districts.forEach(district => {
         const option = document.createElement('option');
@@ -54,12 +62,12 @@ document.addEventListener('DOMContentLoaded', function() {
         districtSelect.appendChild(option);
     });
 
-    // --- Dynamic Taluk Population Logic (Expanded List for Karnataka) ---
+    // Populate taluks per district
     const districtTaluks = {
         "Bagalkot": ["Badami", "Bagalkot", "Bilgi", "Hungund", "Jamkhandi", "Mudhol", "Rabkavi Banhatti"],
         "Ballari": ["Ballari", "Hospet (Vijayanagara)", "Kudligi", "Sandur", "Siruguppa", "Kampli", "Hagaribommanahalli", "Kotturu", "Kurugodu", "Hoovina Hadagali"],
         "Belagavi": ["Athani", "Bailhongal", "Belagavi", "Chikodi", "Gokak", "Hukkeri", "Khanapur", "Raibag", "Ramdurg", "Saundatti", "Kagwad", "Mudalagi", "Nippani"],
-        "Bengaluru Rural": ["Devanahalli", "Doddaballapur", "Hosakote", "Nelamangala", "Devanahalli", "Doddaballapur", "Hosakote", "Nelamangala", "Vijayapura"],
+        "Bengaluru Rural": ["Devanahalli", "Doddaballapur", "Hosakote", "Nelamangala", "Vijayapura"],
         "Bengaluru Urban": ["Bengaluru North", "Bengaluru South", "Bengaluru East", "Anekal", "Yelahanka", "Kengeri"],
         "Bidar": ["Aurad", "Basavakalyan", "Bhalki", "Bidar", "Humnabad", "Kamalanagar", "Chitguppa"],
         "Chamarajanagar": ["Chamarajanagar", "Gundlupet", "Kollegal", "Yelandur", "Hanur"],
@@ -88,13 +96,12 @@ document.addEventListener('DOMContentLoaded', function() {
         "Yadgir": ["Gurumitkal", "Shahapur", "Shorapur", "Vadagera", "Yadgir", "Gurumitkal"]
     };
 
+    // District -> Taluk
     districtSelect.addEventListener('change', function() {
         const selectedDistrict = this.value;
-        talukSelect.innerHTML = '<option value="">Select Taluk</option>'; // Reset taluk options
-        talukSelect.disabled = true; // Disable until a valid district is selected
-
+        talukSelect.innerHTML = '<option value="">Select Taluk</option>';
+        talukSelect.disabled = true;
         if (selectedDistrict && districtTaluks[selectedDistrict]) {
-            // Sort taluks alphabetically for the selected district
             const taluksForDistrict = districtTaluks[selectedDistrict].sort();
             taluksForDistrict.forEach(taluk => {
                 const option = document.createElement('option');
@@ -102,33 +109,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.textContent = taluk;
                 talukSelect.appendChild(option);
             });
-            talukSelect.disabled = false; // Enable taluk dropdown
+            talukSelect.disabled = false;
         }
-        clearError(districtSelect); // Clear error if district selected
-        clearError(talukSelect); // Clear taluk error if district changes
+        clearError(districtSelect);
+        clearError(talukSelect);
     });
 
-    // --- End Dynamic Taluk Population Logic ---
+    // Load Mobilisers
+    loadFieldMobilisers();
 
-   caste.addEventListener('change', function() {
-          console.log('Caste selected:', this.value);
-
-          clearError(caste); // Clear error if caste selected
-   })
-
-        referralSource.addEventListener('change', function () {
+    referralSource.addEventListener('change', function() {
         if (this.value === 'SVYM Staff') {
             staffNameDiv.style.display = 'block';
             staffNameInput.setAttribute('required', 'required');
         } else {
             staffNameDiv.style.display = 'none';
             staffNameInput.removeAttribute('required');
-            staffNameInput.value = ''; // clear previous value
+            staffNameInput.value = '';
         }
         clearError(referralSource);
-        });
+    });
 
-    // Calculate age based on DOB
     dobInput.addEventListener('change', function() {
         const dob = new Date(this.value);
         if (isNaN(dob)) {
@@ -140,174 +141,121 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();
         const m = today.getMonth() - dob.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-            age--;
-        }
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
         ageInput.value = age;
-        if (age < 17 || age > 50) {
-            showError(ageInput, 'Applicant must be at least 17 years old and not greater than 50.');
-        } else {
-            clearError(ageInput);
-        }
+        if (age < 17 || age > 50) showError(ageInput, 'Applicant must be at least 17 years old and not greater than 50.');
+        else clearError(ageInput);
     });
 
+    caste.addEventListener('change', function() { clearError(caste); });
 
-
-    // Helper to show error messages next to fields
     function showError(inputElement, message) {
-        const errorSpanId = inputElement.id + 'Error';
         const errorSpan = errorSpans[inputElement.id];
-        if (errorSpan) {
-            errorSpan.textContent = message;
-            inputElement.classList.add('input-error'); // Add a class for visual error styling
-        }
+        if (errorSpan) { errorSpan.textContent = message; inputElement.classList.add('input-error'); }
     }
 
-    // Helper to clear error messages
     function clearError(inputElement) {
-        const errorSpanId = inputElement.id + 'Error';
         const errorSpan = errorSpans[inputElement.id];
-        if (errorSpan) {
-            errorSpan.textContent = '';
-            inputElement.classList.remove('input-error');
-        }
+        if (errorSpan) { errorSpan.textContent = ''; inputElement.classList.remove('input-error'); }
     }
 
-    // Live validation for required fields
+    // Live validation
     signupForm.querySelectorAll('input, select').forEach(input => {
-        if (input.hasAttribute('required')) {
-            input.addEventListener('input', function() {
-                if (this.value.trim() !== '') {
-                    clearError(this);
-                }
-            });
-            input.addEventListener('blur', function() {
-                if (this.value.trim() === '') {
-                    showError(this, 'This field is required.');
-                } else {
-                    clearError(this);
-                }
-            });
+        if(input.hasAttribute('required')){
+            input.addEventListener('input',()=>{ if(this.value.trim()!=='') clearError(input); });
+            input.addEventListener('blur',()=>{ if(this.value.trim()==='') showError(input,'This field is required.'); else clearError(input); });
         }
-        // Specific pattern validation (e.g., Aadhar, Phone)
-        if (input.hasAttribute('pattern')) {
-            input.addEventListener('input', function() {
-                if (!this.validity.valid) {
-                    showError(this, this.title || 'Invalid format.');
-                } else {
-                    clearError(this);
-                }
-            });
-            input.addEventListener('blur', function() {
-                if (!this.validity.valid && this.value.trim() !== '') {
-                    showError(this, this.title || 'Invalid format.');
-                } else {
-                    clearError(this);
-                }
-            });
+        if(input.hasAttribute('pattern')){
+            input.addEventListener('input',()=>{ if(!input.validity.valid) showError(input,input.title||'Invalid format.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(!input.validity.valid && input.value.trim()!=='') showError(input,input.title||'Invalid format.'); else clearError(input); });
         }
     });
 
-    signupForm.addEventListener('submit', async function(event) {
-        event.preventDefault(); // Prevent default form submission
+    signupForm.addEventListener('submit', async function(event){
+        event.preventDefault();
 
-        // Clear previous messages and errors
-        messageDiv.style.display = 'none';
-        generatedUserIdDiv.style.display = 'none';
-        messageDiv.className = '';
-        Object.values(errorSpans).forEach(span => {
-            if (span) span.textContent = '';
-        });
-        signupForm.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+        messageDiv.style.display='none';
+        generatedUserIdDiv.style.display='none';
+        messageDiv.className='';
+        Object.values(errorSpans).forEach(span=>{if(span) span.textContent='';});
+        signupForm.querySelectorAll('.input-error').forEach(el=>el.classList.remove('input-error'));
 
-        // Manual validation before submission
-        let isValid = true;
-        const formData = new FormData(signupForm);
-        const data = {};
-        for (let [key, value] of formData.entries()) {
-            data[key] = value.trim();
-        }
+        let isValid=true;
+        const formData=new FormData(signupForm);
+        const data={};
+        for(let [key,value] of formData.entries()){ data[key]=value.trim(); }
 
-        // Re-validate all fields on submit
-        signupForm.querySelectorAll('input, select').forEach(input => {
-            if (input.hasAttribute('required') && input.value.trim() === '') {
-                showError(input, 'This field is required.');
-                isValid = false;
-            } else if (input.hasAttribute('pattern') && input.value.trim() !== '' && !input.validity.valid) {
-                showError(input, input.title || 'Invalid format.');
-                isValid = false;
-            } else {
-                clearError(input);
-            }
+        // Revalidate fields
+        signupForm.querySelectorAll('input, select').forEach(input=>{
+            if(input.hasAttribute('required') && input.value.trim()===''){ showError(input,'This field is required.'); isValid=false; }
+            else if(input.hasAttribute('pattern') && input.value.trim()!=='' && !input.validity.valid){ showError(input,input.title||'Invalid format.'); isValid=false; }
+            else clearError(input);
         });
 
-        if (parseInt(ageInput.value) < 17 && parseInt(ageInput.value) > 50 ) {
-            showError(ageInput, 'Applicant must be at least 17 years old and not greater than 50.');
-            isValid = false;
-        }
+        if(parseInt(ageInput.value)<17 || parseInt(ageInput.value)>50){ showError(ageInput,'Applicant must be at least 17 years old and not greater than 50.'); isValid=false; }
+        if(districtSelect.value===''){ showError(districtSelect,'Please select a district.'); isValid=false; }
+        if(talukSelect.value===''){ showError(talukSelect,'Please select a taluk.'); isValid=false; }
+        if(caste.value===''){ showError(caste,'Please select a caste.'); isValid=false; }
+        if(mobiliserSelect.value===''){ showError(mobiliserSelect,'Please select a mobiliser.'); isValid=false; }
+        if(referralSource.value===''){ showError(referralSource,'Please select referralSource'); isValid=false; }
 
-        // Specific validation for dropdowns
-        if (districtSelect.value === '') {
-            showError(districtSelect, 'Please select a district.');
-            isValid = false;
-        }
-        if (talukSelect.value === '') {
-            showError(talukSelect, 'Please select a taluk.');
-            isValid = false;
-        }
-        if( caste.value === '') {
-            showError(caste, 'Please select a caste.');
-            isValid = false;
-        }
-        if (referralSource ===''){
-            showError(referralSource,'Please select referralSource');
-            isValid = false;
-        }
+        if(!isValid){ showMessage('error','Please correct the errors in the form.'); return; }
 
-
-        if (!isValid) {
-            showMessage('error', 'Please correct the errors in the form.');
-            return;
-        }
-
-        try {
-            // CALLING NETLIFY FUNCTION DIRECTLY: Change from '/api/...'
-            const response = await fetch('/.netlify/functions/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+        try{
+            const response = await fetch('/.netlify/functions/signup',{
+                method:'POST',
+                headers:{ 'Content-Type':'application/json' },
                 body: JSON.stringify(data)
             });
-
             const result = await response.json();
-            
-            if (response.ok) {
-                showMessage('success', result.message || 'Sign up successful!');
-                generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
-                generatedUserIdDiv.style.display = 'block';
-                signupForm.reset(); // Clear the form
-                ageInput.value = ''; // Clear age field too
-                talukSelect.innerHTML = '<option value="">Select Taluk</option>'; // Reset taluk options
-                talukSelect.disabled = true; // Disable taluk dropdown
-                 let v=document.getElementById('adminapprovalMessage');
-                v.style.display = 'block';
-                v.className = 'message success';
-                v.textContent = 'Your request has been sent for admin approval. You will be notified once approved.'; 
+            if(response.ok){
+                showMessage('success', result.message||'Sign up successful!');
+                generatedUserIdDiv.innerHTML=`Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
+                generatedUserIdDiv.style.display='block';
+                signupForm.reset();
+                ageInput.value='';
+                talukSelect.innerHTML='<option value="">Select Taluk</option>';
+                talukSelect.disabled=true;
+                let v=document.getElementById('adminapprovalMessage');
+                v.style.display='block';
+                v.className='message success';
+                v.textContent='Your request has been sent for admin approval. You will be notified once approved.';
             } else {
-                showMessage('error', result.message || 'Sign up failed. Please try again.');
+                showMessage('error', result.message||'Sign up failed. Please try again.');
             }
-        } catch (error) {
-            console.error('Error during sign up:', error);
-            showMessage('error', 'An unexpected error occurred. Please try again later.');
+        } catch(error){
+            console.error('Error during sign up:',error);
+            showMessage('error','An unexpected error occurred. Please try again later.');
         }
     });
 
-    function showMessage(type, text) {
-        messageDiv.textContent = text;
-        messageDiv.className = ''; // Clear existing classes
-        messageDiv.classList.add('message', type);
-        messageDiv.style.display = 'block';
+    function showMessage(type,text){
+        messageDiv.textContent=text;
+        messageDiv.className='';
+        messageDiv.classList.add('message',type);
+        messageDiv.style.display='block';
+    }
+
+    async function loadFieldMobilisers(){
+        try{
+            const response = await fetch('/.netlify/functions/getFieldMobileData');
+            const result = await response.json();
+
+            if(response.ok && Array.isArray(result.fieldMobilisers)){
+                mobiliserSelect.innerHTML = '<option value="">Select Mobiliser</option>';
+                result.fieldMobilisers.forEach(m=>{
+                    const option=document.createElement('option');
+                    option.value = m.userId;
+                    option.textContent = m.FieldMobiliserName;
+                    mobiliserSelect.appendChild(option);
+                });
+            } else {
+                mobiliserSelect.innerHTML = '<option value="">No mobilisers available</option>';
+                console.error('Failed to load mobilisers:', result);
+            }
+        } catch(error){
+            console.error('Error fetching mobilisers:',error);
+            mobiliserSelect.innerHTML = '<option value="">Error loading mobilisers</option>';
+        }
     }
 });
-

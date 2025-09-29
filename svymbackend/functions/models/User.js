@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
   aadharNumber: String,
   candidatePhone: String,
   parentPhone: String,
-  mobiliserName: String,
   supportedProject: String,
   email: { type: String, unique: true },
   password: String,
@@ -31,9 +30,17 @@ const userSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending'
     },
+  fieldMobiliserId : {
+    type : String,
+    default : null
+  },
+  fieldMobiliserName : {
+    type : String,
+    default : null
+  },
 accountStatus: {
     type: String,
-    enum: ['active', 'inActive'],
+    enum: ['active', 'followUp1', 'followUp2', 'droppedOut'],
     default: 'active'
     },
   createdAt: { type: Date, default: Date.now }

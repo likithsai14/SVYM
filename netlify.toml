@@ -1,13 +1,11 @@
-# netlify.toml
-
 [build]
-  command = ""                 # still no build for frontend
-  publish = "svymfrontend"
-  directory = "svymbackend/functions"
+  command = ""                 # no frontend build
+  publish = "svymfrontend"     # serve static frontend from this folder
 
-# --- Add this section ---
+[functions]
+  directory = "svymbackend/functions"   # tell Netlify where to look for functions
+
 [[redirects]]
-  from = "/"           # When a user visits the root URL (e.g., http://localhost:8888/)
-  to = "/login.html"   # Redirect them to this page
-  status = 302         # Use a 302 status for a temporary redirect (good for development)
-                       # For production, you might consider 301 for a permanent redirect
+  from = "/"           
+  to = "/login.html"   
+  status = 302

@@ -44,7 +44,7 @@
 
             } catch (error) {
                 // Log any errors that occur during the fetch process
-                console.error('Failed to fetch student data:', error);
+                console.error('Failed to fetch field mobiliser data:', error);
                 const tableBody = document.getElementById('fieldmobiliserTableBody');
                 tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger-color);">
                     Failed to load data. Please try again later.

@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
 
     // Query for docs where _id starts with 'SVYMFM'
     const fieldmobilisers = await FieldMobiliser.find({
-      _id: { $regex: /^SVYMFM/ }
+      userId : { $regex: /^SVYMFM/ }
     }).lean();
 
     console.log(fieldmobilisers);
