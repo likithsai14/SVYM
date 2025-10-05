@@ -9,69 +9,180 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+
+    <!-- Small layout styles added so left panel + right form work without changing your external CSS -->
+    <style>
+      /* Layout: left informational panel + right login form */
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 24px;
+        box-sizing: border-box;
+        background: linear-gradient(to right, #e0f7fa, #bbdefb);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .left-panel {
+        flex: 1 1 45%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px 40px;
+        max-width: 600px;
+      }
+
+      .left-panel .logo img {
+        width: 160px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      .company-name {
+        font-size: 34px;
+        color: #0056b3;
+        font-weight: 700;
+        margin: 18px 0 8px 0;
+      }
+
+      .caption {
+        font-size: 16px;
+        color: #333;
+        line-height: 1.4;
+        max-width: 420px;
+      }
+
+      .right-panel {
+        flex: 0 0 460px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-size: 1.2rem;
+  color: #0056b3;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ccc;
+  border-top-color: #0056b3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+      /* Responsive: hide left panel on small screens and center the form */
+      @media (max-width: 880px) {
+        body {
+          flex-direction: column;
+          justify-content: center;
+          padding: 16px;
+        }
+        .left-panel {
+          display: none;
+        }
+        .right-panel {
+          flex: 1 1 auto;
+          width: 100%;
+        }
+      }
+    </style>
   </head>
-  <body
-    style="
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    "
-  >
-    <div class="container">
-      <h2 class="form-heading-main">Login to SVYM Tech4Hope</h2>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="userId">User ID (SVYMXXXXX)</label>
-          <input
-            type="text"
-            id="userId"
-            name="userId"
-            placeholder="e.g., SVYM12345"
-            required
-            pattern="(SVYM|SVYMA|SVYMS|SVYMFM|SVYMT)\d{5}$"
-            title="User ID must be SVYM followed by 5 digits"
-          />
-        </div>
-        <div class="form-group" id="passwordGroup">
-          <label for="password">Password/PIN</label>
-          <input type="password" id="password" name="password" required />
-        </div>
-        <div class="form-group" id="newPasswordGroup" style="display: none">
-          <label for="newPassword">New 5-digit PIN</label>
-          <input
-            type="password"
-            id="newPassword"
-            name="newPassword"
-            maxlength="5"
-            pattern="[0-9]{5}"
-            title="Please enter a 5-digit PIN"
-          />
-        </div>
-        <div
-          class="form-group"
-          id="confirmNewPasswordGroup"
-          style="display: none"
-        >
-          <label for="confirmNewPassword">Confirm New 5-digit PIN</label>
-          <input
-            type="password"
-            id="confirmNewPassword"
-            name="confirmNewPassword"
-            maxlength="5"
-            pattern="[0-9]{5}"
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p class="link-text">
-        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-      </p>
-      <p class="link-text">
-        Don't have an account? <a href="signup.html">Sign Up</a>
-      </p>
-      <div id="message" style="display: none"></div>
+  <body>
+    <!-- LEFT: logo, company name and caption -->
+    <div class="left-panel">
+      <div class="logo">
+        <!-- Replace src with your logo path -->
+        <img src="public/logo.jpg" alt="SVYM Logo" />
+      </div>
+      <h1 class="company-name">SVYM Tech4Hope</h1>
+      <p class="caption">Empowering communities through technology education and outreach.</p>
     </div>
+
+    <!-- RIGHT: login form (kept IDs and structure exactly as you provided) -->
+    <div class="right-panel">
+      <div class="container">
+        <h2 class="form-heading-main">Login to SVYM Tech4Hope</h2>
+        <!-- novalidate so the JS can control all validation and the submit event always fires -->
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="userId">User ID (SVYMXXXXX)</label>
+            <input
+              type="text"
+              id="userId"
+              name="userId"
+              placeholder="e.g., SVYM12345"
+              required
+              pattern="(SVYM|SVYMA|SVYMS|SVYMFM|SVYMT)\d{5}$"
+              title="User ID must be SVYM followed by 5 digits"
+            />
+          </div>
+          <div class="form-group" id="passwordGroup">
+            <label for="password">Password/PIN</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div class="form-group" id="newPasswordGroup" style="display: none">
+            <label for="newPassword">New 5-digit PIN</label>
+            <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              maxlength="5"
+              pattern="[0-9]{5}"
+              title="Please enter a 5-digit PIN"
+            />
+          </div>
+          <div
+            class="form-group"
+            id="confirmNewPasswordGroup"
+            style="display: none"
+          >
+            <label for="confirmNewPassword">Confirm New 5-digit PIN</label>
+            <input
+              type="password"
+              id="confirmNewPassword"
+              name="confirmNewPassword"
+              maxlength="5"
+              pattern="[0-9]{5}"
+            />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+        <p class="link-text">
+          <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+        </p>
+        <p class="link-text">
+          Don't have an account? <a href="signup.html">Sign Up</a>
+        </p>
+        <div id="message" style="display: none"></div>
+      </div>
+    </div>
+
     <script src="Javascripts/login.js"></script>
   </body>
 </html>

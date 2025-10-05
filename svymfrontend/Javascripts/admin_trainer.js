@@ -69,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       // Add mode
       console.log("Opening modal for adding new trainer.");
-      trainerModalTitle.textContent = "Add New Trainer";
       formTrainerId.value = "";
       formTrainerId.removeAttribute("required");
       formTrainerId.setAttribute("disabled", "disabled");

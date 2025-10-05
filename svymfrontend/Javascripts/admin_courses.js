@@ -6,19 +6,44 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("courseSearch");
   const coursesContainer = document.getElementById("coursesContainer");
 
-  // Assign Trainer modal
-  const assignModal = document.getElementById("assignTrainerModal");
-  const closeAssignModal = document.getElementById("closeAssignModal");
-  const cancelAssignModal = document.getElementById("cancelAssignModal");
-  const trainerSelect = document.getElementById("trainerSelect");
-  const assignTrainerForm = document.getElementById("assignTrainerForm");
-
   let courses = [];
-  let selectedCourseId = null;
-  let currentTrainers = []; // store fetched trainers
+  let currentTrainers = [];
 
-  // Fetch courses from DB
+  // ✅ Create and insert spinner element
+  const spinner = document.createElement("div");
+  spinner.id = "loadingSpinner";
+  spinner.innerHTML = `
+    <div class="spinner"></div>
+    <p>Loading courses...</p>
+  `;
+  spinner.style.display = "none";
+  spinner.style.textAlign = "center";
+  spinner.style.padding = "20px";
+  spinner.querySelector(".spinner").style.cssText = `
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+  `;
+  coursesContainer.parentNode.insertBefore(spinner, coursesContainer);
+
+  // Spinner animation keyframes (for CSS-less support)
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Fetch courses with spinner
   async function fetchCourses() {
+    spinner.style.display = "block";
+    coursesContainer.innerHTML = "";
     try {
       const response = await fetch("/.netlify/functions/allCourses");
       if (!response.ok) throw new Error("Failed to fetch courses");
@@ -27,10 +52,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error(err);
       coursesContainer.innerHTML = `<p style="color:red;">Error loading courses</p>`;
+    } finally {
+      spinner.style.display = "none";
     }
   }
 
-  // Render courses
   function renderCourses(filter = "") {
     coursesContainer.innerHTML = "";
     const filtered = courses.filter(c =>
@@ -58,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <p><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</p>
             <p><strong>Duration:</strong> ${course.durationMonths} months</p>
             <p class="full-width"><strong>Center:</strong> ${course.location}</p>
+            <p class="full-width"><strong>Trainer:</strong> ${course.trainerName || "N/A"}</p>
           </div>
         </div>
         <div class="card-footer">
@@ -69,86 +96,37 @@ document.addEventListener("DOMContentLoaded", () => {
               <i class="fas fa-trash"></i> Delete
             </button>
           </div>
-          ${
-            !course.trainerId
-              ? `<div class="assign-trainer">
-                  <button class="assign-button" data-id="${course.courseId}">
-                    <i class="fas fa-user-plus"></i> Assign Trainer
-                  </button>
-                </div>`
-              : `<div class="assigned-trainer">
-                  <strong>Trainer:</strong> ${course.trainerName || "N/A"}
-                </div>`
-          }
-
         </div>
       `;
       coursesContainer.appendChild(card);
     });
-
-    // Assign Trainer button click
-    document.querySelectorAll(".assign-button").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        selectedCourseId = e.target.dataset.id;
-        trainerSelect.innerHTML = `<option value="">Loading trainers...</option>`;
-        assignModal.classList.add("show");
-
-        try {
-          const res = await fetch("/.netlify/functions/allTrainers");
-          const data = await res.json();
-          currentTrainers = data.trainers.filter(t => t.status === "Active");
-          trainerSelect.innerHTML = currentTrainers
-            .map(t => `<option value="${t.trainerId}">${t.name}</option>`)
-            .join("");
-        } catch (err) {
-          console.error(err);
-          trainerSelect.innerHTML = `<option value="">Error loading trainers</option>`;
-        }
-      });
-    });
   }
 
-  // Search filter
-  searchInput.addEventListener("input", (e) => renderCourses(e.target.value));
+  searchInput.addEventListener("input", e => renderCourses(e.target.value));
 
   // Open/Close Add Course Modal
-  addCourseBtn.addEventListener("click", () => modal.classList.add("show"));
+  addCourseBtn.addEventListener("click", async () => {
+    modal.classList.add("show");
+
+    // Populate trainer dropdown
+    const trainerSelect = document.getElementById("trainerSelect");
+    trainerSelect.innerHTML = `<option value="">Loading...</option>`;
+    try {
+      const res = await fetch("/.netlify/functions/allTrainers");
+      const data = await res.json();
+      currentTrainers = data.trainers.filter(t => t.status === "Active");
+      trainerSelect.innerHTML = `<option value="">Select Trainer</option>
+        <option value="addNewTrainer">+ Add New Trainer</option>
+        ${currentTrainers.map(t => `<option value="${t.trainerId}">${t.name}</option>`).join("")}`;
+    } catch (err) {
+      console.error(err);
+      trainerSelect.innerHTML = `<option value="">Error loading trainers</option>`;
+    }
+  });
+
   closeModal.addEventListener("click", () => modal.classList.remove("show"));
   cancelModal.addEventListener("click", () => modal.classList.remove("show"));
   window.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("show"); });
-
-  // Close Assign Trainer Modal
-  closeAssignModal.addEventListener("click", () => assignModal.classList.remove("show"));
-  cancelAssignModal.addEventListener("click", () => assignModal.classList.remove("show"));
-  window.addEventListener("click", e => { if (e.target === assignModal) assignModal.classList.remove("show"); });
-
-  // Assign Trainer form submit
-  assignTrainerForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const trainerId = trainerSelect.value;
-    console.log("trainer Id: ", trainerId);
-    if (!trainerId) return alert("Select a trainer");
-
-    // Find trainer's name
-    const trainer = currentTrainers.find(t => t.trainerId === trainerId);
-    console.log(trainer);
-    const trainerName = trainer ? trainer.name : "";
-
-    try {
-      const res = await fetch("/.netlify/functions/assignTrainer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId: selectedCourseId, trainerId, trainerName })
-      });
-      if (!res.ok) throw new Error("Failed to assign trainer");
-      alert("Trainer assigned successfully!");
-      assignModal.classList.remove("show");
-      fetchCourses(); // Refresh courses
-    } catch (err) {
-      console.error(err);
-      alert("Error assigning trainer");
-    }
-  });
 
   // Initial load
   fetchCourses();

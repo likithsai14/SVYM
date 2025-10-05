@@ -75,6 +75,25 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  padding: 5px 10px;
+  color: #ffffff; /* white text */
+  white-space: nowrap; /* prevents text from wrapping */
+  overflow: hidden; /* hides overflow text */
+  text-overflow: ellipsis; /* adds "..." when text is cut off */
+  max-width: 180px; /* adjust as needed */
+}
+
+.user-info i {
+  color: #ffffff; /* White icon color */
+  font-size: 1.2rem;
+}
+
+
 /* Logout Button - fixed bottom */
 .logout-container {
   width: 100%;

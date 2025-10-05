@@ -28,6 +28,46 @@ body {
     margin: auto; /* Center the container */
 }
 
+/* Full page layout with 2 columns */
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Left side (logo, name, caption) */
+.left-section {
+  flex: 1;
+  background: linear-gradient(to bottom right, #e0f7fa, #bbdefb);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #0056b3;
+}
+
+.left-section .company-name {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.left-section .caption {
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+  color: #333;
+}
+
+/* Right side (login form) */
+.right-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5faff;
+}
+
 .form-heading-main{
     font-size: 32px;
     text-align: center;

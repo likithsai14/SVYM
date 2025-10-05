@@ -1,255 +1,252 @@
- document.addEventListener('DOMContentLoaded', async function() {
-    
+document.addEventListener('DOMContentLoaded', async function() {
     const viewModal = document.getElementById('viewModal');
     const closeBtn = document.querySelector('.close-btn');
-    const studentsData = [
-          
-        ];
-     try {
-                // Fetch data from the specified endpoint
-                const response = await fetch('/.netlify/functions/allstudents');
-                
-                // Check if the response is okay (status code 200-299)
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const fetchedData = await response.json();
+    const studentsData = [];
+    const studentTableBody = document.getElementById('studentTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const statusFilter = document.getElementById('statusFilter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageInfo = document.getElementById('page-info');
+    const rowsPerPage = 5;
+    let currentPage = 1;
+    let allRows = [];
+    let filteredRows = [];
 
-                //console.log('Fetched student data:', typeof(fetchedData.students));
-                for (const student of fetchedData.students) {
-                    studentsData.push({
-                        id: student._id,
-                        userId: student.userId,
-                        name: student.candidateName,
-                        email: student.email,
-                        course: student.supportedProject,
-                        status: student.approvalStatus,
-                        fatherHusbandName: student.fatherHusbandName,
-                        villageName: student.villageName,
-                        talukName: student.talukName,
-                        districtName: student.districtName,
-                        dob: student.dob,
-                        age: student.age,
-                        gender: student.gender,
-                        tribal: student.tribal,
-                        pwd: student.pwd,
-                        aadharNumber: student.aadharNumber,
-                        candidatePhone: student.candidatePhone,
-                        parentPhone: student.parentPhone,
-                        familyMembers: student.familyMembers,
-                        qualification: student.qualification,
-                        caste: student.caste,
-                        mobiliserName: student.mobiliserName
+    try {
+        const response = await fetch('/.netlify/functions/allstudents');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const fetchedData = await response.json();
 
-                    });
-                    // Log each student's details to the console
-                    console.log(`Student ID: ${student._id}, Name: ${student.candidateName}, Email: ${student.email}, Course: ${student.supportedProject}, Status: ${student.isAppRejPen}`);
-                }
-                
-                // Render the table with the fetched data
-                renderTable(studentsData);
-
-            } catch (error) {
-                // Log any errors that occur during the fetch process
-                console.error('Failed to fetch student data:', error);
-                const tableBody = document.getElementById('studentTableBody');
-                tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger-color);">
-                    Failed to load data. Please try again later.
-                </td></tr>`;
-            }
- 
-
-        // Function to render the table rows based on provided data
-        function renderTable(data) {
-            const tableBody = document.getElementById('studentTableBody');
-            // Clear any existing table rows
-            tableBody.innerHTML = '';
-
-            // Loop through the data and create a row for each student
-            data.forEach(student => {
-                const row = document.createElement('tr');
-                
-                // Set the status badge class based on the student's status
-                const statusClass = student.status.toLowerCase();
-                const statusHtml = `<span class="status ${statusClass}">${student.status.charAt(0).toUpperCase() + student.status.slice(1)}</span>`;
-
-                // Set the inner HTML of the row with all the student details
-                row.innerHTML = `
-                    <td>${student.userId}</td>
-                    <td>${student.name}</td>
-                    <td>${student.email}</td>
-                    <td>${student.course}</td>
-                    <td>${statusHtml}</td>
-                    <td>
-                        <div class="actions">
-                            <button class="action-btn view-btn"><i class="fas fa-eye"></i> View</button>
-                            <button class="action-btn edit-btn" id="updatestudent"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-btn delete-btn"><i class="fas fa-trash-alt"></i> InActive</button>
-                        </div>
-                    </td>
-                `;
-
-                // Append the new row to the table body
-                tableBody.appendChild(row);
-                     row.querySelector('.view-btn').addEventListener('click', function() {
-                        // Populate the modal with the current student's data
-                        document.getElementById('modalStudentName').textContent = student.userId + " " + student.name;
-                        document.getElementById('modalUserId').textContent = student.userId;
-                        document.getElementById('modalUserName').textContent = student.name;
-                        document.getElementById('modalUserEmail').textContent = student.email;
-                        document.getElementById('modalUserCourse').textContent = student.course;
-                        document.getElementById('modalUserStatus').textContent = student.status;
-                        document.getElementById('modalUserFatherHusband').textContent=student.fatherHusbandName || 'N/A';
-                        document.getElementById('modalUserVillageName').textContent = student.villageName || 'N/A';
-                        document.getElementById('modalUserTalukName').textContent = student.talukName || 'N/A';
-                        document.getElementById('modalUserDistrictName').textContent = student.districtName || 'N/A';
-                        document.getElementById('modalUserDob').textContent = student.dob || 'N/A';
-                        document.getElementById('modalUserAge').textContent = student.age || 'N/A';
-                        document.getElementById('modalUserGender').textContent = student.gender || 'N/A';
-                        document.getElementById('modalUserTribal').textContent = student.tribal || 'N/A';
-                        document.getElementById('modalUserPWD').textContent = student.pwd || 'N/A';
-                        document.getElementById('modalUserAadharNumber').textContent = student.aadharNumber || 'N/A';
-                        document.getElementById('modalUserMobileNumber').textContent = student.candidatePhone || 'N/A';
-                        document.getElementById('modalUserParentMobileNo').textContent = student.parentPhone || 'N/A';
-                        document.getElementById('modalUserFamilyMembers').textContent = student.familyMembers || 'N/A';
-                        document.getElementById('modalUserQualification').textContent = student.qualification || 'N/A';
-                        document.getElementById('modalUserCaste').textContent = student.caste || 'N/A';
-                        document.getElementById('modalUserMobiliserName').textContent = student.mobiliserName || 'N/A';
-                        
-                        const mus=document.getElementById('modalUserStatus');
-                        mus.textContent = student.status;
-                        mus.style.color = student.status === 'Approved' ? 'green' : (student.status === 'Rejected' ? 'red' : 'orange');
-                        mus.style.fontWeight = 'bold';
-                        
-                        // Display the modal
-                        viewModal.style.display = 'flex';
-                    });
-                row.querySelector('.edit-btn').addEventListener('click', function() {
-                    // Redirect to the student update page with the student's ID
-                    window.location.href = `admin_studentupdate.html?studentId=${student.id}`;
-                });
+        fetchedData.students.forEach(student => {
+            studentsData.push({
+                id: student._id,
+                userId: student.userId,
+                name: student.candidateName,
+                email: student.email,
+                course: student.supportedProject,
+                status: student.approvalStatus || 'Pending',
+                fatherHusbandName: student.fatherHusbandName,
+                villageName: student.villageName,
+                talukName: student.talukName,
+                districtName: student.districtName,
+                dob: student.dob,
+                age: student.age,
+                gender: student.gender,
+                tribal: student.tribal,
+                pwd: student.pwd,
+                aadharNumber: student.aadharNumber,
+                candidatePhone: student.candidatePhone,
+                parentPhone: student.parentPhone,
+                familyMembers: student.familyMembers,
+                qualification: student.qualification,
+                caste: student.caste,
+                mobiliserName: student.mobiliserName
             });
+        });
+
+        renderTable(studentsData);
+        initPagination();
+    } catch (error) {
+        console.error('Failed to fetch student data:', error);
+        studentTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger-color);">
+            Failed to load data. Please try again later.
+        </td></tr>`;
+    }
+
+    function renderTable(data) {
+        studentTableBody.innerHTML = '';
+        if (!Array.isArray(data) || data.length === 0) {
+            studentTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--subtle-text);">No records found.</td></tr>`;
+            return;
         }
 
-        // Function to handle the search logic
-        function handleSearch() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            // Filter the original data array based on the search term
-            const filteredData = studentsData.filter(student => 
-                
-                student.name.toLowerCase().includes(searchTerm) ||
-                student.email.toLowerCase().includes(searchTerm) ||
-                student.course.toLowerCase().includes(searchTerm)
-            );
+        data.forEach(student => {
+            const row = document.createElement('tr');
+            const statusClass = (student.status || '').toLowerCase();
+            const statusHtml = `<span class="status ${statusClass}">${escapeHtml(student.status || '')}</span>`;
 
-            // Re-render the table with the filtered data
-            renderTable(filteredData);
+            row.innerHTML = `
+                <td>${escapeHtml(student.userId || '')}</td>
+                <td>${escapeHtml(student.name || '')}</td>
+                <td>${escapeHtml(student.email || '')}</td>
+                <td>${escapeHtml(student.course || '')}</td>
+                <td>${statusHtml}</td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn view-btn"><i class="fas fa-eye"></i> View</button>
+                        <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="action-btn delete-btn"><i class="fas fa-trash-alt"></i> InActive</button>
+                    </div>
+                </td>
+            `;
+
+            row.querySelector('.view-btn').addEventListener('click', function() {
+                document.getElementById('modalStudentName').textContent = `${student.userId} - ${student.name}`;
+                populateModalTable(student);
+                viewModal.style.display = 'flex';
+            });
+
+            row.querySelector('.edit-btn').addEventListener('click', function() {
+                window.location.href = `admin_studentupdate.html?studentId=${encodeURIComponent(student.id)}`;
+            });
+
+            studentTableBody.appendChild(row);
+        });
+
+        updateRowCache();
+    }
+
+    function populateModalTable(student) {
+    const table = document.getElementById('studentDetailsTable');
+    table.innerHTML = '';
+
+    const groups = [
+        { title: 'Basic Details', fields: [
+            ['User ID', student.userId], ['Name', student.name], ['Course', student.course],
+            ['Status', student.status], ['Date of Birth', student.dob], ['Age', student.age], ['Gender', student.gender]
+        ]},
+        { title: 'Address Details', fields: [
+            ['Village', student.villageName], ['Taluk', student.talukName], ['District', student.districtName]
+        ]},
+        { title: 'Contact Details', fields: [
+            ['Email', student.email], ['Mobile', student.candidatePhone], ['Parent Mobile', student.parentPhone], ['Mobiliser Name', student.mobiliserName]
+        ]},
+        { title: 'Other Details', fields: [
+            ['Father / Husband Name', student.fatherHusbandName], ['Tribal', student.tribal], ['PWD', student.pwd],
+            ['Aadhar Number', student.aadharNumber], ['Family Members', student.familyMembers],
+            ['Qualification', student.qualification], ['Caste', student.caste]
+        ]}
+    ];
+
+    groups.forEach(group => {
+        // Group Title
+        const trTitle = document.createElement('tr');
+        const tdTitle = document.createElement('td');
+        tdTitle.colSpan = 4; // span across 4 columns (2 fields per row)
+        tdTitle.className = 'group-title';
+        tdTitle.textContent = group.title;
+        trTitle.appendChild(tdTitle);
+        table.appendChild(trTitle);
+
+        // Display 2 fields per row
+        for (let i = 0; i < group.fields.length; i += 2) {
+            const tr = document.createElement('tr');
+
+            // First field
+            const [label1, value1] = group.fields[i];
+            const td1 = document.createElement('td');
+            td1.innerHTML = `<strong>${escapeHtml(label1)}</strong>`;
+            const td2 = document.createElement('td');
+            td2.textContent = value1 || 'N/A';
+
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+
+            // Second field (if exists)
+            if (i + 1 < group.fields.length) {
+                const [label2, value2] = group.fields[i + 1];
+                const td3 = document.createElement('td');
+                td3.innerHTML = `<strong>${escapeHtml(label2)}</strong>`;
+                const td4 = document.createElement('td');
+                td4.textContent = value2 || 'N/A';
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+            } else {
+                // Fill empty cells if odd number of fields
+                const td3 = document.createElement('td');
+                td3.innerHTML = '';
+                const td4 = document.createElement('td');
+                td4.innerHTML = '';
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+            }
+
+            table.appendChild(tr);
         }
-          closeBtn.addEventListener('click', () => {
-                viewModal.style.display = 'none';
-            });
-          renderTable(studentsData);
-            
-            // Add event listener to the search input for real-time filtering
-            document.getElementById('searchInput').addEventListener('keyup', handleSearch);
-            
-            // Add event listener to the search button
-            document.getElementById('searchBtn').addEventListener('click', handleSearch);
-
-
-
-
-
-            const tableBody = document.querySelector('.data-table tbody');
-            const allRows = Array.from(tableBody.querySelectorAll('tr'));
-            
-            // Set the number of rows to display per page
-            const rowsPerPage = 5;
-            let currentPage = 1;
-            let filteredRows = allRows; // Start with all rows
-
-            // Get the pagination, filter, and summary controls
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const pageInfo = document.getElementById('page-info');
-            const statusFilter = document.getElementById('statusFilter');
-            const totalEntries = document.getElementById('total-entries');
-
-            /**
-             * Displays a specific page of data in the table.
-             * @param {number} page The page number to display.
-             * @param {Array} data The array of rows to paginate.
-             */
-            function displayPage(page, data) {
-                // Calculate the total number of pages based on the current data
-                const totalPages = Math.ceil(data.length / rowsPerPage);
-
-                // Hide all rows initially
-                allRows.forEach(row => row.style.display = 'none');
-
-                // Calculate the start and end index for the rows on the current page
-                const startIndex = (page - 1) * rowsPerPage;
-                const endIndex = startIndex + rowsPerPage;
-
-                // Loop through the rows for the current page and display them
-                for (let i = startIndex; i < endIndex && i < data.length; i++) {
-                    data[i].style.display = '';
-                }
-
-                // Update the page information text
-                pageInfo.textContent = `Page ${page} of ${totalPages}`;
-
-                // Update the total entries summary
-                totalEntries.textContent = data.length;
-
-                // Disable or enable the navigation buttons based on the current page
-                prevBtn.disabled = page === 1;
-                nextBtn.disabled = page >= totalPages;
-            }
-
-            /**
-             * Filters the table rows based on the selected status.
-             */
-            function filterTable() {
-                const selectedStatus = statusFilter.value;
-                
-                if (selectedStatus === 'All') {
-                    filteredRows = allRows;
-                } 
-                else {
-                    filteredRows = allRows.filter(row => {
-                        // The status is in the last <td> element
-                        const statusCell = row.querySelector('td:nth-child(5) .status');
-                        return statusCell.textContent.trim() === selectedStatus;
-                    });
-                }
-                
-                // Reset to the first page and display the filtered data
-                currentPage = 1;
-                displayPage(currentPage, filteredRows);
-            }
-
-            // Event listener for the "Previous" button
-            prevBtn.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    displayPage(currentPage, filteredRows);
-                }
-            });
-
-            // Event listener for the "Next" button
-            nextBtn.addEventListener('click', () => {
-                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    displayPage(currentPage, filteredRows);
-                }
-            });
-
-            // Event listener for the filter dropdown
-            statusFilter.addEventListener('change', filterTable);
-
-            // Initial display of the first page with all data
-            displayPage(currentPage, filteredRows);
     });
+}
+
+
+    closeBtn.addEventListener('click', () => viewModal.style.display = 'none');
+
+    function escapeHtml(unsafe) {
+        if (unsafe === null || unsafe === undefined) return '';
+        return String(unsafe).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function applyFiltersAndRender() {
+        const searchTerm = (searchInput.value || '').trim().toLowerCase();
+        const selectedStatus = (statusFilter.value || 'All').trim();
+
+        const filtered = studentsData.filter(s => {
+            const matchesSearch = !searchTerm ||
+                (s.name || '').toLowerCase().includes(searchTerm) ||
+                (s.email || '').toLowerCase().includes(searchTerm) ||
+                (s.course || '').toLowerCase().includes(searchTerm) ||
+                (s.userId || '').toLowerCase().includes(searchTerm);
+
+            const matchesStatus = selectedStatus === 'All' ||
+                ((s.status || '').toLowerCase() === selectedStatus.toLowerCase());
+
+            return matchesSearch && matchesStatus;
+        });
+
+        currentPage = 1;
+        renderTable(filtered);
+        initPagination();
+    }
+
+    searchInput.addEventListener('keyup', applyFiltersAndRender);
+    searchBtn.addEventListener('click', applyFiltersAndRender);
+    statusFilter.addEventListener('change', applyFiltersAndRender);
+
+    function updateRowCache() {
+        const tableBody = document.querySelector('.data-table tbody');
+        allRows = Array.from(tableBody.querySelectorAll('tr'));
+        if (allRows.length === 1 && allRows[0].querySelectorAll('td').length === 1) {
+            filteredRows = [];
+            allRows = [];
+            displayPage(1, []);
+            return;
+        }
+        filteredRows = allRows.slice();
+    }
+
+    function initPagination() { updateRowCache(); currentPage = 1; displayPage(currentPage, filteredRows); }
+
+    function displayPage(page, rowsArray) {
+        const totalPages = Math.max(1, Math.ceil(rowsArray.length / rowsPerPage));
+        const tableBody = document.querySelector('.data-table tbody');
+
+        if (!rowsArray || rowsArray.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--subtle-text);">No records to display.</td></tr>`;
+            pageInfo.textContent = `Page 0 of 0`;
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            return;
+        }
+
+        allRows.forEach(r => r.style.display = 'none');
+
+        const startIndex = (page - 1) * rowsPerPage;
+        const endIndex = Math.min(startIndex + rowsPerPage, rowsArray.length);
+
+        for (let i = startIndex; i < endIndex; i++) rowsArray[i].style.display = '';
+
+        pageInfo.textContent = `Page ${page} of ${totalPages}`;
+        prevBtn.disabled = page === 1;
+        nextBtn.disabled = page >= totalPages;
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) { currentPage--; displayPage(currentPage, filteredRows); }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+        if (currentPage < totalPages) { currentPage++; displayPage(currentPage, filteredRows); }
+    });
+
+});

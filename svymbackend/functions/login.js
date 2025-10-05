@@ -60,6 +60,7 @@ exports.handler = async (event) => {
               userId: trainerDoc.trainerId,
               email: trainerDoc.email,
               role: "trainer",
+              username: trainerDoc.name,
             },
           }),
         };
@@ -73,6 +74,7 @@ exports.handler = async (event) => {
             userId: trainerDoc.trainerId,
             email: trainerDoc.email,
             role: "trainer",
+            username: trainerDoc.name,
           },
         }),
       };
@@ -112,6 +114,7 @@ exports.handler = async (event) => {
               userId: fmDoc.userId,
               email: fmDoc.email,
               role: "fieldMobiliser",
+              username: fmDoc.FieldMobiliserName,
             },
           }),
         };
@@ -125,6 +128,7 @@ exports.handler = async (event) => {
             userId: fmDoc.userId,
             email: fmDoc.email,
             role: "fieldMobiliser",
+            username: fmDoc.FieldMobiliserName,
           },
         }),
       };
@@ -147,7 +151,7 @@ exports.handler = async (event) => {
         statusCode: 200,
         body: JSON.stringify({
           message: "Admin login successful!",
-          user: { userId: adminDoc.username, role: "admin" },
+          user: { userId: adminDoc.username, role: "admin", username : adminDoc.username },
         }),
       };
     }
@@ -188,7 +192,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           message: "First login detected. Please update your PIN.",
           isFirstLoginPrompt: true,
-          user: { userId: userDoc.userId, email: userDoc.email, role: "user" },
+          user: { userId: userDoc.userId, email: userDoc.email, role: "user", username : userDoc.candidateName },
         }),
       };
     }
@@ -197,7 +201,7 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         message: "Login successful!",
-        user: { userId: userDoc.userId, email: userDoc.email, role: "user" },
+        user: { userId: userDoc.userId, email: userDoc.email, role: "user", username : userDoc.candidateName },
       }),
     };
   } catch (err) {

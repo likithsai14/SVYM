@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVYM Tech4Hope - Admin Edit/View Student Data</title>
-    <!-- Google Fonts for a modern look -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/modal.css">
@@ -12,10 +12,10 @@
     <script src="Javascripts/auth.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
-        /* Base Styles */
         :root {
             --primary-color: #007bff;
             --primary-hover: #0056b3;
@@ -52,47 +52,29 @@
             box-shadow: var(--box-shadow);
             padding: 30px;
         }
+
         .data-list-container h1{
             font-size: 2rem;
             font-weight: 700;
-            margin: 0;
+            margin-bottom: 10px;
             color: var(--primary-color);
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
-        }
-         .data-list-container h1 .icon {
-            font-size: 1.5rem;
         }
 
-        /* Header and Search Bar */
         .header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             margin-bottom: 25px;
-            gap: 15px;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header h1 .icon {
-            font-size: 1.5rem;
         }
 
         .search-container {
             display: flex;
             width: 100%;
+            max-width: 400px;
             background-color: #f1f3f5;
             border-radius: 8px;
             overflow: hidden;
@@ -104,14 +86,12 @@
             border: none;
             padding: 12px 15px;
             font-size: 1rem;
-            background: transparent;
             outline: none;
+            background: transparent;
             color: var(--text-color);
         }
 
-        #searchInput::placeholder {
-            color: var(--subtle-text);
-        }
+        #searchInput::placeholder { color: var(--subtle-text); }
 
         #searchBtn {
             background-color: var(--secondary-color);
@@ -122,218 +102,56 @@
             transition: background-color 0.3s ease;
         }
 
-        #searchBtn:hover {
-            background-color: var(--subtle-text);
-        }
+        #searchBtn:hover { background-color: var(--subtle-text); }
 
-        /* Table Styles */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
+        .filter-container { display: flex; align-items: center; gap: 10px; }
+        .custom-select-filter { width: 200px; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 700px; /* Ensure table is readable on smaller screens before scrolling */
-        }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .data-table thead { background-color: #e9f5ff; }
+        .data-table tbody tr:nth-child(odd) { background-color: #fafafa; }
+        .data-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
+        .data-table tbody tr:hover { background-color: #e9ecef; transition: 0.2s; }
 
-        .data-table thead {
-            background-color: #e9f5ff; /* Light blue header */
-        }
-
-        .data-table th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--subtle-text);
-            border-bottom: 2px solid var(--border-color);
-            white-space: nowrap;
-        }
-
-        .data-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
-        
-        .data-table tbody tr:nth-child(odd) {
-            background-color: #fafafa; /* Very light gray for odd rows */
-        }
-
-        .data-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa; /* Light gray for even rows */
-        }
-        
-        .data-table tbody tr:hover {
-            background-color: #e9ecef; /* Slightly darker hover color */
-            transition: background-color 0.2s ease;
-        }
-
-        /* Status Badges */
-        .status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.9em;
-            color: white;
-            white-space: nowrap;
-            display: inline-block;
-        }
-
-        .status.approved { background-color: var(--success-color); }
+        .status { padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.9em; display: inline-block; white-space: nowrap; }
+        .status.approved { background-color: var(--success-color); color: white; }
         .status.pending { background-color: var(--warning-color); color: var(--text-color); }
-        .status.rejected { background-color: var(--danger-color); }
+        .status.rejected { background-color: var(--danger-color); color: white; }
+        .status.inactive { background-color: #6b7280; color: white; }
 
-        /* Action Buttons */
-        .actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            background-color: transparent;
-            border: 1px solid;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .action-btn i {
-            font-size: 1rem;
-        }
-
-        .view-btn {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
+        .actions { display: flex; gap: 8px; }
+        .action-btn { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent; transition: all 0.3s ease; font-weight: 500; background-color: transparent; }
+        .view-btn { border-color: var(--primary-color); color: var(--primary-color); }
         .view-btn:hover { background-color: var(--primary-color); color: white; }
-
-        .edit-btn {
-            color: var(--warning-color);
-            border-color: var(--warning-color);
-        }
+        .edit-btn { border-color: var(--warning-color); color: var(--warning-color); }
         .edit-btn:hover { background-color: var(--warning-color); color: var(--text-color); }
-
-        .delete-btn {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
+        .delete-btn { border-color: var(--danger-color); color: var(--danger-color); }
         .delete-btn:hover { background-color: var(--danger-color); color: white; }
-        /* Modal Styles */
-        
-        /* Pagination Controls */
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 0.5rem;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
 
-        .data-table {
-            min-width: 100%;
-            width: 100%;
-            border-collapse: collapse;
-        }
+        /* Pagination */
+        .pagination-controls { display: flex; justify-content: center; align-items: center; margin-top: 1.5rem; gap: 1rem; }
+        .page-button { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; background-color: var(--primary-color); color: white; font-weight: 700; cursor: pointer; }
+        .page-button:hover:not(:disabled) { background-color: rgb(0, 115, 156); }
+        .page-button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .page-info { font-weight: 500; font-size: 1.125rem; color: #374151; }
 
-        .table-head {
-            background-color: #e5e7eb;
-            color: #4b5563;
-            text-transform: uppercase;
-            font-size: 0.875rem; /* 14px */
-            line-height: 1.25rem;
-        }
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 9998; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: #fff; border-radius: 10px; padding: 20px; max-width: 900px; width: 100%; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .close-btn { float: right; font-size: 24px; cursor: pointer; color: var(--subtle-text); }
 
-        .table-head th {
-            padding: 0.75rem 1.5rem;
-            text-align: left;
-        }
+        /* Modal Student Details Table - Two columns per row */
+        .student-details-table { width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; /* Fix column widths */}
+        .student-details-table td { padding: 12px; border: 1px solid #eef2f7; vertical-align: top; width: 25%; /* 4 columns total, each 25% */ word-wrap: break-word; /* Ensure long text wraps */}
+        .student-details-table td strong { display: block; margin-bottom: 6px; color: var(--primary-color);}
+        .group-title { background-color: #f3f4f6; font-weight: 600; padding: 10px; text-align: left; color: var(--primary-color);}
 
-        .table-body tr {
-            border-bottom: 1px solid #e5e7eb;
-            color: #4b5563;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-        }
-
-        .table-body tr:hover {
-            background-color: #f3f4f6;
-        }
-
-        .table-body td {
-            padding: 0.75rem 1.5rem;
-            white-space: nowrap;
-        }
-
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 1.5rem;
-            gap: 1rem;
-        }
-
-        .page-button {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-        }
-
-        .page-button:hover:not(:disabled) {
-            background-color: rgb(0, 115, 156);
-        }
-
-        .page-button:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            color: #374151;
-            font-size: 1.125rem; /* 18px */
-            font-weight: 500;
-        }
-        /*Filter Table */
-        .filter-container
-        {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        .custom-select-filter {
-            width: 200px;
-            padding: 0.5rem; /* p-2 */
-            border: 1px solid #d1d5db; /* border border-gray-300 */
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
-            font-size: 1rem; /* text-base */
-         }
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .data-list-container {
-                padding: 20px;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .search-container {
-                max-width: 100%;
-            }
-        }
+/* Responsive: single column per row on small screens */
+        @media (max-width: 720px) {
+            .student-details-table td { width: 100%; display: block;}
+    }
     </style>
 </head>
 <body>
@@ -343,10 +161,10 @@
     <div class="overlay" id="overlay"></div>
 
     <aside class="side-menu" id="sideMenu"></aside>
+
     <div class="data-list-container">
-            <h1>
-                SVYM Tech4Hope Students Data <i class="fas fa-file-alt"></i>
-            </h1>
+        <h1>SVYM Tech4Hope Students Data <i class="fas fa-file-alt"></i></h1>
+
         <div class="header">
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search by Name or Course...">
@@ -354,14 +172,14 @@
             </div>
             <div class="filter-container">
                 <label for="statusFilter">Filter by Status:</label>
-           <select id="statusFilter" class="custom-select-filter">
+                <select id="statusFilter" class="custom-select-filter">
                     <option value="All">All Status</option>
                     <option value="Approved">Approved</option>
                     <option value="Pending">Pending</option>
                     <option value="Rejected">Rejected</option>
-                    <option value="Inactive">InActive</option>
-           </select>
-           </div>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -376,57 +194,30 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="studentTableBody">
-                    <!-- Dynamic rows will be inserted here by JavaScript -->
-                </tbody>
+                <tbody id="studentTableBody"></tbody>
             </table>
         </div>
+
         <div id="pagination-controls" class="pagination-controls">
-            <button id="prevBtn" class="page-button">
-                Previous
-            </button>
+            <button id="prevBtn" class="page-button">Previous</button>
             <span id="page-info" class="page-info">Page 1 of 1</span>
-            <button id="nextBtn" class="page-button">
-                Next
-            </button>
+            <button id="nextBtn" class="page-button">Next</button>
         </div>
     </div>
-     <div id="viewModal" class="modal">
+
+    <!-- Modal -->
+    <div id="viewModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div class="modal-header">
                 <h2 id="modalStudentName"></h2>
             </div>
             <div class="modal-body">
-                <p><strong>UserID:</strong> <span id="modalUserId"></span></p>
-                <p><strong>Name:</strong> <span id="modalUserName"></span></p>
-                <p><strong>Email:</strong> <span id="modalUserEmail"></span></p>
-                <p><strong>Course:</strong> <span id="modalUserCourse"></span></p>
-                <p><strong>Status:</strong> <span id="modalUserStatus"></span></p>
-                <p><strong>Father/Husband Name:</strong> <span id="modalUserFatherHusband"></span></p>
-                <p><strong>VillageName:</strong><span id="modalUserVillageName"></span></p>
-                <p><strong>TalukName:</strong><span id="modalUserTalukName"></span></p>
-                <p><strong>DistrictName:</strong><span id="modalUserDistrictName"></span></p>
-                <p><strong>Date of Birth:</strong> <span id="modalUserDob"></span></p>
-                <p><strong>Age:</strong> <span id="modalUserAge"></span></p>
-                <p><strong>Gender:</strong><span id="modalUserGender"></span></p>
-                <p><strong>Tribal:</strong><span id="modalUserTribal"></span></p>
-                <p><strong>Person With Disability:</strong><span id="modalUserPWD"></span></p>
-                <p><strong>AadharNumber:</strong><span id="modalUserAadharNumber"></span></p>
-                <p><strong>MobileNumber:</strong><span id="modalUserMobileNumber"></span></p>
-                <p><strong>ParentMobileNo:</strong><span id="modalUserParentMobileNo"></span></p>
-                <p><strong>Family Members:</strong> <span id="modalUserFamilyMembers"></span></p>
-                <p><strong>Qualification:</strong> <span id="modalUserQualification"></span ></p>
-                <p><strong>Caste:</strong> <span id="modalUserCaste"></span></p>    
-                <p><strong>MobiliserName:</strong><span id="modalUserMobiliserName"></span></p>
-               
-        
+                <table class="student-details-table" id="studentDetailsTable" role="table" aria-label="Student details"></table>
             </div>
         </div>
-        
     </div>
-    
-     
-  <script src="/Javascripts/admin_editstudents.js"></script>
+
+    <script src="/Javascripts/admin_editstudents.js"></script>
 </body>
 </html>
