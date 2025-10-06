@@ -1,156 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Field Mobilizers</title>
-    <script src="./Javascripts/nav.js" defer></script>
-    <script src="./Javascripts/modal.js" defer></script>
-    <link rel="stylesheet" href="css/nav.css" />
-    <script src="Javascripts/auth.js"></script>
-    <link rel="stylesheet" href="css/modal.css" />
-    <link rel="stylesheet" href="css/admin_dashboard.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
-  <body>
-    <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
-    <div class="overlay" id="overlay"></div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVYM Tech4Hope - Admin FieldMobiliser Data</title>
 
-    <aside class="side-menu" id="sideMenu"></aside>
-    <div class="container main-content">
-      <div id="mainMessage" class="message"></div>
-      <h3 class="welcome-message">Field Mobilisers Management Data</h3>
-      <div class="dashboard-card-section">
-        <div id="studentRequestsCard" class="dashboard-card">
-          <h4><i class="fas fa-user-plus"></i>Field Mobilisers Requests</h4>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-number" id="totalRequests">10</span>
-              <span class="stat-label">Total Requests</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number" id="approvedRequests">4</span>
-              <span class="stat-label">Approved Requests</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number" id="rejectedRequests">4</span>
-              <span class="stat-label">Rejected Requests</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number" id="pendingRequests">2</span>
-              <span class="stat-label">Pending Requests</span>
-            </div>
-            <div class="stat-item">
-              <button class="add-button" id="addfieldmobiliser">
-                Add Field Mobiliser
-              </button>
-            </div>
-            <div class="stat-item">
-              <button class="edit-button" id="editfieldmobiliser">
-                View / Edit Field Mobiliser
-              </button>
-            </div>
-          </div>
-        </div>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/admin_dashboard.css">
+
+  <!-- Font Awesome & Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Inline CSS for Table & Pagination -->
+  <style>
+    body { font-family: 'Inter', sans-serif; background: aliceblue; margin: 0; color: #333; }
+    .data-list-container { max-width: 1200px; width: 100%; margin: 20px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 30px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+    .header h1 { font-size:2rem; color:#007bff; display:flex; align-items:center; gap:10px; }
+    .search-container { display:flex; width:100%; max-width:300px; background:#f1f3f5; border-radius:8px; overflow:hidden; border:1px solid #e0e0e0; }
+    #searchInput { flex:1; border:none; padding:10px; outline:none; }
+    #searchBtn { background:#6c757d; color:#fff; border:none; padding:10px 15px; cursor:pointer; }
+    #searchBtn:hover { background:#555; }
+    .table-responsive { width:100%; overflow-x:auto; }
+    .data-table { width:100%; border-collapse:collapse; min-width:700px; }
+    .data-table th, .data-table td { padding:12px; text-align:left; border-bottom:1px solid #e0e0e0; }
+    .data-table thead { background:#e9f5ff; }
+    .data-table tbody tr:nth-child(odd) { background:#fafafa; }
+    .data-table tbody tr:nth-child(even) { background:#f8f9fa; }
+    .data-table tbody tr:hover { background:#e9ecef; }
+    .status { padding:5px 12px; border-radius:20px; font-size:0.9em; font-weight:500; display:inline-block; color:#fff; }
+    .active { background:#40c45f; }
+    .status.pending { background:#ffc107; color:#333; }
+    .inactive { background:#dc3545; }
+    .pagination-controls { display:flex; justify-content:center; align-items:center; margin-top:20px; gap:10px; }
+    .page-button { background:#007bff; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:500; }
+    .page-button:hover:not(:disabled) { background:#0056b3; }
+    .page-button:disabled { background:#9ca3af; cursor:not-allowed; }
+    .page-info { font-weight:500; color:#374151; }
+    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999; }
+    .modal.show { display:flex; }
+    .modal-content { background:#fff; border-radius:10px; width:600px; max-width:90%; padding:20px; position:relative; }
+    .close-btn { position:absolute; top:10px; right:10px; border:none; background:none; font-size:1.5rem; cursor:pointer; }
+    .form-group { margin-bottom:15px; }
+    .form-group input { width:95%; padding:8px; border:1px solid #ccc; border-radius:5px; }
+    .error-message { color:red; font-size:0.85rem; }
+    .add-button {
+      width: 200px;
+      background: #28a745;        /* Green */
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .add-button:hover {
+      background: #218838;        /* Slightly darker green */
+    }
+
+
+    /* Field Mobiliser Modal Styles */
+#viewFieldModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    overflow-y: auto;
+}
+
+#viewFieldModal .modal-content {
+    background-color: #fff;
+    width: 90%;
+    max-width: 1000px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#viewFieldModal .close-btn {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #333;
+}
+
+#fieldMobiliserDetailsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#fieldMobiliserDetailsTable td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#fieldMobiliserDetailsTable .group-title {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #1f2937;
+    padding: 12px 15px;
+}
+
+.view-btn {
+  background-color: #1E90FF;   /* Dodger Blue */
+  color: white;                /* White text */
+  border: none;
+  border-radius: 4px;          /* Slightly rounded corners */
+  padding: 6px 12px;           /* Button padding */
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;                     /* Space between icon and text */
+}
+
+.view-btn i {
+  font-size: 14px;              /* Icon size */
+}
+
+/* Hover effect */
+.view-btn:hover {
+  background-color: #1C86EE;   /* Slightly darker blue */
+}
+
+
+  </style>
+</head>
+
+<body>
+  <!-- Hamburger & Side Menu -->
+  <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+  <div class="overlay" id="overlay"></div>
+  <aside class="side-menu" id="sideMenu"></aside>
+
+  <!-- Loader Spinner -->
+  <div id="loadingSpinner" style="display:none; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.85); z-index:9999;">
+    <div style="border:6px solid #f3f3f3; border-top:6px solid #3498db; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite;"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="data-list-container">
+    <div class="header">
+      <h1>FieldMobiliser Data <i class="fas fa-file-alt"></i></h1>
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search by Name...">
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
       </div>
-      <div class="modal" id="fieldMobilizerFormModal">
-        <div class="modal-content">
-          <button class="close-btn">&times;</button>
-          <div class="modal-header">
-            <h2 class="form-subheading-main" style="text-align: center">
-              Add FieldMobilizer Data
-            </h2>
-          </div>
-          <div class="modal-body">
-            <form id="fieldMobilizerForm" novalidate>
-              <div class="form-group">
-                <label for="FieldMobiliserName">FieldMobiliser Name:</label>
-                <input
-                  type="text"
-                  id="FieldMobiliserName"
-                  name="FieldMobiliserName"
-                  required
-                />
-                <span id="FieldMobiliserNameError" class="error-message"></span>
-              </div>
-              <div class="form-group">
-                <label for="FieldMobiliserEmailID">Email Id:</label>
-                <input
-                  type="text"
-                  id="FieldMobiliserEmailID"
-                  name="FieldMobiliserEmailID"
-                  required
-                />
-                <span
-                  id="FieldMobiliserEmailIDError"
-                  class="error-message"
-                ></span>
-              </div>
-              <div class="form-group">
-                <label for="FieldMobiliserMobileNo">Mobile No:</label>
-                <input
-                  type="text"
-                  id="FieldMobiliserMobileNo"
-                  name="FieldMobiliserMobileNo"
-                  maxlength="10"
-                  required
-                />
-                <span
-                  id="FieldMobiliserMobileNoError"
-                  class="error-message"
-                ></span>
-              </div>
-              <div class="form-group">
-                <label for="FieldMobiliserRegion">Region:</label>
-                <input
-                  type="text"
-                  id="FieldMobiliserRegion"
-                  name="FieldMobiliserRegion"
-                  required
-                />
-                <span
-                  id="FieldMobiliserRegionError"
-                  class="error-message"
-                ></span>
-              </div>
-              <div class="form-group">
-                <label for="FieldMobiliserSupportedProject"
-                  >Supported Project:</label
-                >
-                <input
-                  type="text"
-                  id="FieldMobiliserSupportedProject"
-                  name="FieldMobiliserSupportedProject"
-                  required
-                />
-                <span
-                  id="FieldMobiliserSupportedProjectError"
-                  class="error-message"
-                ></span>
-              </div>
-              <button type="submit" class="add-button">
-                Add Field Mobiliser
-              </button>
-            </form>
-          </div>
-          <div id="message" class="message" style="display: none"></div>
-          <div id="generatedUserId" style="display: none"></div>
-          <div
-            id="adminapprovalMessage"
-            class="message"
-            style="display: none"
-          ></div>
-        </div>
-      </div>
+      <button class="add-button" id="addfieldmobiliser"> <i class="fas fa-plus"></i> Add Field Mobiliser</button>
     </div>
-    <script src="Javascripts/admin_addfieldmobiliser.js"></script>
-    <script src="Javascripts/admin_viewfieldmobiliserrequest.js"></script>
-  </body>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>UserID</th>
+            <th>Name</th>
+            <th>Email Id</th>
+            <th>Supported Project</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="fieldmobiliserTableBody">
+          <!-- Dynamic rows inserted by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-controls">
+      <button id="prevBtn" class="page-button">Previous</button>
+      <span id="page-info" class="page-info">Page 1 of 1</span>
+      <button id="nextBtn" class="page-button">Next</button>
+    </div>
+  </div>
+
+  <!-- Modal for Adding Field Mobiliser -->
+  <div class="modal" id="fieldMobilizerFormModal">
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <h2 style="text-align:center; margin-bottom:20px;">Add FieldMobiliser Data</h2>
+      <form id="fieldMobilizerForm" novalidate>
+        <div class="form-group">
+          <label for="FieldMobiliserName">Name:</label>
+          <input type="text" id="FieldMobiliserName" name="FieldMobiliserName" required>
+          <span id="FieldMobiliserNameError" class="error-message"></span>
+        </div>
+        <div class="form-group">
+          <label for="FieldMobiliserEmailID">Email:</label>
+          <input type="text" id="FieldMobiliserEmailID" name="FieldMobiliserEmailID" required>
+          <span id="FieldMobiliserEmailIDError" class="error-message"></span>
+        </div>
+        <div class="form-group">
+          <label for="FieldMobiliserMobileNo">Mobile No:</label>
+          <input type="text" id="FieldMobiliserMobileNo" name="FieldMobiliserMobileNo" maxlength="10" required>
+          <span id="FieldMobiliserMobileNoError" class="error-message"></span>
+        </div>
+        <div class="form-group">
+          <label for="FieldMobiliserRegion">Region:</label>
+          <input type="text" id="FieldMobiliserRegion" name="FieldMobiliserRegion" required>
+          <span id="FieldMobiliserRegionError" class="error-message"></span>
+        </div>
+        <div class="form-group">
+          <label for="FieldMobiliserSupportedProject">Supported Project:</label>
+          <input type="text" id="FieldMobiliserSupportedProject" name="FieldMobiliserSupportedProject" required>
+          <span id="FieldMobiliserSupportedProjectError" class="error-message"></span>
+        </div>
+        <button type="submit" class="add-button">Add Field Mobiliser</button>
+      </form>
+      <div id="message" class="message" style="display:none;"></div>
+      <div id="generatedUserId" style="display:none;"></div>
+      <div id="adminapprovalMessage" class="message" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Field Mobiliser View Modal -->
+  <div id="viewFieldModal">
+      <div class="modal-content">
+          <button class="close-btn">&times;</button>
+          <h2 id="modalFieldMobiliserName" style="text-align:center;">Field Mobiliser Name</h2>
+          <table id="fieldMobiliserDetailsTable"></table>
+      </div>
+  </div>
+
+
+  <!-- Scripts -->
+  <script src="Javascripts/nav.js" defer></script>
+  <script src="Javascripts/modal.js" defer></script>
+  <script src="Javascripts/admin_field_mobilisers.js"></script>
+</body>
 </html>
