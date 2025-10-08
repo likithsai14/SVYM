@@ -14,12 +14,12 @@ exports.handler = async (event, context) => {
     await connectDB();
 
     // Fetch all users (students)
-    const students = await User.find().lean();
+    const students = await User.find({approvalStatus: 'pending'}).lean();
 
     // Debug logs
     for (const student of students) {
       console.log(
-        `Student ID: ${student._id}, Name: ${student.candidateName}, Email: ${student.email}, Course: ${student.supportedProject}, Status: ${student.isAppRejPen}`
+        `Student ID: ${student.userId}, Name: ${student.candidateName}, Email: ${student.email}, FieldMobiliser: ${student.fieldMobiliserName}, Status: ${student.approvalStatus}`
       );
     }
 

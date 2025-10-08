@@ -2,7 +2,6 @@ const { connectDB } = require('./utils/mongodb');
 const User = require('./models/User'); // Student model
 
 exports.handler = async (event, context) => {
-  console.log("hello");
 
   try {
     if (event.httpMethod !== 'POST') {
@@ -12,9 +11,10 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { studentId, approvalStatus } = JSON.parse(event.body);
+    const { id, status } = JSON.parse(event.body);
 
-    if (!studentId || !approvalStatus) {
+    console.log(id, status);
+    if (!id || !status) {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'studentId and approvalStatus are required.' })
@@ -25,11 +25,12 @@ exports.handler = async (event, context) => {
     await connectDB();
 
     // Update only the approvalStatus field
-    const updatedStudent = await User.findByIdAndUpdate(
-      studentId,
-      { approvalStatus },
-      { new: true } // Return the updated document
+    const updatedStudent = await User.findOneAndUpdate(
+      { userId: id },  // ✅ search by your custom field
+      { approvalStatus: status },
+      { new: true }
     ).lean();
+
 
     if (!updatedStudent) {
       return {
@@ -41,7 +42,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: `Student approval status for ${studentId} updated successfully.`,
+        message: `Student approval status for ${id} updated successfully.`,
         student: updatedStudent
       })
     };

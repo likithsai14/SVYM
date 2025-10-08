@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVYM Tech4Hope - Admin Edit/View Student Data</title>
-    <!-- Google Fonts for a modern look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="css/modal.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVYM Tech4Hope - Admin Students Management</title>
+
+    <!-- CSS Files -->
     <link rel="stylesheet" href="css/nav.css">
-    <script src="Javascripts/nav.js" defer></script>
-        <script src="Javascripts/modal.js" defer></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/admin_dashboard.css">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Base Styles */
+        /* ===================== Combined Styles ===================== */
         :root {
             --primary-color: #007bff;
             --primary-hover: #0056b3;
@@ -52,9 +53,9 @@
             border-radius: 12px;
             box-shadow: var(--box-shadow);
             padding: 30px;
+            margin-bottom: 30px;
         }
 
-        /* Header and Search Bar */
         .header {
             display: flex;
             justify-content: space-between;
@@ -74,278 +75,116 @@
             gap: 10px;
         }
 
-        .header h1 .icon {
-            font-size: 1.5rem;
-        }
-
-        .search-container {
-            display: flex;
-            width: 100%;
-            background-color: #f1f3f5;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #e0e0e0;
-        }
-
-        #searchInput {
-            flex-grow: 1;
-            border: none;
-            padding: 12px 15px;
-            font-size: 1rem;
-            background: transparent;
-            outline: none;
-            color: var(--text-color);
-        }
-
-        #searchInput::placeholder {
-            color: var(--subtle-text);
-        }
-
-        #searchBtn {
-            background-color: var(--secondary-color);
+        /* Notification badge for requests */
+        .badge {
+            display: inline-block;
+            background-color: var(--danger-color);
             color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            padding: 10px 16px;
+            border-radius: 6px;
             border: none;
-            padding: 12px 18px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
         }
 
-        #searchBtn:hover {
-            background-color: var(--subtle-text);
-        }
+        .add-button { background-color: var(--primary-color); color: white; }
+        .add-button:hover { background-color: var(--primary-hover); }
 
-        /* Table Styles */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
+        .view-button { background-color: var(--secondary-color); color: white; position: relative; }
+        .view-button:hover { background-color: var(--subtle-text); }
+
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 20px; }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 700px; /* Ensure table is readable on smaller screens before scrolling */
+            min-width: 700px;
         }
 
-        .data-table thead {
-            background-color: #e9f5ff; /* Light blue header */
-        }
-
-        .data-table th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--subtle-text);
-            border-bottom: 2px solid var(--border-color);
-            white-space: nowrap;
-        }
-
-        .data-table td {
-            padding: 15px;
+        .data-table th, .data-table td {
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
-        
-        .data-table tbody tr:nth-child(odd) {
-            background-color: #fafafa; /* Very light gray for odd rows */
         }
 
-        .data-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa; /* Light gray for even rows */
-        }
-        
-        .data-table tbody tr:hover {
-            background-color: #e9ecef; /* Slightly darker hover color */
-            transition: background-color 0.2s ease;
-        }
+        .data-table thead { background-color: #e9f5ff; }
 
-        /* Status Badges */
+        .data-table tbody tr:nth-child(odd) { background-color: #fafafa; }
+        .data-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
+        .data-table tbody tr:hover { background-color: #e9ecef; transition: 0.2s; }
+
         .status {
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: 500;
             font-size: 0.9em;
-            color: white;
-            white-space: nowrap;
             display: inline-block;
-        }
-
-        .status.approved { background-color: var(--success-color); }
-        .status.pending { background-color: var(--warning-color); color: var(--text-color); }
-        .status.rejected { background-color: var(--danger-color); }
-         button:disabled {
-                /* Prevents the button from being clickable */
-                pointer-events: none; 
-                
-                /* Makes the button look greyed out */
-                opacity: 0.5; 
-                
-                /* Changes the cursor to show it's not active */
-                cursor: not-allowed; 
-                }
-        /* Action Buttons */
-        .actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            background-color: transparent;
-            border: 1px solid;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .action-btn i {
-            font-size: 1rem;
-        }
-
-        .view-btn {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        .view-btn:hover { background-color: var(--primary-color); color: white; }
-
-        .edit-btn {
-            color: var(--warning-color);
-            border-color: var(--warning-color);
-        }
-        .edit-btn:hover { background-color: var(--warning-color); color: var(--text-color); }
-
-        .delete-btn {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-        .delete-btn:hover { background-color: var(--danger-color); color: white; }
-        .approve-btn {
-            color: var(--success-color);
-            border-color: var(--success-color);
-        }
-        .approve-btn:hover { background-color: var(--success-color); color: white; }
-
-        .reject-btn {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-        .reject-btn:hover { background-color: var(--danger-color); color: white; }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 0.5rem;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        .data-table {
-            min-width: 100%;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table-head {
-            background-color: #e5e7eb;
-            color: #4b5563;
-            text-transform: uppercase;
-            font-size: 0.875rem; /* 14px */
-            line-height: 1.25rem;
-        }
-
-        .table-head th {
-            padding: 0.75rem 1.5rem;
-            text-align: left;
-        }
-
-        .table-body tr {
-            border-bottom: 1px solid #e5e7eb;
-            color: #4b5563;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-        }
-
-        .table-body tr:hover {
-            background-color: #f3f4f6;
-        }
-
-        .table-body td {
-            padding: 0.75rem 1.5rem;
             white-space: nowrap;
         }
+        .status.approved { background-color: var(--success-color); color: white; }
+        .status.pending { background-color: var(--warning-color); color: var(--text-color); }
+        .status.rejected { background-color: var(--danger-color); color: white; }
+        .status.inactive { background-color: #6b7280; color: white; }
 
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 1.5rem;
-            gap: 1rem;
-        }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .action-btn { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent; transition: all 0.3s ease; font-weight: 500; background-color: transparent; }
+        .view-btn { border-color: var(--primary-color); color: var(--primary-color); }
+        .view-btn:hover { background-color: var(--primary-color); color: white; }
+        .edit-btn { border-color: var(--warning-color); color: var(--warning-color); }
+        .edit-btn:hover { background-color: var(--warning-color); color: var(--text-color); }
+        .delete-btn { border-color: var(--danger-color); color: var(--danger-color); }
+        .delete-btn:hover { background-color: var(--danger-color); color: white; }
 
-        .page-button {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-        }
+        /* Pagination */
+        .pagination-controls { display: flex; justify-content: center; align-items: center; margin-top: 1.5rem; gap: 1rem; }
+        .page-button { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; background-color: var(--primary-color); color: white; font-weight: 700; cursor: pointer; }
+        .page-button:hover:not(:disabled) { background-color: rgb(0, 115, 156); }
+        .page-button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .page-info { font-weight: 500; font-size: 1.125rem; color: #374151; }
 
-        .page-button:hover:not(:disabled) {
-            background-color: rgb(0, 115, 156);
-        }
-
-        .page-button:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            color: #374151;
-            font-size: 1.125rem; /* 18px */
-            font-weight: 500;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
-            .data-list-container {
-                padding: 20px;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .search-container {
-                max-width: 100%;
-            }
+            .data-list-container { padding: 20px; }
+            .header { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-        <div class="hamburger" id="hamburger">
-      <i class="fas fa-bars"></i>
-    </div>
+
+    <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
     <div class="overlay" id="overlay"></div>
     <aside class="side-menu" id="sideMenu"></aside>
 
+    <!-- =================== Students Table =================== -->
     <div class="data-list-container">
         <div class="header">
-            <h1>
-                SVYM Tech4Hope Students Data <i class="fas fa-file-alt"></i>
-            </h1>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search by Name or Course...">
-                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            <h1>SVYM Tech4Hope Students Data <i class="fas fa-file-alt"></i></h1>
+            <div class="button-group">
+                <button class="view-button" id="viewRequestsBtn">
+                    <i class="fas fa-bell"></i> View Requests
+                    <span class="badge" id="requestsCount">10</span>
+                </button>
+                <button class="add-button" id="addStudentsBtn"><i class="fas fa-plus"></i> Add Students</button>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
@@ -359,20 +198,72 @@
                     </tr>
                 </thead>
                 <tbody id="studentTableBody">
-                    <!-- Dynamic rows will be inserted here by JavaScript -->
+                    <!-- JS will populate rows -->
                 </tbody>
             </table>
         </div>
+
         <div id="pagination-controls" class="pagination-controls">
-            <button id="prevBtn" class="page-button">
-                Previous
-            </button>
+            <button id="prevBtn" class="page-button">Previous</button>
             <span id="page-info" class="page-info">Page 1 of 1</span>
-            <button id="nextBtn" class="page-button">
-                Next
-            </button>
+            <button id="nextBtn" class="page-button">Next</button>
         </div>
     </div>
-  <script src="/Javascripts/admin_viewstudentrequest.js"></script>
+
+    <!-- =================== Add Student Modal =================== -->
+    <div class="modal hide" id="studentFormModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header"><h2 class="form-subheading-main" style="text-align: center">Add Student Data</h2></div>
+            <div class="modal-body">
+                <form id="studentForm" novalidate>
+                    <!-- Add all fields as in admin_students.html -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== View Requests Modal =================== -->
+    <div class="modal hide" id="requestsModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header"><h2>Student Requests</h2></div>
+            <div class="modal-body table-responsive">
+                <table class="data-table" id="requestsTable">
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Student Name</th>
+                            <th>Course Requested</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JS will populate request rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== View/Edit Student Modal =================== -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header"><h2 id="modalStudentName"></h2></div>
+            <div class="modal-body">
+                <table class="student-details-table" id="studentDetailsTable"></table>
+            </div>
+        </div>
+    </div>
+
+    <script src="Javascripts/nav.js"></script>
+    <script src="Javascripts/auth.js"></script>
+    <script src="Javascripts/modal.js"></script>
+    <script src="Javascripts/admin_student.js"></script>
+    <script src="Javascripts/admin_addstudents.js"></script>
+    <script src="Javascripts/admin_requests.js"></script>
 </body>
 </html>
