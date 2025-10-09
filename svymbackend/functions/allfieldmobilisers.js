@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
       userId : { $regex: /^SVYMFM/ }
     }).lean();
 
-    console.log(fieldmobilisers);
+    // console.log(fieldmobilisers);
 
     return {
       statusCode: 200,

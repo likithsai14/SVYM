@@ -8,10 +8,7 @@ body {
 
 .main-content {
   background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   padding: 30px;
-  margin: 30px auto;
   max-width: 1200px;
   width: 90%;
 }
@@ -23,15 +20,15 @@ body {
   margin-bottom: 20px;
 }
 
-.header-row h2 {
-  color: #007bff;
+.header-row h1 {
+  color: #004080;
   margin: 0;
   font-size: 2rem;
 }
 
 .add-course-btn {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 8px;
@@ -42,15 +39,10 @@ body {
 }
 
 .add-course-btn:hover {
-  background-color: #0056b3;
+  background-color: #218838;
 }
 
-.search-row {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.search-row input {
+.search-input {
   width: 100%;
   max-width: 400px;
   padding: 10px 15px;

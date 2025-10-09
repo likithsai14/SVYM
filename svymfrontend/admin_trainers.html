@@ -74,7 +74,7 @@
       font-size: 2rem;
       font-weight: 700;
       margin: 0;
-      color: var(--primary-color);
+      color: #004080;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -106,7 +106,6 @@
 
     .search-container {
       display: flex;
-      width: 100%;
       background-color: #f1f3f5;
       border-radius: 8px;
       overflow: hidden;
@@ -350,14 +349,15 @@
 
   <div class="data-list-container">
     <div class="header">
-      <h1>SVYM Tech4Hope Trainer Data <i class="fas fa-file-alt"></i></h1>
-      <button class="add-button" id="openAddTrainerModal"><i class="fas fa-plus"></i> Add Trainer</button>
-    </div>
-
-    <div class="search-container">
+      <h1><i class="fas fa-chalkboard-teacher"></i>Trainer Management</h1>
+      <div class="search-container">
       <input type="text" id="searchInput" placeholder="Search by Name...">
       <button id="searchBtn"><i class="fas fa-search"></i></button>
     </div>
+      <button class="add-button" id="openAddTrainerModal"><i class="fas fa-plus"></i> Add Trainer</button>
+    </div>
+
+    
 
 
     <div class="table-responsive">

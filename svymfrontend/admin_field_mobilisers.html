@@ -17,9 +17,9 @@
   <!-- Inline CSS for Table & Pagination -->
   <style>
     body { font-family: 'Inter', sans-serif; background: aliceblue; margin: 0; color: #333; }
-    .data-list-container { max-width: 1200px; width: 100%; margin: 20px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 30px; }
+    .data-list-container { max-width: 1200px; width: 100%; background: #fff; padding: 30px; }
     .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
-    .header h1 { font-size:2rem; color:#007bff; display:flex; align-items:center; gap:10px; }
+    .header h1 { font-size:2rem; color:#004080; display:flex; align-items:center; gap:10px; margin: 0; }
     .search-container { display:flex; width:100%; max-width:300px; background:#f1f3f5; border-radius:8px; overflow:hidden; border:1px solid #e0e0e0; }
     #searchInput { flex:1; border:none; padding:10px; outline:none; }
     #searchBtn { background:#6c757d; color:#fff; border:none; padding:10px 15px; cursor:pointer; }
@@ -156,7 +156,7 @@
   <!-- Main Container -->
   <div class="data-list-container">
     <div class="header">
-      <h1>FieldMobiliser Data <i class="fas fa-file-alt"></i></h1>
+      <h1><i class="fas fa-people-carry"></i>FieldMobiliser Management</h1>
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search by Name...">
         <button id="searchBtn"><i class="fas fa-search"></i></button>

@@ -49,11 +49,12 @@
         .data-list-container {
             width: 100%;
             max-width: 1200px;
+            height: 100vh;
+            max-height: 100vh;
             background-color: var(--white-bg);
             border-radius: 12px;
             box-shadow: var(--box-shadow);
             padding: 30px;
-            margin-bottom: 30px;
         }
 
         .header {
@@ -61,9 +62,6 @@
           justify-content: space-between;
           align-items: center;
           background-color: #f8faff;
-          padding: 15px 25px;
-          border-radius: 10px;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
           margin-bottom: 20px;
         }
 
@@ -73,6 +71,7 @@
           display: flex;
           align-items: center;
           gap: 10px;
+          margin: 0;
         }
 
         .search-box {
@@ -86,13 +85,14 @@
 
         .search-box input {
           padding: 8px 10px;
+          font-size: 1rem;
           border: none;
           outline: none;
           width: 180px;
         }
 
         .search-btn {
-          background-color: #007bff;
+          background-color: var(--secondary-color);
           color: white;
           border: none;
           padding: 8px 10px;
