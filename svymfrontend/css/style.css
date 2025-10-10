@@ -20,12 +20,10 @@ body {
 .container {
     background-color: #ffffff;
     padding: 12.5px 30px; /* Increased padding */
-    border-radius: 12px; /* More rounded corners */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
     width: 100%;
     max-width: 500px; /*Maximum width for larger screens */
     box-sizing: border-box;
-    margin: auto; /* Center the container */
 }
 
 /* Full page layout with 2 columns */
@@ -85,7 +83,6 @@ h1 {
     text-align: center;
     color: #007bff; /* Primary color */
     margin-bottom: 10px;
-    font-size: 1em; /* Larger title */
     letter-spacing: 0.5px;
 }
 

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVYM Tech4Hope - Admin Fee Management</title>
+
+        <!-- CSS Files -->
+    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/admin_dashboard.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        /* ===================== Combined Styles ===================== */
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --success-hover: #218838;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --warning-color: #ffc107;
+            --warning-hover: #e0a800;
+            --white-bg: #ffffff;
+            --text-color: #333333;
+            --subtle-text: #666666;
+            --border-color: #e9ecef;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: aliceblue;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .data-list-container {
+            width: 100%;
+            max-width: 1300px;
+            height: 100vh;
+            max-height: 100vh;
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #f8faff;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+          color: #004080;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin: 0;
+        }
+
+        .search-box {
+          display: flex;
+          align-items: center;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          overflow: hidden;
+          margin-top: 10px;
+        }
+
+        .search-box input {
+          padding: 8px 10px;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+          width: 180px;
+        }
+
+        .search-btn {
+          background-color: var(--secondary-color);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          cursor: pointer;
+        }
+
+        .search-btn:hover {
+          background-color: #0056b3;
+        }
+
+        .view-type-select {
+            margin-left: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .summary-boxes {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .summary-box {
+            background-color: #f0f8ff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* First box */
+        .summary-boxes .summary-box:first-child {
+        background-color: #1e90ff;
+        }
+
+        /* Second box */
+        .summary-boxes .summary-box:nth-child(2) {
+        background-color: #28a745;
+        }
+
+        /* Third box */
+        .summary-boxes .summary-box:nth-child(3) {
+        background-color: #ff4500;
+        }
+
+
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 20px; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table thead { background-color: #e9f5ff; }
+
+        .data-table tbody tr:nth-child(odd) { background-color: #fafafa; }
+        .data-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
+        .data-table tbody tr:hover { background-color: #e9ecef; transition: 0.2s; }
+
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .action-btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent; transition: all 0.3s ease; font-weight: 500; background-color: transparent; }
+        .view-btn { border-color: var(--primary-color); color: var(--primary-color); }
+        .view-btn:hover { background-color: var(--primary-color); color: white; }
+        .pay-btn { border-color: var(--success-color); color: var(--success-color); }
+        .pay-btn:hover { background-color: var(--success-color); color: white; }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.hide { display: none; }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 1200px;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .modal-content th, .modal-content td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .pagination-controls { display:flex; justify-content:center; align-items:center; margin-top:20px; gap:10px; }
+        .page-button { background:#007bff; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:500; }
+        .page-button:hover:not(:disabled) { background:#0056b3; }
+        .page-button:disabled { background:#9ca3af; cursor:not-allowed; }
+        .page-info { font-weight:500; color:#374151; }
+
+        /* Overlay covers the whole screen */
+        .spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(5px); /* blur background */
+        background: rgba(255, 255, 255, 0.3); /* translucent layer */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        }
+
+        /* Spinner container (centered) */
+        .spinner-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        }
+
+        /* Spinner itself */
+        .spinner {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid black;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px;
+        }
+
+        .spinner-text {
+        font-size: 16px;
+        font-weight: 500;
+        color: black;
+        text-align: center;
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+
+        /* Hide by default */
+        .hide {
+        display: none !important;
+        }
+
+        .course-modal-heading{
+            margin: 0;
+            text-align: center;
+        }
+        .course-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            transition: 0.3s ease-in-out;
+            }
+
+            .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+            }
+
+            .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            }
+
+            .course-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2a3d66;
+            }
+
+            .course-header .course-id {
+            font-size: 0.9rem;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            }
+
+            .course-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px 20px;
+            }
+
+            .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px 12px;
+            transition: background 0.2s;
+            }
+
+            .info-item:hover {
+            background: #eef4ff;
+            }
+
+            .info-item i {
+            font-size: 1.2rem;
+            color: #1565c0;
+            }
+
+            .label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin: 0;
+            }
+
+            .value {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #1f2937;
+            }
+
+            .value.paid {
+            color: #16a34a;
+            }
+
+            .value.dues {
+            color: #dc2626;
+            }
+
+            @media (max-width: 900px) {
+                .course-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                }
+
+                @media (max-width: 600px) {
+                .course-grid {
+                    grid-template-columns: 1fr;
+                }
+                }
+
+    </style>
+</head>
+<body>
+    <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+    <div class="overlay" id="overlay"></div>
+    <aside class="side-menu" id="sideMenu"></aside>
+
+    <div class="data-list-container">
+        <div class="header">
+            <h1><i class="fas fa-money-bill-wave"></i> Fee Management</h1>
+                <div class="search-box">
+                    <input type="text" id="filterInput" placeholder="Search by ID, Name, Course..." />
+                    <button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+
+                <select id="viewType" class="view-type-select">
+                    <option value="student">Display by Students</option>
+                    <option value="course">Display by Courses</option>
+                    <option value="transaction">Display by Transactions</option>
+                </select>
+            
+        </div>
+
+        <div class="summary-boxes">
+            <div class="summary-box" id="totalAmountBox">Total: 0</div>
+            <div class="summary-box" id="totalPaidBox">Paid: 0</div>
+            <div class="summary-box" id="totalDuesBox">Dues: 0</div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" id="feeTable">
+                <thead></thead>
+                <tbody id="feeTableBody"></tbody>
+            </table>
+        </div>
+        <div id="paginationControls" class="pagination-controls">
+            <button class="page-button" id="prevPageBtn">Prev</button>
+            <span class="page-info" id="pageInfo">Page 1</span>
+            <button class="page-button" id="nextPageBtn">Next</button>
+        </div>
+    </div>
+
+    <!-- View Transactions Modal -->
+    <div class="modal hide" id="viewTransactionsModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="course-modal-heading"> Course Transactions</h2>
+            <div class="table-responsive">
+                <div id="courseInfoBox" class="course-info-box"></div>
+                <table id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Transaction ID</th> 
+                            <th>Amount</th>
+                            <th>Payment Method</th>
+                            <th>Paid To</th>
+                            <th>Transaction Date</th>
+                            <th>Amount Paid</th>
+                            <th>Dues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Fee Modal -->
+    <div class="modal hide" id="studentFeeModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Student Fee Details</h2>
+
+            <div class="summary-boxes">
+                <div class="summary-box" id="totalFees">INR 0</div>
+                <div class="summary-box" id="completedFees">INR 0</div>
+                <div class="summary-box" id="pendingFees">INR 0</div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table" id="paymentHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Course</th>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                            <th>Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentHistoryTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="spinnerOverlay" class="spinner-overlay hide">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <div class="spinner-text">Fetching fee data...</div>
+        </div>
+    </div>
+
+
+    <script src="Javascripts/nav.js"></script>
+    <script src="Javascripts/auth.js"></script>
+    <script src="Javascripts/modal.js"></script>
+    <script src="Javascripts/admin_fee_details.js" defer></script>
+</body>
+</html>
