@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-const uri =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://nagendrababutorlikonda_db_user:8NvWN2yYEdkSXpHE@tech4hopecluster.y7mlwdk.mongodb.net/tech4hope_db?retryWrites=true&w=majority&appName=tech4hopeCluster';
+const uri = process.env.MONGODB_URI;
 
 let cached = global.mongoose;
 if (!cached) {

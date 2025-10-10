@@ -93,10 +93,6 @@ h2, h3 {
     font-size: 0.8em;
 }
 
-.form-group {
-    margin-bottom: 20px; /* More space between form groups */
-}
-
 label {
     display: block;
     margin-bottom: 4px; /* More space below labels */
@@ -187,6 +183,36 @@ p a:hover {
     padding-top: 25px;
     border-top: 1px solid #eee;
 }
+
+.form-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px; /* Reduced from 10px */
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 3px; /* Reduced from 5px */
+  font-size: 14px; /* Reduced from 16px */
+}
+
+.form-group input,
+.form-group select {
+  padding: 6px 8px; /* Reduced from 10px */
+  border: 1px solid #ccc;
+  border-radius: 5px; /* Slightly smaller */
+  font-size: 13px; /* Reduced from 14px */
+}
+
 
 /* Responsive adjustments for smaller screens */
 @media (max-width: 600px) {
