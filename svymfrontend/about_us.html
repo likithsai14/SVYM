@@ -1,71 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVYM Tech4Hope - About Us</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <script src="Javascripts/auth.js"></script>
-    <style>
-        /* Specific styles for details pages (can be same as fee_details.html's style block) */
-        .content-section {
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-top: 20px;
-        }
-        .content-section h3 {
-            color: #007bff;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-        .content-section p, .content-section ul {
-            font-size: 1em;
-            line-height: 1.6;
-            color: #444;
-        }
-        .content-section ul {
-            list-style: disc;
-            margin-left: 20px;
-        }
-        .content-section table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .content-section th, .content-section td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        .content-section th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-            font-size: 1.1em;
-            color: #007bff;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVYM Tech4Hope - About Us</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="Javascripts/auth.js"></script>
+  <script src="./Javascripts/nav.js" defer></script>
+  <style>
+    /* Keep container styling consistent */
+    .container {
+      max-width: 100vw;
+    }
+
+    .content-section {
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 100vw;
+      margin: 20px 30px;
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0056b3;
+      margin-top: 30px;
+      font-size: 2rem;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.7em;
+    }
+
+    .content-section p {
+      font-size: 1.05em;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 15px;
+    }
+
+    /* --- Cards Section --- */
+    .info-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background-color: #f9fbfd;
+      border-radius: 12px;
+      padding: 25px;
+      flex: 1 1 250px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .card i {
+      font-size: 2rem;
+      color: #007bff;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      color: #222;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* --- Team Section --- */
+    .team-section {
+      margin-top: 40px;
+    }
+
+    .team-heading {
+      color: #007bff;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+
+    .team-members {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .member {
+      background-color: #f5f9ff;
+      border-radius: 12px;
+      padding: 20px;
+      width: 180px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      transition: 0.3s ease;
+    }
+
+    .member:hover {
+      transform: translateY(-5px);
+    }
+
+    .member i {
+      font-size: 2.5rem;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .member h4 {
+      font-size: 1rem;
+      color: #222;
+      margin-bottom: 5px;
+    }
+
+    .member p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media (max-width: 700px) {
+      .content-section {
+        width: 90%;
+      }
+      .info-cards {
+        flex-direction: column;
+        align-items: center;
+      }
+      .team-members {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>SVYM Tech4Hope</h1>
-        <h2>About Us</h2>
-        <div class="content-section">
-            <p>SVYM Tech4hope is a non-profit initiative dedicated to empowering individuals through skill development and vocational training. Our mission is to provide accessible, high-quality education that leads to self-employment and sustainable livelihoods.</p>
-            <p>We believe in creating opportunities for everyone, especially those from underserved communities, to build a brighter future for themselves and their families.</p>
-            <p>Our courses are designed to be practical, industry-relevant, and delivered by experienced instructors.</p>
+  <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+  <div class="overlay" id="overlay"></div>
+  <aside class="side-menu" id="sideMenu"></aside>
+
+  <div class="container">
+    <h1><i class="fas fa-hand-holding-heart"></i> SVYM Tech4Hope</h1>
+    <h2>About Us</h2>
+
+    <div class="content-section">
+      <p><strong>SVYM Tech4Hope</strong> is a non-profit initiative under the Swami Vivekananda Youth Movement. We are dedicated to empowering individuals through skill development, vocational training, and digital literacy programs.</p>
+
+      <p>Our mission is to create accessible, high-quality education that helps learners build sustainable livelihoods. We believe that knowledge and opportunity can change lives — and we aim to make that transformation a reality for everyone, especially underserved communities.</p>
+
+      <!-- Cards Section -->
+      <div class="info-cards">
+        <div class="card">
+          <i class="fas fa-bullseye"></i>
+          <h3>Our Mission</h3>
+          <p>To empower individuals through education, digital learning, and life skills that promote self-reliance and community growth.</p>
         </div>
-        <p><a href="candidate_dashboard.html" class="back-link">Back to Dashboard</a></p>
+
+        <div class="card">
+          <i class="fas fa-lightbulb"></i>
+          <h3>Our Vision</h3>
+          <p>To build a society where everyone has equal access to opportunities, technology, and tools to transform their future.</p>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-hands-helping"></i>
+          <h3>Our Values</h3>
+          <p>Integrity, inclusivity, compassion, and innovation drive every initiative we undertake at SVYM Tech4Hope.</p>
+        </div>
+      </div>
+
+      <!-- Team Section -->
+      <div class="team-section">
+        <h3 class="team-heading"><i class="fas fa-users"></i> Meet Our Team</h3>
+        <div class="team-members">
+          <div class="member">
+            <i class="fas fa-user-tie"></i>
+            <h4>Dr. R. Balasubramaniam</h4>
+            <p>Founder & Visionary Leader</p>
+          </div>
+          <div class="member">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <h4>Priya Sharma</h4>
+            <p>Training Coordinator</p>
+          </div>
+          <div class="member">
+            <i class="fas fa-laptop-code"></i>
+            <h4>Ravi Kumar</h4>
+            <p>Technical Mentor</p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </body>
 </html>

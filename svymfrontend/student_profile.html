@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVYM Tech4Hope - Profile</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="Javascripts/auth.js"></script>
+  <script src="./Javascripts/nav.js" defer></script>
+  <style>
+    h1 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header .student-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-card {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 25px 20px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .section-title {
+      font-size: 1.2em;
+      color: #007bff;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e0f2f7;
+      padding-bottom: 5px;
+    }
+    .section-title i {
+      margin-right: 10px;
+      color: #007bff;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .detail-item {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-item label {
+      font-weight: 600;
+      color: #007bff;
+      font-size: 0.9em;
+      margin-bottom: 3px;
+    }
+
+    .detail-item span {
+      color: #333;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    .button-group {
+      display: flex;
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .button-group button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      margin: 10px;
+      width: auto;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .button-group button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+  <div class="overlay" id="overlay"></div>
+  <aside class="side-menu" id="sideMenu"></aside>
+
+  <div class="container">
+    <div class="header">
+        <div class="student-name">
+        <i class="fas fa-user-circle"></i>
+        <span id="candidateName">John Doe</span>
+        </div>
+
+        <div class="button-group">
+        <button id="editProfile"><i class="fas fa-edit"></i> Edit Profile</button>
+        <button id="changePassword"><i class="fas fa-key"></i> Change Password</button>
+        </div>
+    </div>
+    <!-- Personal Details -->
+    <div class="profile-card">
+      <div class="section-title"><i class="fas fa-id-card"></i> Personal Details</div>
+      <div class="profile-details">
+        <div class="detail-item">
+          <label>Father/Husband Name</label>
+          <span id="fatherHusbandName">Bob Doe</span>
+        </div>
+        <div class="detail-item">
+          <label>Date of Birth</label>
+          <span id="dob">1999-07-10</span>
+        </div>
+        <div class="detail-item">
+          <label>Age</label>
+          <span id="age">25</span>
+        </div>
+        <div class="detail-item">
+          <label>Gender</label>
+          <span id="gender">Male</span>
+        </div>
+        <div class="detail-item">
+          <label>Tribal</label>
+          <span id="tribal">No</span>
+        </div>
+        <div class="detail-item">
+          <label>PWD (Disability)</label>
+          <span id="pwd">No</span>
+        </div>
+        <div class="detail-item">
+          <label>Caste</label>
+          <span id="caste">BC</span>
+        </div>
+        <div class="detail-item">
+          <label>Qualification</label>
+          <span id="qualification">B.Tech (CSE)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Details -->
+    <div class="profile-card">
+      <div class="section-title"><i class="fas fa-phone"></i> Contact Information</div>
+      <div class="profile-details">
+        <div class="detail-item">
+          <label>Email</label>
+          <span id="email">johndoe@example.com</span>
+        </div>
+        <div class="detail-item">
+          <label>Candidate Phone</label>
+          <span id="candidatePhone">+91 9876543210</span>
+        </div>
+        <div class="detail-item">
+          <label>Parent Phone</label>
+          <span id="parentPhone">+91 9123456789</span>
+        </div>
+        <div class="detail-item">
+          <label>Aadhar Number</label>
+          <span id="aadharNumber">1234-5678-9012</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address & Other Info -->
+    <div class="profile-card">
+      <div class="section-title"><i class="fas fa-map-marker-alt"></i> Address & Additional Info</div>
+      <div class="profile-details">
+        <div class="detail-item">
+          <label>Village</label>
+          <span id="villageName">Kenchanahalli</span>
+        </div>
+        <div class="detail-item">
+          <label>Taluk</label>
+          <span id="talukName">Hunsur</span>
+        </div>
+        <div class="detail-item">
+          <label>District</label>
+          <span id="districtName">Mysuru</span>
+        </div>
+        <div class="detail-item">
+          <label>Family Members</label>
+          <span id="familyMembers">5</span>
+        </div>
+        <div class="detail-item">
+          <label>Supported Project</label>
+          <span id="supportedProject">Tech4Hope Youth Training</span>
+        </div>
+        <div class="detail-item">
+          <label>Referral Source</label>
+          <span id="referralSource">Community Volunteer</span>
+        </div>
+        <div class="detail-item">
+          <label>Staff Name</label>
+          <span id="staffName">Anita R</span>
+        </div>
+        <div class="detail-item">
+          <label>Field Mobiliser</label>
+          <span id="fieldMobiliserName">Rahul K</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="Javascripts/student_profile.js" defer></script>
+</body>
+</html>

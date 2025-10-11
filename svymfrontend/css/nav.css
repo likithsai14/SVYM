@@ -198,7 +198,6 @@ body {
   margin: 0;
   background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
   color: #333;
-  overflow: hidden;
 }
 
 #message {
