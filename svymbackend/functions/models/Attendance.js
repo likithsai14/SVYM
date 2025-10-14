@@ -14,4 +14,8 @@ const attendanceSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
+// Indexes for common queries and uniqueness to avoid duplicate session rows
+attendanceSchema.index({ trainerId: 1, courseId: 1, attendanceDate: 1 }, { unique: true });
+attendanceSchema.index({ 'students.studentId': 1 });
+
 module.exports = mongoose.models.Attendance || mongoose.model("Attendance", attendanceSchema);

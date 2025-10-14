@@ -16,10 +16,14 @@ module.exports.handler = async (event) => {
 
       await connectDB();
 
-      // Save or update (upsert)
+      // Normalize attendanceDate to UTC date-only (midnight) to avoid duplicates
+      const parsedDate = new Date(attendanceDate);
+      parsedDate.setUTCHours(0, 0, 0, 0);
+
+      // Save or update (upsert) using normalized date
       const record = await Attendance.findOneAndUpdate(
-        { trainerId, courseId, attendanceDate },
-        { trainerId, courseId, attendanceDate, students },
+        { trainerId, courseId, attendanceDate: parsedDate },
+        { trainerId, courseId, attendanceDate: parsedDate, students },
         { upsert: true, new: true }
       );
 
@@ -31,7 +35,7 @@ module.exports.handler = async (event) => {
 
     if (event.httpMethod === "GET") {
       // Fetch existing attendance
-      const { trainerId, courseId, attendanceDate } = event.queryStringParameters;
+      const { trainerId, courseId, attendanceDate } = event.queryStringParameters || {};
 
       if (!trainerId || !courseId || !attendanceDate) {
         return {
@@ -42,7 +46,11 @@ module.exports.handler = async (event) => {
 
       await connectDB();
 
-      const record = await Attendance.findOne({ trainerId, courseId, attendanceDate });
+      // Normalize query attendanceDate
+      const parsedDate = new Date(attendanceDate);
+      parsedDate.setUTCHours(0, 0, 0, 0);
+
+      const record = await Attendance.findOne({ trainerId, courseId, attendanceDate: parsedDate });
       // console.log("record for : ", courseId, attendanceDate, record);
       return {
         statusCode: 200,

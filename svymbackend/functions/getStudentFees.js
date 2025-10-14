@@ -36,6 +36,7 @@ exports.handler = async (event) => {
 
         return {
           id: enrollment.enrollmentId,
+          courseId: enrollment.courseId,
           courseName: enrollment.courseName, // assuming this field exists in StudentEnrollment
           totalAmount: enrollment.totalPrice,
           payments,
