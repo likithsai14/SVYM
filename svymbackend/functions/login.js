@@ -151,7 +151,7 @@ exports.handler = async (event) => {
         statusCode: 200,
         body: JSON.stringify({
           message: "Admin login successful!",
-          user: { userId: adminDoc.username, role: "admin", username : adminDoc.username },
+          user: { userId: adminDoc.username, role: "admin", username : "Admin" },
         }),
       };
     }

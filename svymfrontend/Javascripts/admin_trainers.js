@@ -106,16 +106,15 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="modal-content">
         <button class="close-btn">&times;</button>
         <h2 style="text-align:center; margin-bottom:15px;">Trainer Details</h2>
-        <table style="width:100%; border-collapse:collapse;">
+        <table id="fieldMobiliserDetailsTable" style="width:100%; border-collapse:collapse;">
           <tbody>
-            <tr><td><b>Trainer ID</b></td><td>${trainer.trainerId}</td></tr>
-            <tr><td><b>Name</b></td><td>${trainer.name}</td></tr>
-            <tr><td><b>Email</b></td><td>${trainer.email}</td></tr>
-            <tr><td><b>Expertise</b></td><td>${trainer.expertise}</td></tr>
-            <tr><td><b>Phone</b></td><td>${trainer.mobile}</td></tr>
-            <tr><td><b>Security Question</b></td><td>${trainer.securityQuestion}</td></tr>
-            <tr><td><b>Security Answer</b></td><td>${trainer.securityAnswer}</td></tr>
-            <tr><td><b>Status</b></td><td>${trainer.status}</td></tr>
+            <tr><td><strong>Trainer ID</strong></td><td>${trainer.trainerId || '-'}</td></tr>
+            <tr><td><strong>Name</strong></td><td>${trainer.name || '-'}</td></tr>
+            <tr><td><strong>Email</strong></td><td>${trainer.email || '-'}</td></tr>
+            <tr><td><strong>Expertise</strong></td><td>${trainer.expertise || '-'}</td></tr>
+            <tr><td><strong>Phone</strong></td><td>${trainer.mobile || '-'}</td></tr>
+            <tr><td><strong>Status</strong></td><td>${trainer.status || '-'}</td></tr>
+            <tr><td><strong>Created At</strong></td><td>${trainer.createdAt ? new Date(trainer.createdAt).toLocaleString() : '-'}</td></tr>
           </tbody>
         </table>
       </div>
@@ -282,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <td>${trainer.trainerId}</td>
       <td>${trainer.name || "-"}</td>
       <td>${trainer.expertise || "-"}</td>
-      <td><span class="status ${trainer.status.toLowerCase()}">${trainer.status}</span></td>
+      <td><span class="status ${trainer.status.toLowerCase()}">${formatStatusDisplay(trainer.status)}</span></td>
       <td class="actions">
         <button class="action-btn view-btn view-trainer-btn">
           <i class="fas fa-eye"></i> View
@@ -317,6 +316,14 @@ document.addEventListener("DOMContentLoaded", function () {
   updatePaginationInfo();
 }
 
+function formatStatusDisplay(status) {
+    if (!status && status !== 0) return '-';
+    const s = String(status).toLowerCase();
+    if (s === 'active') return 'Active';
+    if (s === 'inactive') return 'Inactive';
+    // fallback: capitalize first letter
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 
   //
 

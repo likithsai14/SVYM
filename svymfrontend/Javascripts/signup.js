@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const signupForm = document.getElementById('signupForm');
+    // form in HTML has id="studentForm"
+    const signupForm = document.getElementById('studentForm');
     const messageDiv = document.getElementById('message');
     const generatedUserIdDiv = document.getElementById('generatedUserId');
 

@@ -26,7 +26,7 @@ fetch(url)
     if (userInfo && userInfo.username) {
       const usernameDisplay = document.getElementById("usernameDisplay");
       if (usernameDisplay) {
-        usernameDisplay.textContent = "Welcome, " + userInfo.username;
+        usernameDisplay.textContent = "Hi, " + userInfo.username;
       }
     }
 

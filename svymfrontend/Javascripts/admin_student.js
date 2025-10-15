@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <td>${student.userId}</td>
                 <td>${student.candidateName}</td>
                 <td>${student.email || '-'}</td>
-                <td><span class="status ${student.status}">${student.status}</span></td>
+                <td><span class="status ${student.status}">${formatStatusDisplay(student.status)}</span></td>
                 <td>
                     <button class="action-btn view-btn" data-id="${student.userId}"><i class="fas fa-eye"></i> View</button>
                     <button class="action-btn edit-btn" data-id="${student.userId}"><i class="fas fa-pen"></i> Edit</button>
@@ -478,6 +478,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         const totalPages = Math.ceil(studentsData.length / rowsPerPage) || 1;
         if (currentPage < totalPages) { currentPage++; renderStudentsTable(); }
     });
+
+    function formatStatusDisplay(status) {
+    if (!status && status !== 0) return '-';
+    const s = String(status).toLowerCase();
+    if (s === 'approved') return 'Approved';
+    if (s === 'rejected') return 'Rejected';
+    if (s === 'pending') return 'Pending';
+    // fallback: capitalize first letter
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 
     // ------------------------------
     // Requests Modal

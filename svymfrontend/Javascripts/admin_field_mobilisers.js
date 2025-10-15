@@ -75,6 +75,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // Helper: display status in Title Case without changing stored value
+  function formatStatusDisplay(status) {
+    if (!status && status !== 0) return '-';
+    const s = String(status).toLowerCase();
+    if (s === 'active') return 'Active';
+    if (s === 'inactive') return 'Inactive';
+    // fallback: capitalize first letter
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
   function renderTable() {
     tableBody.innerHTML = "";
     const start = (currentPage - 1) * rowsPerPage;
@@ -92,18 +102,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${data.id}</td>
         <td>${data.name}</td>
         <td>${data.email}</td>
-        <td>${data.supportedProject}</td>
-        <td><span class="status ${data.status.toLowerCase()}">${data.status}</span></td>
-        <td>
-          <button class="view-btn action-btn" data-id="${data.id}">
-            <i class="fas fa-eye"></i> View
-          </button>
+  <td><span class="status ${String(data.status || '').toLowerCase()}">${formatStatusDisplay(data.status)}</span></td>
+        <td class="actions">
+          <button class="action-btn view-btn" data-id="${data.id}"><i class="fas fa-eye"></i> View</button>
+          <button class="action-btn edit-btn" data-id="${data.id}"><i class="fas fa-pen"></i> Edit</button>
+          ${data.status && data.status.toLowerCase() === 'active'
+            ? `<button class="action-btn deactivate-btn" data-id="${data.id}"><i class="fas fa-toggle-off"></i> Deactivate</button>`
+            : `<button class="action-btn activate-btn" data-id="${data.id}"><i class="fas fa-toggle-on"></i> Activate</button>`
+          }
         </td>
       `;
       tableBody.appendChild(row);
     });
 
-    // Attach click events to view buttons
+    // Attach click events to action buttons
     document.querySelectorAll(".view-btn").forEach(btn => {
       btn.addEventListener("click", e => {
         const id = e.currentTarget.dataset.id;
@@ -113,6 +125,47 @@ document.addEventListener("DOMContentLoaded", async () => {
           viewFieldModal.style.display = "flex";
         }
       });
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const id = e.currentTarget.dataset.id;
+        const selected = fieldmobilisersData.find(d => d.id === id);
+        if (!selected) return;
+
+        console.log('[admin_field_mobilisers] Edit clicked for userId:', id);
+
+        // Prefill add modal form for edit
+        const modal = document.getElementById('fieldMobilizerFormModal');
+        const form = document.getElementById('fieldMobilizerForm');
+        if (form) {
+          form.querySelector('#FieldMobiliserName').value = selected.name || '';
+          form.querySelector('#FieldMobiliserEmailID').value = selected.email || '';
+          form.querySelector('#FieldMobiliserMobileNo').value = selected.mobile || '';
+          form.querySelector('#FieldMobiliserRegion').value = selected.region || '';
+          form.querySelector('#FieldMobiliserSupportedProject').value = selected.supportedProject || '';
+          // store userId in the hidden field and update modal UI
+          const userIdInput = form.querySelector('#FieldMobiliserUserId');
+          if (userIdInput) userIdInput.value = selected.id;
+          console.log('[admin_field_mobilisers] Set #FieldMobiliserUserId to', selected.id);
+          const generated = document.getElementById('generatedUserId');
+          if (generated) { generated.style.display = 'block'; generated.textContent = `Editing User: ${selected.id}`; }
+          // change modal title and submit button text
+          const modalTitle = modal.querySelector('h2');
+          if (modalTitle) modalTitle.textContent = 'Edit FieldMobiliser Data';
+          const submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) submitBtn.textContent = 'Submit';
+        }
+        if (modal) modal.classList.add('show');
+      });
+    });
+
+    document.querySelectorAll('.deactivate-btn').forEach(btn => {
+      btn.addEventListener('click', () => updateFieldMobiliserStatus(btn.dataset.id, 'inActive'));
+    });
+
+    document.querySelectorAll('.activate-btn').forEach(btn => {
+      btn.addEventListener('click', () => updateFieldMobiliserStatus(btn.dataset.id, 'active'));
     });
   }
 
@@ -125,7 +178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <tr><td><strong>Region</strong></td><td>${data.region}</td></tr>
       <tr><td><strong>Supported Project</strong></td><td>${data.supportedProject}</td></tr>
       <tr><td><strong>Added By</strong></td><td>${data.addedBy}</td></tr>
-      <tr><td><strong>Status</strong></td><td>${data.status}</td></tr>
+  <tr><td><strong>Status</strong></td><td>${formatStatusDisplay(data.status)}</td></tr>
       <tr><td><strong>Created At</strong></td><td>${new Date(data.createdAt).toLocaleString()}</td></tr>
     `;
   }
@@ -179,6 +232,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     modal.classList.add("show");
+    // Ensure Add mode UI
+    const form = document.getElementById('fieldMobilizerForm');
+    if (form) {
+      const userIdInput = form.querySelector('#FieldMobiliserUserId');
+      if (userIdInput) userIdInput.value = '';
+      const modalTitle = modal.querySelector('h2');
+      if (modalTitle) modalTitle.textContent = 'Add FieldMobiliser Data';
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.textContent = 'Add Field Mobiliser';
+      // also clear inputs
+      form.querySelectorAll('input').forEach(inp => { if (inp.type !== 'hidden') inp.value = ''; });
+      if (generatedUserIdDiv) generatedUserIdDiv.style.display = 'none';
+    }
   });
   closeModalBtn.addEventListener("click", () => modal.classList.remove("show"));
   overlay.addEventListener("click", () => {
@@ -241,27 +307,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!isValid) { showMessage("error", "Please correct the errors in the form."); return; }
 
     try {
-      const response = await fetch("/.netlify/functions/fieldmobilisersignup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        showMessage("success", result.message || "Sign up successful!");
-        generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
-        generatedUserIdDiv.style.display = "block";
-        signupForm.reset();
-        adminApprovalMessageDiv.style.display = "block";
-        fetchData(); // refresh table
+      const userIdInput = signupForm.querySelector('#FieldMobiliserUserId');
+      let response, result;
+      if (userIdInput && userIdInput.value.trim() !== '') {
+        // Edit flow
+        console.log('[admin_field_mobilisers] Submit handler detected edit mode. FieldMobiliserUserId=', userIdInput.value);
+        data.userId = userIdInput.value.trim();
+        response = await fetch('/.netlify/functions/editFieldMobiliser', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        result = await response.json();
+        if (response.ok) {
+          showMessage('success', result.message || 'Update successful!');
+          signupForm.reset();
+          // hide edit marker
+          userIdInput.value = '';
+          if (generatedUserIdDiv) generatedUserIdDiv.style.display = 'none';
+          // refresh table
+          fetchData();
+        } else {
+          showMessage('error', result.message || 'Update failed. Please try again.');
+        }
       } else {
-        showMessage("error", result.message || "Failed to sign up.");
+        // Create flow
+        console.log('[admin_field_mobilisers] Submit handler in create mode (no FieldMobiliserUserId)');
+        response = await fetch('/.netlify/functions/fieldmobilisersignup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        result = await response.json();
+        if (response.ok) {
+          showMessage('success', result.message || 'Sign up successful!');
+          generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
+          generatedUserIdDiv.style.display = 'block';
+          signupForm.reset();
+          adminApprovalMessageDiv.style.display = 'block';
+          fetchData(); // refresh table
+        } else {
+          showMessage('error', result.message || 'Failed to sign up.');
+        }
       }
     } catch (error) {
       console.error(error);
-      showMessage("error", "An error occurred while submitting.");
+      showMessage('error', 'An error occurred while submitting.');
     }
   });
 
@@ -275,4 +366,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initial fetch
   // -------------------------
   fetchData();
+
+  // expose for other scripts to call after edits
+  window.fetchFieldMobilisers = fetchData;
+
+  // -------------------------
+  // Update Field Mobiliser Status (activate / deactivate)
+  // -------------------------
+  async function updateFieldMobiliserStatus(userId, newStatus) {
+    const actionText = newStatus.toLowerCase() === 'active' ? 'activate' : 'deactivate';
+    if (!confirm(`Are you sure you want to ${actionText} field mobiliser ${userId}?`)) return;
+
+    try {
+      const response = await fetch('/.netlify/functions/updateFieldMobiliserStatus', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, status: newStatus })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to update status');
+
+      // Update local dataset and re-render
+      const fm = fieldmobilisersData.find(f => f.id === userId);
+      if (fm) fm.status = result.status || newStatus;
+      renderTable();
+      renderPagination();
+    } catch (error) {
+      console.error('Error updating field mobiliser status:', error);
+      alert('Failed to update status.');
+    }
+  }
 });

@@ -119,31 +119,55 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         console.log("In frontend add field mobil file ", data);
         try {
-            const response = await fetch('/.netlify/functions/fieldmobilisersignup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                showMessage('success', result.message || 'Sign up successful!');
-                generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
-                generatedUserIdDiv.style.display = 'block';
-                signupForm.reset();
-
-                let v = document.getElementById('adminapprovalMessage');
-                if (v) {
-                    v.style.display = 'block';
-                    v.className = 'message success';
-                    v.textContent = 'Your request has been sent for admin approval. You will be notified once approved.';
+            const userIdInput = document.getElementById('FieldMobiliserUserId');
+            let response, result;
+            if (userIdInput && userIdInput.value.trim() !== '') {
+                console.log('[admin_addfieldmobiliser] Submit handler detected edit mode. FieldMobiliserUserId=', userIdInput.value);
+                // Edit flow
+                data.userId = userIdInput.value.trim();
+                response = await fetch('/.netlify/functions/editFieldMobiliser', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                result = await response.json();
+                if (response.ok) {
+                    showMessage('success', result.message || 'Update successful!');
+                    signupForm.reset();
+                    // hide edit marker
+                    userIdInput.value = '';
+                    if (generatedUserIdDiv) generatedUserIdDiv.style.display = 'none';
+                    // refresh table if available
+                    if (window.fetchFieldMobilisers) window.fetchFieldMobilisers();
+                } else {
+                    showMessage('error', result.message || 'Update failed. Please try again.');
                 }
             } else {
-                showMessage('error', result.message || 'Sign up failed. Please try again.');
+                console.log('[admin_addfieldmobiliser] Submit handler in create mode (no FieldMobiliserUserId)');
+                // Create flow (unchanged)
+                response = await fetch('/.netlify/functions/fieldmobilisersignup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                result = await response.json();
+                if (response.ok) {
+                    showMessage('success', result.message || 'Sign up successful!');
+                    generatedUserIdDiv.innerHTML = `Your User ID: <strong>${result.userId}</strong><br>Please remember this ID for login.`;
+                    generatedUserIdDiv.style.display = 'block';
+                    signupForm.reset();
+                    let v = document.getElementById('adminapprovalMessage');
+                    if (v) {
+                        v.style.display = 'block';
+                        v.className = 'message success';
+                        v.textContent = 'Your request has been sent for admin approval. You will be notified once approved.';
+                    }
+                } else {
+                    showMessage('error', result.message || 'Sign up failed. Please try again.');
+                }
             }
         } catch (error) {
-            console.error('Error during sign up:', error);
+            console.error('Error during sign up/edit:', error);
             showMessage('error', 'An unexpected error occurred. Please try again later.');
         }
     });
