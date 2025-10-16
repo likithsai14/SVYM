@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Personalize Welcome Message (keep existing) ---
     const welcomeMessageElement = document.getElementById('welcomeMessage');
-    const loggedInUserName = sessionStorage.getItem('loggedInUserName');
+    const loggedInUserName = JSON.parse(sessionStorage.getItem("user")).username;
 
     if (welcomeMessageElement && loggedInUserName) {
         const displayUserName = loggedInUserName.charAt(0).toUpperCase() + loggedInUserName.slice(1);

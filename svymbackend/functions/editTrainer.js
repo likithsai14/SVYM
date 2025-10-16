@@ -1,52 +1,78 @@
-const Trainer = require('./models/Trainer'); // assuming you define the schema in models/FieldMobiliser.js
+const { connectDB } = require('./utils/mongodb');
+const Trainer = require('./models/Trainer');
 
-exports.handler = async (event) => {
+exports.handler = async function(event, context) {
   try {
-    if (event.httpMethod !== 'GET') {
+    if (event.httpMethod !== 'PUT' && event.httpMethod !== 'POST') {
       return { statusCode: 405, body: JSON.stringify({ message: 'Method Not Allowed' }) };
     }
 
-    const body = JSON.parse(event.body);
+    const body = JSON.parse(event.body || '{}');
+    const { trainerId } = body;
+    if (!trainerId) return { statusCode: 400, body: JSON.stringify({ message: 'trainerId is required' }) };
 
-    const filter = {};
-    if (body.email) { filter.email = body.email; } 
-    else if (body.mobile) { filter.mobile = body.mobile;} 
-    
+    await connectDB();
 
-    const trainers = await Trainer.find(filter);
+    const trainer = await Trainer.findOne({ trainerId });
+    if (!trainer) return { statusCode: 404, body: JSON.stringify({ message: 'Trainer not found' }) };
 
-    if(trainers.length!==0){
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'Trainer with given email or mobile already exists.' })
+    // If email provided and changed, ensure uniqueness (case-insensitive), exclude current trainerId
+    if (body.email && body.email !== trainer.email) {
+      const emailToCheck = String(body.email).trim();
+      // case-insensitive search excluding current trainerId
+      const conflict = await Trainer.findOne({
+        email: { $regex: `^${emailToCheck.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+        trainerId: { $ne: trainerId }
+      });
+      if (conflict) {
+        return { statusCode: 400, body: JSON.stringify({ message: 'Email already in use' }) };
       }
     }
 
-    const trainer = new Trainer(body);
-    const uniqueSuffix = Math.floor(10000 + Math.random() * 90000).toString();
-    const userId = `SVYMT${uniqueSuffix}`;
-    const hashedPassword = await bcrypt.hash(uniqueSuffix, 10);
-    trainer.trianerId = userId;
-    trainer.password = hashedPassword;
-    await Trainer.save();
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ fieldmobilisers })
-    };
-  } catch (error) {
-    console.error('Netlify Function error:', error);
-
-    if (error.message.includes('authorization') || error.message.includes('authentication')) {
-      return {
-        statusCode: 401,
-        body: JSON.stringify({ message: 'Backend Authentication Error: Function not authorized to connect to MongoDB. Check environment variables.' })
-      };
+    // If mobile provided and changed, ensure uniqueness, exclude current trainerId
+    if (body.mobile && body.mobile !== trainer.mobile) {
+      const mobileToCheck = String(body.mobile).trim();
+      const conflict = await Trainer.findOne({
+        mobile: mobileToCheck,
+        trainerId: { $ne: trainerId }
+      });
+      if (conflict) {
+        return { statusCode: 400, body: JSON.stringify({ message: 'Mobile already in use' }) };
+      }
     }
 
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: `Internal server error: ${error.message}` })
-    };
+    // Allowed fields to update
+    const updates = {};
+    const allowed = ['name', 'email', 'mobile', 'expertise', 'status'];
+    for (const key of allowed) {
+      if (Object.prototype.hasOwnProperty.call(body, key) && body[key] !== undefined) updates[key] = body[key];
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'No updatable fields provided' }) };
+    }
+
+    let updated;
+    try {
+      updated = await Trainer.findOneAndUpdate({ trainerId }, { $set: updates }, { new: true }).lean();
+    } catch (dbErr) {
+      // handle duplicate key errors gracefully
+      if (dbErr && dbErr.code === 11000) {
+        const message = dbErr.message || '';
+        if (message.includes('email')) {
+          return { statusCode: 400, body: JSON.stringify({ message: 'Duplicate entry: email already exists.' }) };
+        }
+        if (message.includes('mobile')) {
+          return { statusCode: 400, body: JSON.stringify({ message: 'Duplicate entry: mobile already exists.' }) };
+        }
+        return { statusCode: 400, body: JSON.stringify({ message: 'Duplicate key error' }) };
+      }
+      throw dbErr;
+    }
+
+    return { statusCode: 200, body: JSON.stringify({ message: 'Trainer updated', trainer: updated }) };
+  } catch (error) {
+    console.error('Error in editTrainer:', error);
+    return { statusCode: 500, body: JSON.stringify({ message: 'Server error', error: error.message }) };
   }
 };

@@ -65,10 +65,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (data.exists) {
         populateStudents(data.record.students, true); // readonly mode
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Attendance Already Submitted";
+        submitBtn.style.display = "none"; // completely remove the button
       } else {
         populateStudents(); // fresh editable table
+        submitBtn.style.display = "block";
         submitBtn.disabled = false;
         submitBtn.textContent = "Submit Attendance";
       }
@@ -87,41 +87,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const courseStudents = students.filter(s => enrollment.studentIds.includes(s.userId));
 
+    if (courseStudents.length === 0) {
+      tableBody.innerHTML = "<tr><td colspan='4'>No students enrolled for this course</td></tr>";
+      submitBtn.style.display = "none";
+      return;
+    }
+
     courseStudents.forEach(student => {
       const existingRec = existing.find(e => e.studentId === student.userId);
       const isPresent = existingRec ? existingRec.present : false;
       const remarksVal = existingRec ? existingRec.remarks : "";
 
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${student.userId}</td>
-        <td>${student.candidateName}</td>
-        <td><input type="checkbox" class="attendanceCheckbox" ${isPresent ? "checked" : ""} ${readOnly ? "disabled" : ""}></td>
-        <td><input type="text" class="remarksInput" value="${remarksVal}" placeholder="Enter remarks" ${readOnly || isPresent ? "disabled" : ""}></td>
-      `;
+      if (readOnly) {
+        // Display as text
+        const displayRemarks = !isPresent && (!remarksVal || remarksVal.trim() === "") ? "not yet joined" : (remarksVal || "—");
+        row.innerHTML = `
+          <td>${student.userId}</td>
+          <td>${student.candidateName}</td>
+          <td>${isPresent ? "Present" : "Absent"}</td>
+          <td>${displayRemarks}</td>
+        `;
+      } else {
+        // Editable with dropdown
+        const statusValue = isPresent ? "Present" : "Absent";
+        row.innerHTML = `
+          <td>${student.userId}</td>
+          <td>${student.candidateName}</td>
+          <td>
+            <select class="attendanceSelect">
+              <option value="Present" ${statusValue === "Present" ? "selected" : ""}>Present</option>
+              <option value="Absent" ${statusValue === "Absent" ? "selected" : ""}>Absent</option>
+            </select>
+          </td>
+          <td><input type="text" class="remarksInput" value="${remarksVal}" placeholder="Enter remarks"></td>
+        `;
+      }
       tableBody.appendChild(row);
     });
 
     if (!readOnly) {
-      // Checkbox logic (disable remarks when present is checked)
-      document.querySelectorAll(".attendanceCheckbox").forEach(chk => {
-        chk.addEventListener("change", () => {
-          const tr = chk.closest("tr");
+      // Dropdown logic (remarks is always enabled, but clear when Present is selected)
+      document.querySelectorAll(".attendanceSelect").forEach(sel => {
+        sel.addEventListener("change", () => {
+          const tr = sel.closest("tr");
           const remarks = tr.querySelector(".remarksInput");
-          remarks.disabled = chk.checked;
-          if (chk.checked) remarks.value = "";
+          if (sel.value === "Present") remarks.value = "";
         });
       });
     }
   }
 
-  // Date restrictions
+  // Set default date to today
   const today = new Date();
-  const maxPastDate = new Date();
-  maxPastDate.setDate(today.getDate() - 7);
   const formatDate = d => d.toISOString().split("T")[0];
-  dateInput.max = formatDate(today);
-  dateInput.min = formatDate(maxPastDate);
   dateInput.value = formatDate(today);
 
   // Submit attendance
@@ -130,13 +149,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const attendanceDate = dateInput.value;
 
     const attendanceData = [];
+    let hasError = false;
     document.querySelectorAll("#studentsTableBody tr").forEach(tr => {
       const studentId = tr.cells[0].textContent;
       const studentName = tr.cells[1].textContent;
-      const isPresent = tr.querySelector(".attendanceCheckbox").checked;
-      const remarks = tr.querySelector(".remarksInput").value;
+      const isPresent = tr.querySelector(".attendanceSelect").value === "Present";
+      const remarks = tr.querySelector(".remarksInput").value.trim();
+
+      // Validate: remarks mandatory if absent
+      if (!isPresent && !remarks) {
+        alert(`Remarks are mandatory for absent students. Please provide remarks for ${studentName}.`);
+        hasError = true;
+        return;
+      }
+
       attendanceData.push({ studentId, studentName, present: isPresent, remarks });
     });
+
+    if (hasError) return;
 
     try {
       const res = await fetch("/.netlify/functions/markAttendance", {

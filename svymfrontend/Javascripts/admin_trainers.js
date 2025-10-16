@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
           const response = await fetch("/.netlify/functions/editTrainer", {
-            body: JSON.stringify({ userId: userIdToEdit, ...newTrainerData }),
+            body: JSON.stringify({ trainerId: userIdToEdit, ...newTrainerData }),
             method: "POST",
           });
 

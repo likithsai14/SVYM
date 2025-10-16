@@ -29,6 +29,41 @@
       --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
+            .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #f8faff;
+          margin-bottom: 20px;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+          color: #004080;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin: 0;
+        }
+
+        .search-box {
+          display: flex;
+          align-items: center;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          overflow: hidden;
+          max-width: 50%;
+          width: 100%;
+        }
+
+        .search-box input {
+          padding: 8px 10px;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+        }
+
     .modal {
       display: none;
       position: fixed;
@@ -126,13 +161,11 @@
 
   <main class="main-content">
     <!-- Header row -->
-    <div class="header-row">
-      <h2>My Courses </h2>
-    </div>
-
-    <!-- Search row -->
-    <div class="search-row">
-      <input type="text" id="courseSearch" placeholder="Search courses..." />
+    <div class="header">
+      <h1><i class="fas fa-book"></i> My Courses </h1>
+      <div class="search-box">
+        <input type="text" id="courseSearch" placeholder="Search courses..." />
+      </div>
     </div>
 
     <!-- Course cards -->
