@@ -124,9 +124,9 @@ function initLogin() {
             ) {
               window.location.href = "field_mobiliser_dashboard.html";
             } else if (roleLower === "user") {
-              window.location.href = "candidate_dashboard.html";
+              window.location.href = "student_dashboard.html";
             } else {
-              window.location.href = "candidate_dashboard.html";
+              window.location.href = "student_dashboard.html";
             }
           }
         }

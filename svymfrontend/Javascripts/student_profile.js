@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       setText('gender', user.gender);
       setText('tribal', user.tribal);
       setText('pwd', user.pwd);
-      setText('aadharNumber', user.aadharNumber);
+      setText('aadhaarNumber', user.aadharNumber);
       setText('candidatePhone', user.candidatePhone);
       setText('parentPhone', user.parentPhone);
       setText('supportedProject', user.supportedProject);

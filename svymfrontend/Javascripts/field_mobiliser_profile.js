@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Get trainer ID from sessionStorage
+  // Get field mobiliser ID from sessionStorage
   const sessionUserId = sessionStorage.getItem('userId');
   if (!sessionUserId) {
     console.warn('No session userId found in sessionStorage');
@@ -12,38 +12,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (el) el.textContent = value ?? '—';
   };
 
-  // Fetch trainer profile from backend
+  // Fetch field mobiliser profile from backend
   async function loadProfile() {
     try {
-      const res = await fetch(`/.netlify/functions/allTrainers?trainerId=${encodeURIComponent(sessionUserId)}`);
+      const res = await fetch(`/.netlify/functions/allfieldmobilisers?userId=${encodeURIComponent(sessionUserId)}`);
       if (!res.ok) {
-        console.error('Failed to fetch trainer profile', await res.text());
+        console.error('Failed to fetch field mobiliser profile', await res.text());
         return;
       }
       const payload = await res.json();
-      const trainers = payload.trainers || [];
-      const trainer = trainers.find(t => t.trainerId === sessionUserId);
+      const fm = payload.fieldMobiliser;
 
-      if (!trainer) {
-        console.error('Trainer not found');
+      if (!fm) {
+        console.error('Field Mobiliser not found');
         return;
       }
 
-      console.log('Loaded trainer profile:', trainer);
+      console.log('Loaded field mobiliser profile:', fm);
 
       // Populate profile details
-      setText('trainerId', trainer.trainerId);
-      setText('trainerName', trainer.name);
-      setText('trainerEmail', trainer.email || 'Not provided');
-      setText('trainerPhone', trainer.mobile || 'Not provided');
-      setText('trainerExpertise', trainer.expertise);
-      setText('trainerJoined', trainer.createdAt ? new Date(trainer.createdAt).toLocaleDateString() : '—');
-      setText('trainerStatus', trainer.status);
+      setText('fieldMobiliserId', fm.userId);
+      setText('fieldMobiliserName', fm.FieldMobiliserName);
+      setText('fieldMobiliserEmail', fm.FieldMobiliserEmailID || 'Not provided');
+      setText('fieldMobiliserMobile', fm.FieldMobiliserMobileNo || 'Not provided');
+      setText('fieldMobiliserRegion', fm.FieldMobiliserRegion);
+      setText('fieldMobiliserProject', fm.FieldMobiliserSupportedProject);
+      setText('fieldMobiliserJoined', fm.createdAt ? new Date(fm.createdAt).toLocaleDateString() : '—');
+      setText('fieldMobiliserStatus', fm.accountStatus);
 
       // Store for edit modal
-      window.__currentTrainerProfile = trainer;
+      window.__currentFieldMobiliserProfile = fm;
     } catch (err) {
-      console.error('Error loading trainer profile:', err);
+      console.error('Error loading field mobiliser profile:', err);
     }
   }
 
@@ -60,39 +60,41 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Open edit profile modal
   document.getElementById('editProfileBtn').addEventListener('click', () => {
-    const trainer = window.__currentTrainerProfile || {};
-    document.getElementById('edit_trainerName').value = trainer.name || '';
-    document.getElementById('edit_expertise').value = trainer.expertise || '';
-    document.getElementById('edit_email').value = trainer.email || '';
-    document.getElementById('edit_mobile').value = trainer.mobile || '';
+    const fm = window.__currentFieldMobiliserProfile || {};
+    document.getElementById('edit_fieldMobiliserName').value = fm.FieldMobiliserName || '';
+    document.getElementById('edit_fieldMobiliserEmail').value = fm.FieldMobiliserEmailID || '';
+    document.getElementById('edit_fieldMobiliserMobile').value = fm.FieldMobiliserMobileNo || '';
+    document.getElementById('edit_fieldMobiliserRegion').value = fm.FieldMobiliserRegion || '';
+    document.getElementById('edit_fieldMobiliserProject').value = fm.FieldMobiliserSupportedProject || '';
     editModal.style.display = 'flex';
   });
 
   // Edit profile form submit
   document.getElementById('editProfileForm').addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    const trainerId = sessionUserId;
-    if (!trainerId) return alert('Trainer ID missing');
+    const userId = sessionUserId;
+    if (!userId) return alert('User ID missing');
 
     const payload = {
-      trainerId: trainerId,
-      name: document.getElementById('edit_trainerName').value.trim(),
-      expertise: document.getElementById('edit_expertise').value.trim(),
-      email: document.getElementById('edit_email').value.trim(),
-      mobile: document.getElementById('edit_mobile').value.trim()
+      userId: userId,
+      FieldMobiliserName: document.getElementById('edit_fieldMobiliserName').value.trim(),
+      FieldMobiliserEmailID: document.getElementById('edit_fieldMobiliserEmail').value.trim(),
+      FieldMobiliserMobileNo: document.getElementById('edit_fieldMobiliserMobile').value.trim(),
+      FieldMobiliserRegion: document.getElementById('edit_fieldMobiliserRegion').value.trim(),
+      FieldMobiliserSupportedProject: document.getElementById('edit_fieldMobiliserProject').value.trim()
     };
 
-    // Validate at least one contact
-    if (!payload.email && !payload.mobile) {
+    // Validate required fields
+    if (!payload.FieldMobiliserName || !payload.FieldMobiliserEmailID || !payload.FieldMobiliserMobileNo || !payload.FieldMobiliserRegion || !payload.FieldMobiliserSupportedProject) {
       const msgDiv = document.getElementById('editProfileMessage');
       msgDiv.style.display = 'block';
       msgDiv.className = 'message error';
-      msgDiv.textContent = 'Please provide at least one contact method (email or mobile)';
+      msgDiv.textContent = 'All fields are required';
       return;
     }
 
-    // Validate mobile if provided
-    if (payload.mobile && !/^\d{10}$/.test(payload.mobile)) {
+    // Validate mobile
+    if (payload.FieldMobiliserMobileNo && !/^\d{10}$/.test(payload.FieldMobiliserMobileNo)) {
       const msgDiv = document.getElementById('editProfileMessage');
       msgDiv.style.display = 'block';
       msgDiv.className = 'message error';
@@ -101,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const res = await fetch('/.netlify/functions/editTrainer', {
+      const res = await fetch('/.netlify/functions/editFieldMobiliserProfile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -150,14 +152,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    const trainerId = sessionUserId;
-    if (!trainerId) return alert('Trainer ID missing');
+    const userId = sessionUserId;
+    if (!userId) return alert('User ID missing');
 
     try {
-      const res = await fetch('/.netlify/functions/changeTrainerPassword', {
+      const res = await fetch('/.netlify/functions/changeFieldMobiliserPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: trainerId, currentPassword, newPassword })
+        body: JSON.stringify({ userId: userId, currentPassword, newPassword })
       });
       const j = await res.json();
       const msgDiv = document.getElementById('changePasswordMessage');

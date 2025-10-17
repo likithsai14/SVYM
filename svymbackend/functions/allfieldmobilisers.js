@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const FieldMobiliser = require('./models/FieldMobiliser'); // assuming you define the schema in models/FieldMobiliser.js
+const { connectDB } = require('./utils/mongodb');
+const FieldMobiliser = require('./models/FieldMobiliser');
 
 exports.handler = async (event, context) => {
   try {
@@ -7,17 +7,31 @@ exports.handler = async (event, context) => {
       return { statusCode: 405, body: JSON.stringify({ message: 'Method Not Allowed' }) };
     }
 
-    // Query for docs where _id starts with 'SVYMFM'
-    const fieldmobilisers = await FieldMobiliser.find({
-      userId : { $regex: /^SVYMFM/ }
-    }).lean();
+    await connectDB();
 
-    // console.log(fieldmobilisers);
+    const { userId } = event.queryStringParameters || {};
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ fieldmobilisers })
-    };
+    if (userId) {
+      // Fetch single field mobiliser by userId
+      const fieldMobiliser = await FieldMobiliser.findOne({ userId }).lean();
+      if (!fieldMobiliser) {
+        return { statusCode: 404, body: JSON.stringify({ message: 'Field Mobiliser not found' }) };
+      }
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ fieldMobiliser })
+      };
+    } else {
+      // Fetch all field mobilisers
+      const fieldmobilisers = await FieldMobiliser.find({
+        userId: { $regex: /^SVYMFM/ }
+      }).lean();
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ fieldmobilisers })
+      };
+    }
   } catch (error) {
     console.error('Netlify Function error:', error);
 

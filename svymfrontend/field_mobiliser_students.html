@@ -62,33 +62,40 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- View Modal -->
   <div id="viewModal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
-      <div class="modal-header">
-        <h2 id="modalStudentName"></h2>
-      </div>
+      <div class="modal-header"><h2 id="modalStudentName"></h2></div>
       <div class="modal-body">
-        <p><strong>UserID:</strong> <span id="modalUserId"></span></p>
-        <p><strong>Name:</strong> <span id="modalUserName"></span></p>
-        <p><strong>Email:</strong> <span id="modalUserEmail"></span></p>
-        <p><strong>Status:</strong> <span id="modalUserStatus"></span></p>
-        <p><strong>Father/Husband Name:</strong> <span id="modalUserFatherHusband"></span></p>
-        <p><strong>VillageName:</strong> <span id="modalUserVillageName"></span></p>
-        <p><strong>TalukName:</strong> <span id="modalUserTalukName"></span></p>
-        <p><strong>DistrictName:</strong> <span id="modalUserDistrictName"></span></p>
-        <p><strong>Date of Birth:</strong> <span id="modalUserDob"></span></p>
-        <p><strong>Age:</strong> <span id="modalUserAge"></span></p>
-        <p><strong>Gender:</strong> <span id="modalUserGender"></span></p>
-        <p><strong>Tribal:</strong> <span id="modalUserTribal"></span></p>
-        <p><strong>Person With Disability:</strong> <span id="modalUserPWD"></span></p>
-        <p><strong>AadharNumber:</strong> <span id="modalUserAadharNumber"></span></p>
-        <p><strong>MobileNumber:</strong> <span id="modalUserMobileNumber"></span></p>
-        <p><strong>ParentMobileNo:</strong> <span id="modalUserParentMobileNo"></span></p>
-        <p><strong>Family Members:</strong> <span id="modalUserFamilyMembers"></span></p>
-        <p><strong>Qualification:</strong> <span id="modalUserQualification"></span ></p>
-        <p><strong>Caste:</strong> <span id="modalUserCaste"></span></p>
+        <table class="student-details-table" id="studentDetailsTable"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drop Out Modal -->
+  <div id="dropoutModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <div class="modal-header"><h2>Update Student Account Status</h2></div>
+      <div class="modal-body">
+        <form id="dropoutForm">
+          <div class="form-group">
+            <label for="dropoutUserId">Student ID:</label>
+            <input type="text" id="dropoutUserId" readonly />
+          </div>
+          <div class="form-group">
+            <label for="dropoutStudentName">Student Name:</label>
+            <input type="text" id="dropoutStudentName" readonly />
+          </div>
+          <div class="form-group">
+            <label for="dropoutStatus">Update Status:</label>
+            <select id="dropoutStatus" required>
+              <option value="">Select Status</option>
+            </select>
+          </div>
+          <button type="submit" class="add-button" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Update Status</button>
+        </form>
       </div>
     </div>
   </div>

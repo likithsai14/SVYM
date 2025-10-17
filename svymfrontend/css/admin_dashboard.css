@@ -68,6 +68,10 @@ body {
   margin-top: 30px;
 }
 
+.enrollment-card {
+  grid-column: span 2;
+}
+
 .dashboard-card {
   background-color: #ffffff;
   border-radius: 15px;
@@ -153,6 +157,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.chart-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.chart-scroll-wrapper canvas {
+  min-width: 400px; /* Ensure minimum width for readability */
 }
 
 /* Recent Activity Specifics */

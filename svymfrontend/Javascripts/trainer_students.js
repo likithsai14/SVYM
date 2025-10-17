@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${student.candidateName || "N/A"}</td>
         <td>${student.email || "N/A"}</td>
         <td>${courseNames}</td>
-        <td><span class="status ${statusClass}">${student.approvalStatus || student.accountStatus || "N/A"}</span></td>
+        <td><span class="status ${statusClass}">${(student.accountStatus || "N/A").toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</span></td>
         <td><button class="action-btn view-btn"><i class="fas fa-eye"></i> View</button></td>
       `;
       studentTableBody.appendChild(row);
@@ -94,34 +94,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       // View modal
       row.querySelector(".view-btn").addEventListener("click", () => {
         document.getElementById("modalStudentName").textContent = `${student.userId || ""} ${student.candidateName || ""}`;
-        document.getElementById("modalUserId").textContent = student.userId || "N/A";
-        document.getElementById("modalUserName").textContent = student.candidateName || "N/A";
-        document.getElementById("modalUserEmail").textContent = student.email || "N/A";
-        document.getElementById("modalUserCourse").textContent = courseNames;
-        document.getElementById("modalUserStatus").textContent = student.approvalStatus || student.accountStatus || "N/A";
-        document.getElementById("modalUserFatherHusband").textContent = student.fatherHusbandName || "N/A";
-        document.getElementById("modalUserVillageName").textContent = student.villageName || "N/A";
-        document.getElementById("modalUserTalukName").textContent = student.talukName || "N/A";
-        document.getElementById("modalUserDistrictName").textContent = student.districtName || "N/A";
-        document.getElementById("modalUserDob").textContent = student.dob || "N/A";
-        document.getElementById("modalUserAge").textContent = student.age || "N/A";
-        document.getElementById("modalUserGender").textContent = student.gender || "N/A";
-        document.getElementById("modalUserTribal").textContent = student.tribal || "N/A";
-        document.getElementById("modalUserPWD").textContent = student.pwd || "N/A";
-        document.getElementById("modalUserAadharNumber").textContent = student.aadharNumber || "N/A";
-        document.getElementById("modalUserMobileNumber").textContent = student.candidatePhone || "N/A";
-        document.getElementById("modalUserParentMobileNo").textContent = student.parentPhone || "N/A";
-        document.getElementById("modalUserFamilyMembers").textContent = student.familyMembers || "N/A";
-        document.getElementById("modalUserQualification").textContent = student.qualification || "N/A";
-        document.getElementById("modalUserCaste").textContent = student.caste || "N/A";
-        document.getElementById("modalUserMobiliserName").textContent = student.mobiliserName || "N/A";
 
-        const mus = document.getElementById("modalUserStatus");
-        const status = student.approvalStatus || student.accountStatus;
-        mus.style.color = status === "approved" ? "green" :
-                          status === "rejected" ? "red" :
-                          status === "inactive" ? "gray" : "orange";
-        mus.style.fontWeight = "bold";
+        const table = document.getElementById("studentDetailsTable");
+        table.innerHTML = `
+          <tr><td colspan="2" class="group-title">Basic Information</td></tr>
+          <tr><td><strong>UserID:</strong></td><td>${student.userId || "N/A"}</td></tr>
+          <tr><td><strong>Name:</strong></td><td>${student.candidateName || "N/A"}</td></tr>
+          <tr><td><strong>Email:</strong></td><td>${student.email || "N/A"}</td></tr>
+          <tr><td><strong>Course:</strong></td><td>${courseNames}</td></tr>
+          <tr><td><strong>Account Status:</strong></td><td>${(student.accountStatus || "N/A").toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</td></tr>
+          <tr><td colspan="2" class="group-title">Personal Details</td></tr>
+          <tr><td><strong>Father/Husband Name:</strong></td><td>${student.fatherHusbandName || "N/A"}</td></tr>
+          <tr><td><strong>Village Name:</strong></td><td>${student.villageName || "N/A"}</td></tr>
+          <tr><td><strong>Taluk Name:</strong></td><td>${student.talukName || "N/A"}</td></tr>
+          <tr><td><strong>District Name:</strong></td><td>${student.districtName || "N/A"}</td></tr>
+          <tr><td><strong>Date of Birth:</strong></td><td>${student.dob || "N/A"}</td></tr>
+          <tr><td><strong>Age:</strong></td><td>${student.age || "N/A"}</td></tr>
+          <tr><td><strong>Gender:</strong></td><td>${student.gender || "N/A"}</td></tr>
+          <tr><td><strong>Tribal:</strong></td><td>${student.tribal || "N/A"}</td></tr>
+          <tr><td><strong>Person With Disability:</strong></td><td>${student.pwd || "N/A"}</td></tr>
+          <tr><td colspan="2" class="group-title">Contact & Identification</td></tr>
+          <tr><td><strong>Aadhar Number:</strong></td><td>${student.aadharNumber || "N/A"}</td></tr>
+          <tr><td><strong>Mobile Number:</strong></td><td>${student.candidatePhone || "N/A"}</td></tr>
+          <tr><td><strong>Parent Mobile No:</strong></td><td>${student.parentPhone || "N/A"}</td></tr>
+          <tr><td colspan="2" class="group-title">Additional Information</td></tr>
+          <tr><td><strong>Family Members:</strong></td><td>${student.familyMembers || "N/A"}</td></tr>
+          <tr><td><strong>Qualification:</strong></td><td>${student.qualification || "N/A"}</td></tr>
+          <tr><td><strong>Caste:</strong></td><td>${student.caste || "N/A"}</td></tr>
+          <tr><td><strong>Mobiliser Name:</strong></td><td>${student.mobiliserName || "N/A"}</td></tr>
+        `;
 
         viewModal.style.display = "flex";
       });

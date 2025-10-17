@@ -88,6 +88,55 @@
 span {
   font-weight: bold;
 }
+
+#studentDetailsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#studentDetailsTable td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  vertical-align: top;
+}
+
+#studentDetailsTable .group-title {
+  background-color: #f0f4ff;
+  font-weight: bold;
+  text-align: left;
+  font-size: 1.05em;
+  padding: 10px;
+  border: none;
+}
+
+/* Drop Out Modal Styles */
+#dropoutModal .modal-content {
+  max-width: 500px;
+}
+
+#dropoutForm .form-group {
+  margin-bottom: 15px;
+}
+
+#dropoutForm label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+#dropoutForm input, #dropoutForm select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#dropoutForm input[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
 /* Modal Styles */
 @keyframes animatetop {
   from {

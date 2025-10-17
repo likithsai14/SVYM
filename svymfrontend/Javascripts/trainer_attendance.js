@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
       } else {
         // Editable with dropdown
-        const statusValue = isPresent ? "Present" : "Absent";
+        const statusValue = isPresent ? "Present" : "Present"; // Default to Present
         row.innerHTML = `
           <td>${student.userId}</td>
           <td>${student.candidateName}</td>
