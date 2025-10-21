@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             { title: 'Contact Details', fields: [
                 ['Email', student.email],
                 ['Mobile', student.mobile],
-                ['Aadhar Number', student.aadharNumber],
+                ['Aadhaar Number', student.aadharNumber],
                 ['Field Mobiliser', student.fieldMobiliserName]
             ]},
             { title: 'Other Details', fields: [

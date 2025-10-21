@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function populateFieldMobiliserModal(data) {
     fieldMobiliserDetailsTable.innerHTML = `
-      <tr><td><strong>User ID</strong></td><td>${data.id}</td></tr>
+      <tr><td><strong>Field Mobiliser ID</strong></td><td>${data.id}</td></tr>
       <tr><td><strong>Name</strong></td><td>${data.name}</td></tr>
       <tr><td><strong>Email</strong></td><td>${data.email}</td></tr>
       <tr><td><strong>Mobile</strong></td><td>${data.mobile}</td></tr>

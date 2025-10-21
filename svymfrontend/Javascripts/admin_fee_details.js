@@ -68,14 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.studentId.toLowerCase().includes(filterText) ||
                 (item.studentName && item.studentName.toLowerCase().includes(filterText))
             );
-            headers = ["Student ID","Name","No. of Enrollments","Total Amount","Total Paid","Total Dues","Actions"];
+            headers = ["Student ID","Name","No. of Enrollments","Total Amount","Total Paid","Total Due","Actions"];
         } else if(viewType === "course") {
             data = allCourseFees.filter(item =>
                 item.courseId.toLowerCase().includes(filterText) ||
                 (item.courseName && item.courseName.toLowerCase().includes(filterText)) ||
                 (item.trainerName && item.trainerName.toLowerCase().includes(filterText))
             );
-            headers = ["Course ID","Course Name","Trainer Name","No. of Enrollments","Total Amount","Total Paid","Total Dues","Actions"];
+            headers = ["Course ID","Course Name","Trainer Name","No. of Enrollments","Total Amount","Total Paid","Total Due","Actions"];
         } else {
             data = allTransactions.transactions.filter(item =>
                 item.transactionId.toLowerCase().includes(filterText) ||

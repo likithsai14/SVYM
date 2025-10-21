@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       { title: 'Contact Details', fields: [
         ['Email', student.email],
         ['Mobile', student.candidatePhone],
-        ['Aadhar Number', student.aadharNumber],
+        ['Aadhaar Number', student.aadharNumber],
         ['Field Mobiliser', student.fieldMobiliserName]
       ]},
       { title: 'Other Details', fields: [

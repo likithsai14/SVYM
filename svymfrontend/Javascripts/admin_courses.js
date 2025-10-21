@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/.netlify/functions/allCourses");
       if (!response.ok) throw new Error("Failed to fetch courses");
       courses = await response.json();
+      console.log("Fetched courses:", courses);
       renderCourses();
     } catch (err) {
       console.error(err);
@@ -60,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderCourses(filter = "") {
     coursesContainer.innerHTML = "";
-    const filtered = courses.filter(c =>
+    const filtered = courses.courses.filter(c =>
       c.courseName.toLowerCase().includes(filter.toLowerCase()) ||
       c.courseId.toLowerCase().includes(filter.toLowerCase())
     );

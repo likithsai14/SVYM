@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const table = document.getElementById("studentDetailsTable");
         table.innerHTML = `
           <tr><td colspan="2" class="group-title">Basic Information</td></tr>
-          <tr><td><strong>UserID:</strong></td><td>${student.userId || "N/A"}</td></tr>
+          <tr><td><strong>User ID:</strong></td><td>${student.userId || "N/A"}</td></tr>
           <tr><td><strong>Name:</strong></td><td>${student.candidateName || "N/A"}</td></tr>
           <tr><td><strong>Email:</strong></td><td>${student.email || "N/A"}</td></tr>
           <tr><td><strong>Course:</strong></td><td>${courseNames}</td></tr>
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <tr><td><strong>Tribal:</strong></td><td>${student.tribal || "N/A"}</td></tr>
           <tr><td><strong>Person With Disability:</strong></td><td>${student.pwd || "N/A"}</td></tr>
           <tr><td colspan="2" class="group-title">Contact & Identification</td></tr>
-          <tr><td><strong>Aadhar Number:</strong></td><td>${student.aadharNumber || "N/A"}</td></tr>
+          <tr><td><strong>Aadhaar Number:</strong></td><td>${student.aadharNumber || "N/A"}</td></tr>
           <tr><td><strong>Mobile Number:</strong></td><td>${student.candidatePhone || "N/A"}</td></tr>
           <tr><td><strong>Parent Mobile No:</strong></td><td>${student.parentPhone || "N/A"}</td></tr>
           <tr><td colspan="2" class="group-title">Additional Information</td></tr>

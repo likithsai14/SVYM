@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!coursesRes.ok) throw new Error("Failed to fetch courses");
       if (!enrollmentsRes.ok) throw new Error("Failed to fetch enrollments");
 
-      courses = await coursesRes.json();
+      courseData = await coursesRes.json();
+      courses = courseData.courses;
       enrollments = await enrollmentsRes.json();
 
       renderCourses();
