@@ -39,8 +39,9 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: "End date must be after Start date" }) };
     }
 
-    // Calculate duration in months
-    const durationMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+    // Calculate duration in days
+    const timeDiff = end.getTime() - start.getTime();
+    const durationMonths = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
 
     // Find course
     const course = await Course.findOne({ courseId });

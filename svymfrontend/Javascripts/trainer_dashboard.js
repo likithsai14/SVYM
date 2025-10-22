@@ -48,7 +48,7 @@ async function loadTrainerStats(trainerId) {
                 <li class="placement-item">
                     <strong>${course.courseName}</strong>
                     <span>Course ID: ${course.courseId}</span>
-                    <span>Duration: ${course.durationMonths || 'N/A'} months</span>
+                    <span>Duration: ${course.durationMonths || 'N/A'} days</span>
                     <span>Status: ${course.courseStatus || 'Upcoming'}</span>
                 </li>
             `).join('');

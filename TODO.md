@@ -1,12 +1,14 @@
-# TODO: Admin Reports Enhancements
+# TODO: Change Duration Calculation to Days
 
-- [x] Add 4 new report cards: Field Mobilisers, Courses, Fee Details, Attendance.
-- [x] Update fetchAndSetCounts to fetch data for new reports.
-- [x] Add event listeners for new report buttons.
-- [x] Implement generateFieldMobiliserExcelReport, generateCoursesExcelReport.
-- [x] Implement showFeeDetailsModal with filters for Student Fees and Transactions.
-- [x] Implement generateFeeDetailsReport for both filters.
-- [x] Implement showAttendanceModal with filters for Course, Month, Year.
-- [x] Implement generateAttendanceReport with table: rows=students, columns=dates, cells=Present/Absent.
-- [x] Test all new reports: preview modal, filters, download XLS.
-- [x] Verify table headers are <th> with styling.
+## Tasks
+- [x] Update `calculateDuration` in `svymfrontend/Javascripts/add_course.js` to calculate inclusive days
+- [x] Update `calculateUpdateDuration` in `svymfrontend/Javascripts/trainer_courses.js` to calculate inclusive days
+- [x] Update `durationMonths` calculation in `svymbackend/functions/updateTrainerCourse.js` to days
+- [x] Change label in `svymfrontend/admin_courses.html` to "(days)"
+- [x] Change label in `svymfrontend/trainer_courses.html` to "(days)"
+- [x] Change display text in `svymfrontend/Javascripts/admin_courses.js` to "days"
+- [x] Change display text in `svymfrontend/Javascripts/student_courses.js` to "days"
+- [x] Change display text in `svymfrontend/Javascripts/trainer_dashboard.js` to "days"
+- [x] Change header in `svymfrontend/Javascripts/admin_reports.js` to "(Days)"
+- [x] Test the duration calculations (inclusive days: floor((end - start)/msPerDay) + 1)
+- [x] Verify displays and labels show "days" instead of "months"

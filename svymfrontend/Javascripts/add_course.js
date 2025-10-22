@@ -64,8 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const start = new Date(startDateInput.value);
     const end = new Date(endDateInput.value);
     if (start && end && end >= start) {
-      const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
-      durationInput.value = months > 0 ? months : 0;
+      const timeDiff = end.getTime() - start.getTime();
+      const days = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+      durationInput.value = days > 0 ? days : 0;
     } else {
       durationInput.value = "";
     }

@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="course-details-grid">
             <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>
             <p><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</p>
-            <p><strong>Duration:</strong> ${course.durationMonths || ""} months</p>
+            <p><strong>Duration:</strong> ${course.durationMonths || ""} days</p>
             <p class="full-width"><strong>Center:</strong> ${course.location}</p>
           </div>
         </div>
@@ -155,8 +155,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const start = new Date(updateStartDate.value);
     const end = new Date(updateEndDate.value);
     if (start && end && end >= start) {
-      const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
-      updateDuration.value = months > 0 ? months : 0;
+      const timeDiff = end.getTime() - start.getTime();
+      const days = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+      updateDuration.value = days > 0 ? days : 0;
     } else {
       updateDuration.value = "";
     }

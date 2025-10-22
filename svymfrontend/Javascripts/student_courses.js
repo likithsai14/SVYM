@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="course-details-grid">
             <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>
             <p><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</p>
-            <p><strong>Duration:</strong> ${course.durationMonths} months</p>
+            <p><strong>Duration:</strong> ${course.durationMonths} days</p>
             <p class="full-width"><strong>Center:</strong> ${course.location}</p>
           </div>
         </div>

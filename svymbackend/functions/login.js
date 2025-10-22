@@ -174,6 +174,15 @@ exports.handler = async (event) => {
       };
     }
 
+    if (userDoc.accountStatus === "droppedOut") {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({
+          message: `Cannot login. Current status: ${userDoc.accountStatus}`,
+        }),
+      };
+    }
+
     const isMatch = await bcrypt.compare(password, userDoc.password);
     if (!isMatch) {
       return {

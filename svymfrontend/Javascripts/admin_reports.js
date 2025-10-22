@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Course ID": c.courseId,
       "Course Name": c.courseName,
       "Description": c.description,
-      "Duration (Months)": c.durationMonths,
+      "Duration (Days)": c.durationMonths,
       "Fee": c.price,
       "Start Date": c.startDate ? new Date(c.startDate).toLocaleDateString('en-IN') : 'N/A',
       "End Date": c.endDate ? new Date(c.endDate).toLocaleDateString('en-IN') : 'N/A',

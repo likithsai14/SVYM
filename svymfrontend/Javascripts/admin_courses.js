@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("/.netlify/functions/allCourses");
       if (!response.ok) throw new Error("Failed to fetch courses");
-      courses = await response.json();
-      console.log("Fetched courses:", courses);
+      courseData = await response.json();
+      courses = courseData.courses;
       renderCourses();
     } catch (err) {
       console.error(err);
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderCourses(filter = "") {
     coursesContainer.innerHTML = "";
-    const filtered = courses.courses.filter(c =>
+    const filtered = courses.filter(c =>
       c.courseName.toLowerCase().includes(filter.toLowerCase()) ||
       c.courseId.toLowerCase().includes(filter.toLowerCase())
     );
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="course-details-grid">
             <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>
             <p><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</p>
-            <p><strong>Duration:</strong> ${course.durationMonths} months</p>
+            <p><strong>Duration:</strong> ${course.durationMonths} days</p>
             <p class="full-width"><strong>Center:</strong> ${course.location}</p>
             <p class="full-width"><strong>Trainer:</strong> ${course.trainerName || "N/A"}</p>
           </div>
