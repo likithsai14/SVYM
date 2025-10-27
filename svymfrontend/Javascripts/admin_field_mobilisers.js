@@ -27,6 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     FieldMobiliserSupportedProject: document.getElementById("FieldMobiliserSupportedProjectError")
   };
 
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
   const hamburger = document.getElementById("hamburger");
   const sideMenu = document.getElementById("sideMenu");
   const overlay = document.getElementById("overlay");
@@ -293,7 +298,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     let isValid = true;
     const formData = new FormData(signupForm);
     const data = {};
-    for (let [key, value] of formData.entries()) data[key] = value.trim();
+    for (let [key, value] of formData.entries()) {
+      if (key === 'FieldMobiliserName') {
+        data[key] = toTitleCase(value.trim());
+      } else {
+        data[key] = value.trim();
+      }
+    }
 
     const adminUserId = sessionStorage.getItem("userId");
     if (!adminUserId) { showMessage("error", "Admin session expired."); return; }

@@ -18,6 +18,17 @@ exports.handler = async (event) => {
     // Fetch all enrollments for the student
     const enrollments = await StudentEnrollment.find({ studentId }).select("-_id -__v");
 
+    // Get unique courseIds from enrollments
+    const courseIds = [...new Set(enrollments.map(e => e.courseId))];
+
+    // Update course statuses if needed
+    if (courseIds.length > 0) {
+      const Course = require('./models/Course');
+      const courses = await Course.find({ courseId: { $in: courseIds } });
+      const { updateCoursesStatus } = require('./utils/updateCourseStatus');
+      await updateCoursesStatus(courses);
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify(enrollments),

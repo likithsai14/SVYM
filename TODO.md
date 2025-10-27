@@ -1,14 +1,16 @@
-# TODO: Change Duration Calculation to Days
+# TODO: Fix Age Calculation and Live Validation for Date of Birth in signup.js
 
-## Tasks
-- [x] Update `calculateDuration` in `svymfrontend/Javascripts/add_course.js` to calculate inclusive days
-- [x] Update `calculateUpdateDuration` in `svymfrontend/Javascripts/trainer_courses.js` to calculate inclusive days
-- [x] Update `durationMonths` calculation in `svymbackend/functions/updateTrainerCourse.js` to days
-- [x] Change label in `svymfrontend/admin_courses.html` to "(days)"
-- [x] Change label in `svymfrontend/trainer_courses.html` to "(days)"
-- [x] Change display text in `svymfrontend/Javascripts/admin_courses.js` to "days"
-- [x] Change display text in `svymfrontend/Javascripts/student_courses.js` to "days"
-- [x] Change display text in `svymfrontend/Javascripts/trainer_dashboard.js` to "days"
-- [x] Change header in `svymfrontend/Javascripts/admin_reports.js` to "(Days)"
-- [x] Test the duration calculations (inclusive days: floor((end - start)/msPerDay) + 1)
-- [x] Verify displays and labels show "days" instead of "months"
+- [x] Extract age calculation logic into a reusable `calculateAge` function.
+- [x] Attach `calculateAge` to 'change', 'blur', and 'input' events on `dobInput` to ensure it triggers on user interactions.
+- [x] Modify live validation to include `validity.valid` checks for date inputs (add condition for `input.type === 'date'`).
+- [x] In form submit revalidation, add check for `!input.validity.valid && input.value.trim() !== ''` to catch invalid dates.
+- [x] Ensure age validation (17-50) happens after age calculation.
+- [x] Test the form to verify age calculation and validation work on input, blur, and submit. (Skipped by user)
+
+# TODO: Implement Title Case Conversion for Candidate Name and Father/Husband Name
+
+- [x] Add `toTitleCase` function to signup.js.
+- [x] Attach 'input' event listeners to candidateName and fatherHusbandName inputs in signup.js to convert to title case.
+- [x] Add `toTitleCase` function to admin_student.js.
+- [x] Attach 'input' event listeners to candidateName and fatherHusbandName inputs in admin_student.js add/edit modal.
+- [x] Note: trainer_students.js is view-only, no editing capability, so no changes needed.

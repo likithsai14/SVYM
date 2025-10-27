@@ -65,8 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-header">
           <h3>${course.courseId} - ${course.courseName}</h3>
           <div class="course-price">INR ${course.price.toLocaleString("en-IN")}</div>
+          
         </div>
         <div class="card-body">
+        <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
           <p>${course.description}</p>
           <div class="course-details-grid">
             <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>

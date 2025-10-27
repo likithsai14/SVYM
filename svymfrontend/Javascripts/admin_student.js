@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
 
+    // Function to convert to title case
+    function toTitleCase(str) {
+        return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    }
+
     const viewModal = document.getElementById('viewModal');
     const viewModalBody = document.getElementById('studentDetailsTable');
 
@@ -32,6 +37,22 @@ document.addEventListener('DOMContentLoaded', async function () {
     const requestsTableBody = document.getElementById('requestsTable').querySelector('tbody');
 
     const studentFormModal = document.getElementById('studentFormModal');
+
+    // Title case conversion for candidate name and father/husband name in add/edit modal
+    const candidateNameInput = document.getElementById('candidateName');
+    const fatherHusbandNameInput = document.getElementById('fatherHusbandName');
+
+    if (candidateNameInput) {
+        candidateNameInput.addEventListener('input', function() {
+            this.value = toTitleCase(this.value);
+        });
+    }
+
+    if (fatherHusbandNameInput) {
+        fatherHusbandNameInput.addEventListener('input', function() {
+            this.value = toTitleCase(this.value);
+        });
+    }
 
     mobiliserSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
@@ -307,6 +328,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     addStudentsBtn.addEventListener('click', () => {
         studentForm.reset();
         generatedUserIdDiv.textContent = '';
+        document.getElementById('modalHeader').textContent = 'Add Student Data';
+        document.getElementById('submitBtn').textContent = 'Add Student Data';
         studentFormModal.style.display = 'flex';
     });
 
@@ -316,6 +339,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         const student = studentsData.find(s => s.userId === id);
         if (!student) return;
         studentFormModal.style.display = 'flex';
+        document.getElementById('modalHeader').textContent = 'Edit Student Data';
+        document.getElementById('submitBtn').textContent = 'Update Student Data';
         document.getElementById('candidateName').value = student.candidateName;
         document.getElementById('fatherHusbandName').value = student.fatherHusbandName;
         document.getElementById('email').value = student.email;
@@ -558,6 +583,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         location.reload(); // reload after modal closes
     });
 });
+
+    // ------------------------------
+    // Cancel Button
+    // ------------------------------
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            studentFormModal.style.display = 'none';
+        });
+    }
 
 
     // ------------------------------

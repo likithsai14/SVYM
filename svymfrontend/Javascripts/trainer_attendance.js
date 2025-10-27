@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const courseSelect = document.getElementById("courseSelect");
   const dateInput = document.getElementById("attendanceDate");
+  const filterSelect = document.getElementById("filterSelect");
   const tableBody = document.getElementById("studentsTableBody");
   const submitBtn = document.getElementById("submitAttendance");
+  const editBtn = document.getElementById("editAttendance");
 
   let trainerId = sessionStorage.getItem("userId") || "T001"; // example
   let courses = [];
@@ -66,11 +68,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (data.exists) {
         populateStudents(data.record.students, true); // readonly mode
         submitBtn.style.display = "none"; // completely remove the button
+        editBtn.style.display = "block"; // show edit button
       } else {
         populateStudents(); // fresh editable table
         submitBtn.style.display = "block";
         submitBtn.disabled = false;
         submitBtn.textContent = "Submit Attendance";
+        editBtn.style.display = "none"; // hide edit button
       }
     } catch (err) {
       console.error("Error checking attendance:", err);
@@ -85,12 +89,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const enrollment = enrollments.find(e => e.courseId === selectedCourseId);
     if (!enrollment) return;
 
-    const courseStudents = students.filter(s => enrollment.studentIds.includes(s.userId));
+    let courseStudents = students.filter(s => enrollment.studentIds.includes(s.userId));
 
     if (courseStudents.length === 0) {
       tableBody.innerHTML = "<tr><td colspan='4'>No students enrolled for this course</td></tr>";
       submitBtn.style.display = "none";
       return;
+    }
+
+    // Apply filtering based on filterSelect value
+    const filterValue = filterSelect.value;
+    if (filterValue !== "default") {
+      courseStudents = courseStudents.filter(student => {
+        const existingRec = existing.find(e => e.studentId === student.userId);
+        const isPresent = existingRec ? existingRec.present : false;
+        if (filterValue === "present") return isPresent;
+        if (filterValue === "absent") return !isPresent;
+        return true;
+      });
     }
 
     courseStudents.forEach(student => {
@@ -110,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
       } else {
         // Editable with dropdown
-        const statusValue = isPresent ? "Present" : "Present"; // Default to Present
+        const statusValue = isPresent ? "Present" : "Absent";
         row.innerHTML = `
           <td>${student.userId}</td>
           <td>${student.candidateName}</td>
@@ -143,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const formatDate = d => d.toISOString().split("T")[0];
   dateInput.value = formatDate(today);
 
-  // Submit attendance
+  // Submit or update attendance
   submitBtn.addEventListener("click", async () => {
     const selectedCourseId = courseSelect.value;
     const attendanceDate = dateInput.value;
@@ -182,20 +198,66 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const result = await res.json();
       if (res.ok) {
-        alert("Attendance saved successfully!");
+        const isUpdate = submitBtn.textContent === "Update Attendance";
+        alert(isUpdate ? "Attendance updated successfully!" : "Attendance saved successfully!");
         await checkExistingAttendance(); // reload as read-only
       } else {
         alert("Error: " + result.message);
       }
     } catch (err) {
-      console.error("Error submitting attendance:", err);
-      alert("Failed to submit attendance");
+      console.error("Error submitting/updating attendance:", err);
+      alert("Failed to submit/update attendance");
     }
   });
 
-  // Change course/date → check for existing record
+  // Change course/date/filter → check for existing record or re-filter
   courseSelect.addEventListener("change", checkExistingAttendance);
   dateInput.addEventListener("change", checkExistingAttendance);
+  filterSelect.addEventListener("change", () => {
+    // Re-populate students with current data
+    const selectedCourseId = courseSelect.value;
+    const attendanceDate = dateInput.value;
+    if (!selectedCourseId || !attendanceDate) return;
+
+    // Fetch current attendance data to re-filter
+    fetch(
+      `/.netlify/functions/markAttendance?trainerId=${trainerId}&courseId=${selectedCourseId}&attendanceDate=${attendanceDate}`,
+      { method: "GET" }
+    )
+      .then(res => res.json())
+      .then(data => {
+        if (data.exists) {
+          populateStudents(data.record.students, true);
+        } else {
+          populateStudents();
+        }
+      })
+      .catch(err => console.error("Error re-filtering:", err));
+  });
+
+  // Edit attendance
+  editBtn.addEventListener("click", async () => {
+    const selectedCourseId = courseSelect.value;
+    const attendanceDate = dateInput.value;
+    if (!selectedCourseId || !attendanceDate) return;
+
+    // Fetch current attendance data
+    try {
+      const res = await fetch(
+        `/.netlify/functions/markAttendance?trainerId=${trainerId}&courseId=${selectedCourseId}&attendanceDate=${attendanceDate}`,
+        { method: "GET" }
+      );
+      const data = await res.json();
+      if (data.exists) {
+        populateStudents(data.record.students, false); // editable mode with pre-filled data
+        editBtn.style.display = "none";
+        submitBtn.style.display = "block";
+        submitBtn.textContent = "Update Attendance";
+      }
+    } catch (err) {
+      console.error("Error fetching attendance for edit:", err);
+    }
+  });
 
   // Initial load
   await loadTrainerData();

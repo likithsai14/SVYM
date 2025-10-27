@@ -58,8 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-header">
           <h3>${course.courseId} - ${course.courseName}</h3>
           <div class="course-price">INR ${course.price.toLocaleString('en-IN')}</div>
+          
         </div>
         <div class="card-body">
+        <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
           <p>${course.description}</p>
           <div class="course-details-grid">
             <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>
@@ -73,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
             ${
               isEnrolled
                 ? `<span class="enrolled-label">Already Enrolled</span>`
+                : course.courseStatus === 'Completed'
+                ? `<span class="enrolled-label">Course Completed</span>`
                 : `<button class="apply-btn" data-id="${course.courseId}">
                      <i class="fas fa-paper-plane"></i> Apply Course
                    </button>`

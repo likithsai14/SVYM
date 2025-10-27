@@ -17,6 +17,10 @@ exports.handler = async (event, context) => {
     // Fetch all courses
     const courses = await Course.find();
 
+    // Update course statuses if needed
+    const { updateCoursesStatus } = require('./utils/updateCourseStatus');
+    await updateCoursesStatus(courses);
+
     return {
       statusCode: 200,
       body: JSON.stringify({ courses })

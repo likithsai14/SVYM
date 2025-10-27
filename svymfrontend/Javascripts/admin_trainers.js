@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const formTrainerMessage = document.getElementById("trainerFormMessage");
   const generatedUserId = document.getElementById("generatedUserId");
 
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
   const addTrainerBtn = document.getElementById("openAddTrainerModal");
   const closeBtn = document.getElementById("closeAddTrainerModal");
 
@@ -152,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const newTrainerData = {
-        name: formTrainerName.value,
+        name: toTitleCase(formTrainerName.value),
         expertise: formTrainerExpertise.value,
         mobile: formTrainerContact.value,
         email: formTrainerEmail.value,

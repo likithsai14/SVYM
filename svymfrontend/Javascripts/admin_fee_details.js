@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(viewType !== "transaction") {
             totalAmountBox.textContent = `Total: ${totalAmount}`;
             totalPaidBox.textContent = `Paid: ${totalPaid}`;
-            totalDuesBox.textContent = `Dues: ${totalDues}`;
+            totalDuesBox.textContent = `Due: ${totalDues}`;
         }
 
         updatePaginationControls(data.length);
@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         totalFeesElement.textContent = `Total : INR ${total}`;
         completedFeesElement.textContent = `Amount Paid : INR ${paid}`;
-        pendingFeesElement.textContent = `Dues : INR ${total - paid}`;
+        pendingFeesElement.textContent = `Due : INR ${total - paid}`;
 
         document.querySelectorAll('.download-receipt-btn').forEach(btn => {
             btn.addEventListener('click', e => generateSingleReceiptPdf(e.currentTarget.dataset));

@@ -19,6 +19,10 @@ module.exports.handler = async (event) => {
 
     // Fetch all courses for the trainer
     const courses = await Course.find({ trainerId }).select("courseId courseName");
+
+    // Update course statuses if needed
+    const { updateCoursesStatus } = require('./utils/updateCourseStatus');
+    await updateCoursesStatus(courses);
     const courseIds = courses.map(c => c.courseId);
 
     // Fetch all enrollments for these courses

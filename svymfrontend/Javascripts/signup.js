@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const staffNameInput = document.getElementById('staffName');
     const mobiliserSelect = document.getElementById('mobiliserName'); // dropdown
     const mobiliserNameText = document.getElementById('mobiliserNameText');
+    const candidateNameInput = document.getElementById('candidateName');
+    const fatherHusbandNameInput = document.getElementById('fatherHusbandName');
+
+    // Function to convert to title case
+    function toTitleCase(str) {
+        return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    }
 
     mobiliserSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
@@ -131,11 +138,13 @@ document.addEventListener('DOMContentLoaded', function() {
         clearError(referralSource);
     });
 
-    dobInput.addEventListener('change', function() {
-        const dob = new Date(this.value);
-        if (isNaN(dob)) {
+    function calculateAge() {
+        const dobValue = dobInput.value;
+        console.log('Calculating age for DOB:', dobValue);
+        const dob = new Date(dobValue);
+        if (isNaN(dob) || dobValue === '') {
             ageInput.value = '';
-            showError(dobInput, 'Please enter a valid date.');
+            if (dobValue !== '') showError(dobInput, 'Please enter a valid date.');
             return;
         }
         clearError(dobInput);
@@ -144,11 +153,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const m = today.getMonth() - dob.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
         ageInput.value = age;
-        if (age < 17 || age > 50) showError(ageInput, 'Applicant must be at least 17 years old and not greater than 50.');
-        else clearError(ageInput);
-    });
+        console.log('Calculated age:', age);
+        if (age < 17 || age > 50) showError(dobInput, 'Applicant must be at least 17 years old and not greater than 50.');
+        else clearError(dobInput);
+    }
 
-    caste.addEventListener('change', function() { clearError(caste); });
+    dobInput.addEventListener('change', calculateAge);
+    dobInput.addEventListener('blur', calculateAge);
+    dobInput.addEventListener('input', calculateAge);
+
+    caste.addEventListener('change', function() {
+        const tribalSelect = document.getElementById('tribal');
+        if (this.value === 'ST') {
+            tribalSelect.disabled = false;
+            tribalSelect.required = true;
+        } else {
+            tribalSelect.disabled = true;
+            tribalSelect.required = false;
+            tribalSelect.value = '';
+        }
+        clearError(caste);
+    });
 
     function showError(inputElement, message) {
         const errorSpan = errorSpans[inputElement.id];
@@ -160,13 +185,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (errorSpan) { errorSpan.textContent = ''; inputElement.classList.remove('input-error'); }
     }
 
+    // Title case conversion for candidate name and father/husband name
+    candidateNameInput.addEventListener('input', function() {
+        this.value = toTitleCase(this.value);
+    });
+
+    fatherHusbandNameInput.addEventListener('input', function() {
+        this.value = toTitleCase(this.value);
+    });
+
     // Live validation
     signupForm.querySelectorAll('input, select').forEach(input => {
         if(input.hasAttribute('required')){
-            input.addEventListener('input',()=>{ if(this.value.trim()!=='') clearError(input); });
-            input.addEventListener('blur',()=>{ if(this.value.trim()==='') showError(input,'This field is required.'); else clearError(input); });
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='') clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()==='') showError(input,'This field is required.'); else clearError(input); });
         }
-        if(input.hasAttribute('pattern')){
+        if(input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email'){
             input.addEventListener('input',()=>{ if(!input.validity.valid) showError(input,input.title||'Invalid format.'); else clearError(input); });
             input.addEventListener('blur',()=>{ if(!input.validity.valid && input.value.trim()!=='') showError(input,input.title||'Invalid format.'); else clearError(input); });
         }
@@ -189,11 +223,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Revalidate fields
         signupForm.querySelectorAll('input, select').forEach(input=>{
             if(input.hasAttribute('required') && input.value.trim()===''){ showError(input,'This field is required.'); isValid=false; }
-            else if(input.hasAttribute('pattern') && input.value.trim()!=='' && !input.validity.valid){ showError(input,input.title||'Invalid format.'); isValid=false; }
+            else if((input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email') && input.value.trim()!=='' && !input.validity.valid){ showError(input,input.title||'Invalid format.'); isValid=false; }
             else clearError(input);
         });
 
-        if(parseInt(ageInput.value)<17 || parseInt(ageInput.value)>50){ showError(ageInput,'Applicant must be at least 17 years old and not greater than 50.'); isValid=false; }
+        if(parseInt(ageInput.value)<17 || parseInt(ageInput.value)>50){ showError(dobInput,'Applicant must be at least 17 years old and not greater than 50.'); isValid=false; }
         if(districtSelect.value===''){ showError(districtSelect,'Please select a district.'); isValid=false; }
         if(talukSelect.value===''){ showError(talukSelect,'Please select a taluk.'); isValid=false; }
         if(caste.value===''){ showError(caste,'Please select a caste.'); isValid=false; }

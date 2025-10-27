@@ -318,7 +318,7 @@
     <div class="modal hide" id="studentFormModal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
-            <div class="modal-header"><h2 class="form-subheading-main" style="text-align: center">Add Student Data</h2></div>
+            <div class="modal-header"><h2 id="modalHeader" class="form-subheading-main" style="text-align: center">Add Student Data</h2></div>
             <div class="modal-body">
                 <form id="studentForm" novalidate>
                   <!-- Full form fields from your last message -->
@@ -378,7 +378,7 @@
                     <span id="qualificationError" class="error-message"></span>
                   </div>
                   <div class="form-group">
-                    <label for="aadharNumber">Aadhar Number:</label>
+                    <label for="aadharNumber">Aadhaar Number:</label>
                     <input type="text" id="aadharNumber" name="aadharNumber" required pattern="\d{12}" maxlength="12" title="Aadhar number must be 12 digits"/>
                     <span id="aadharNumberError" class="error-message"></span>
                   </div>
@@ -500,7 +500,10 @@
                 <span id="staffNameError" class="error-message"></span>
             </div>
                   
-                  <button type="submit" class="add-button">Add Student Data</button>
+                  <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="submit" id="submitBtn" class="add-button">Add Student Data</button>
+                    <button type="button" id="cancelBtn" class="view-button">Cancel</button>
+                  </div>
                 </form>
                 <div id="message" class="message" style="display: none"></div>
                 <div id="generatedUserId" style="display: none"></div>

@@ -44,6 +44,9 @@ exports.handler = async (event) => {
     const coursesMap = {};
     if (courseIds.length) {
       const courseDocs = await Course.find({ courseId: { $in: courseIds } }).lean();
+      // Update course statuses if needed
+      const { updateCoursesStatus } = require('./utils/updateCourseStatus');
+      await updateCoursesStatus(courseDocs);
       courseDocs.forEach(c => { coursesMap[c.courseId] = c.courseName || c.courseId; });
     }
 

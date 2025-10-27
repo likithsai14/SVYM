@@ -27,6 +27,10 @@ exports.handler = async (event) => {
     // Fetch all courses assigned to this trainer
     const courses = await Course.find({ trainerId });
 
+    // Update course statuses if needed
+    const { updateCoursesStatus } = require('./utils/updateCourseStatus');
+    await updateCoursesStatus(courses);
+
     if (!courses || courses.length === 0) {
       return {
         statusCode: 404,

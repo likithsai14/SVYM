@@ -80,6 +80,7 @@
   align-items: center;
   gap: 8px;
   font-weight: bold;
+  margin-left: 20px;
   padding: 5px 10px;
   color: #ffffff; /* white text */
   white-space: nowrap; /* prevents text from wrapping */
