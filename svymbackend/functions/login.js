@@ -34,7 +34,7 @@ exports.handler = async (event) => {
       if (!trainerDoc) {
         return {
           statusCode: 401,
-          body: JSON.stringify({ message: "Invalid Trainer ID or Password." }),
+          body: JSON.stringify({ message: "Invalid User ID or Password." }),
         };
       }
 
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
       if (!isMatch) {
         return {
           statusCode: 401,
-          body: JSON.stringify({ message: "Invalid Trainer ID or Password." }),
+          body: JSON.stringify({ message: "Invalid User ID or Password." }),
         };
       }
 
@@ -88,7 +88,7 @@ exports.handler = async (event) => {
       if (!fmDoc) {
         return {
           statusCode: 401,
-          body: JSON.stringify({ message: "Invalid Field Mobiliser ID or Password." }),
+          body: JSON.stringify({ message: "Invalid User ID or Password." }),
         };
       }
 
@@ -96,7 +96,7 @@ exports.handler = async (event) => {
       if (!isMatch) {
         return {
           statusCode: 401,
-          body: JSON.stringify({ message: "Invalid Field Mobiliser ID or Password." }),
+          body: JSON.stringify({ message: "Invalid User ID or Password." }),
         };
       }
 
@@ -143,7 +143,7 @@ exports.handler = async (event) => {
       if (!isMatch) {
         return {
           statusCode: 401,
-          body: JSON.stringify({ message: "Invalid Admin ID or Password." }),
+          body: JSON.stringify({ message: "Invalid User ID or Password." }),
         };
       }
 

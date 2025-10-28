@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         age: document.getElementById('ageError'),
         familyMembers: document.getElementById('familyMembersError'),
         qualification: document.getElementById('qualificationError'),
+        otherQualification: document.getElementById('otherQualificationError'),
         caste: document.getElementById('casteError'),
         referralSource: document.getElementById('referralSourceError'),
         gender: document.getElementById('genderError'),
@@ -194,6 +195,23 @@ document.addEventListener('DOMContentLoaded', function() {
         this.value = toTitleCase(this.value);
     });
 
+    // Qualification dropdown change handler
+    const qualificationSelect = document.getElementById('qualification');
+    const otherQualificationInput = document.getElementById('otherQualification');
+
+    qualificationSelect.addEventListener('change', function() {
+        if (this.value === 'Other') {
+            otherQualificationInput.style.display = 'block';
+            otherQualificationInput.setAttribute('required', 'required');
+        } else {
+            otherQualificationInput.style.display = 'none';
+            otherQualificationInput.removeAttribute('required');
+            otherQualificationInput.value = '';
+            clearError(otherQualificationInput);
+        }
+        clearError(qualificationSelect);
+    });
+
     // Live validation
     signupForm.querySelectorAll('input, select').forEach(input => {
         if(input.hasAttribute('required')){
@@ -226,6 +244,12 @@ document.addEventListener('DOMContentLoaded', function() {
             else if((input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email') && input.value.trim()!=='' && !input.validity.valid){ showError(input,input.title||'Invalid format.'); isValid=false; }
             else clearError(input);
         });
+
+        // Special validation for qualification
+        if (qualificationSelect.value === 'Other' && otherQualificationInput.value.trim() === '') {
+            showError(otherQualificationInput, 'Please specify the qualification.');
+            isValid = false;
+        }
 
         if(parseInt(ageInput.value)<17 || parseInt(ageInput.value)>50){ showError(dobInput,'Applicant must be at least 17 years old and not greater than 50.'); isValid=false; }
         if(districtSelect.value===''){ showError(districtSelect,'Please select a district.'); isValid=false; }

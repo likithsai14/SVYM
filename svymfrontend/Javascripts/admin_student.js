@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     const staffNameInput = document.getElementById('staffName');
     const mobiliserSelect = document.getElementById('mobiliserName'); // dropdown
     const mobiliserNameText = document.getElementById('mobiliserNameText');
+    const qualificationSelect = document.getElementById('qualification');
+    const otherQualificationInput = document.getElementById('otherQualification');
+    const otherQualificationLabel = document.querySelector('label[for="otherQualification"]');
 
     const addStudentsBtn = document.getElementById('addStudentsBtn');
     const viewRequestsBtn = document.getElementById('viewRequestsBtn');
@@ -71,6 +74,21 @@ document.addEventListener('DOMContentLoaded', async function () {
         clearError(referralSource);
     });
 
+    qualificationSelect.addEventListener('change', function() {
+        if (this.value === 'Other') {
+            otherQualificationLabel.style.display = 'block';
+            otherQualificationInput.style.display = 'block';
+            otherQualificationInput.setAttribute('required', 'required');
+        } else {
+            otherQualificationLabel.style.display = 'none';
+            otherQualificationInput.style.display = 'none';
+            otherQualificationInput.removeAttribute('required');
+            otherQualificationInput.value = '';
+        }
+        clearError(qualificationSelect);
+        clearError(otherQualificationInput);
+    });
+
     // ------------------------------
     // Error handling spans
     // ------------------------------
@@ -79,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const spanId = input.id + 'Error';
         errorSpans[input.id] = document.getElementById(spanId);
     });
+    errorSpans['otherQualification'] = document.getElementById('otherQualificationError');
 
     function showError(input, message) {
         const span = errorSpans[input.id];
@@ -229,6 +248,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 dob: st.dob,
                 age:  st.age,
                 education: st.qualification,
+                otherQualification: st.otherQualification,
                 districtName: st.districtName,
                 talukName: st.talukName,
                 villageName: st.villageName,
@@ -349,6 +369,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('dob').value = student.dob;
         document.getElementById('age').value = student.age;
         document.getElementById('qualification').value = student.education;
+        document.getElementById('qualification').dispatchEvent(new Event('change'));
+        document.getElementById('otherQualification').value = student.otherQualification;
         document.getElementById('villageName').value = student.villageName;
         document.getElementById('districtName').value = student.districtName;
         districtSelect.dispatchEvent(new Event('change'));
