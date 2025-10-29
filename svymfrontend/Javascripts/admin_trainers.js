@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const formTrainerExpertise = document.getElementById("formTrainerExpertise");
   const formTrainerContact = document.getElementById("formTrainerMobile");
   const formTrainerEmail = document.getElementById("formTrainerEmail");
-  const formTrainerSecurityQuestion = document.getElementById("formTrainerSecurityQuestion");
-  const formTrainerSecurityAnswer = document.getElementById("formTrainerSecurityAnswer");
   const formTrainerMessage = document.getElementById("trainerFormMessage");
   const generatedUserId = document.getElementById("generatedUserId");
 
@@ -81,8 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
         formTrainerExpertise.value = trainerToEdit.expertise || "";
         formTrainerContact.value = trainerToEdit.mobile || "";
         formTrainerEmail.value = trainerToEdit.email || "";
-        formTrainerSecurityQuestion.value = trainerToEdit.securityQuestion || "";
-        formTrainerSecurityAnswer.value = trainerToEdit.securityAnswer || "";
         formTrainerId.setAttribute("disabled", "disabled");
         trainerModal.classList.add("show");
         trainerModal.classList.remove("hide");
@@ -143,11 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      if (!formTrainerSecurityQuestion.value || !formTrainerSecurityAnswer.value) {
-        showFormMessage(formTrainerMessage, "error", "Please provide security question and answer.");
-        return;
-      }
-
       if (formTrainerContact.value) {
         const mobileRegex = /^\d{10}$/; // exactly 10 digits
         if (!mobileRegex.test(formTrainerContact.value)) {
@@ -161,8 +152,6 @@ document.addEventListener("DOMContentLoaded", function () {
         expertise: formTrainerExpertise.value,
         mobile: formTrainerContact.value,
         email: formTrainerEmail.value,
-        securityQuestion: formTrainerSecurityQuestion.value,
-        securityAnswer: formTrainerSecurityAnswer.value,
       };
 
       if (!isEditMode) {

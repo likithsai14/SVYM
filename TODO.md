@@ -1,16 +1,31 @@
-# TODO: Fix Age Calculation and Live Validation for Date of Birth in signup.js
+# Footer Positioning Fix
 
-- [x] Extract age calculation logic into a reusable `calculateAge` function.
-- [x] Attach `calculateAge` to 'change', 'blur', and 'input' events on `dobInput` to ensure it triggers on user interactions.
-- [x] Modify live validation to include `validity.valid` checks for date inputs (add condition for `input.type === 'date'`).
-- [x] In form submit revalidation, add check for `!input.validity.valid && input.value.trim() !== ''` to catch invalid dates.
-- [x] Ensure age validation (17-50) happens after age calculation.
-- [x] Test the form to verify age calculation and validation work on input, blur, and submit. (Skipped by user)
+## Task Overview
+Move the footer div to be the last child inside the main content container in all affected HTML files to prevent it from appearing as a column on the right side, ensure it doesn't cover the nav, and allow proper scrolling.
 
-# TODO: Implement Title Case Conversion for Candidate Name and Father/Husband Name
+## Affected Files
+- svymfrontend/admin_dashboard.html
+- svymfrontend/admin_students.html
+- svymfrontend/admin_courses.html
+- svymfrontend/admin_reports.html
+- svymfrontend/admin_fee_details.html
+- svymfrontend/admin_field_mobilisers.html
+- svymfrontend/admin_trainers.html
 
-- [x] Add `toTitleCase` function to signup.js.
-- [x] Attach 'input' event listeners to candidateName and fatherHusbandName inputs in signup.js to convert to title case.
-- [x] Add `toTitleCase` function to admin_student.js.
-- [x] Attach 'input' event listeners to candidateName and fatherHusbandName inputs in admin_student.js add/edit modal.
-- [x] Note: trainer_students.js is view-only, no editing capability, so no changes needed.
+## Steps
+1. Analyze each file's structure to identify the main content container.
+2. Move `<div id="footer"></div>` to be the last child inside the main content div/container.
+3. Verify scrolling works by checking CSS (e.g., overflow settings).
+4. Test changes if possible.
+
+## Progress
+- [x] Read and edit admin_dashboard.html
+- [x] Read and edit admin_students.html
+- [x] Read and edit admin_courses.html
+- [x] Read and edit admin_reports.html
+- [x] Read and edit admin_fee_details.html
+- [x] Read and edit admin_field_mobilisers.html
+- [x] Read and edit admin_trainers.html
+- [x] Verify CSS for scrolling in admin_dashboard.css
+- [x] Add overflow-x: hidden to .data-list-container in admin_field_mobilisers.html
+- [x] Add overflow-x: hidden to .container.main-content in admin_dashboard.css

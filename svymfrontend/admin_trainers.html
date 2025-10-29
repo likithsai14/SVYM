@@ -50,11 +50,14 @@
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
+      overflow: auto !important;
     }
 
     .data-list-container {
       width: 100%;
       max-width: 1200px;
+      height: 100vh;
+      overflow-y: auto;
       background-color: var(--white-bg);
       border-radius: 12px;
       box-shadow: var(--box-shadow);
@@ -441,6 +444,7 @@
       <span id="page-info" class="page-info">Page 1 of 1</span>
       <button id="nextBtn" class="page-button">Next</button>
     </div>
+    <div id="footer"></div>
   </div>
 
   <!-- Add Trainer Modal -->
@@ -492,18 +496,6 @@
         </div>
 
         <!-- Security Question -->
-        <div class="form-group">
-          <label for="formTrainerSecurityQuestion">Security Question:</label>
-          <input type="text" id="formTrainerSecurityQuestion" name="formTrainerSecurityQuestion" required />
-          <span id="formTrainerSecurityQuestionError" class="error-message"></span>
-        </div>
-
-        <!-- Security Answer -->
-        <div class="form-group">
-          <label for="formTrainerSecurityAnswer">Security Answer:</label>
-          <input type="text" id="formTrainerSecurityAnswer" name="formTrainerSecurityAnswer" required />
-          <span id="formTrainerSecurityAnswerError" class="error-message"></span>
-        </div>
 
         <!-- Form message -->
         <div id="trainerFormMessage" class="form-message"></div>
@@ -524,5 +516,6 @@
 
 
   <script src="Javascripts/admin_trainers.js" defer></script>
+  <script src="Javascripts/footer.js"></script>
 </body>
 </html>

@@ -8,8 +8,6 @@ const TrainerSchema = new mongoose.Schema({
   email: { type: String },
   mobile: { type: String },
   name: { type: String, required: true },
-  securityQuestion: { type: String, required: true },
-  securityAnswer: { type: String, required: true },
   status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
   expertise: { type: String, required: true },
 }, {

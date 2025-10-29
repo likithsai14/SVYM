@@ -57,7 +57,6 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
   margin-top: 30px;
-  max-height: 70vh; /* Adjust height as needed */
   overflow-y: auto; /* Enable vertical scrolling */
   padding-right: 10px; /* Optional, avoids content cut off with scrollbar */
 }

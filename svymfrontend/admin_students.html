@@ -50,7 +50,8 @@
             width: 100%;
             max-width: 1200px;
             height: 100vh;
-            max-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
             background-color: var(--white-bg);
             border-radius: 12px;
             box-shadow: var(--box-shadow);
@@ -330,6 +331,7 @@
             <span id="paginationInfo" class="page-info">Page 1 of 1</span>
             <button id="nextPage" class="page-button">Next</button>
         </div>
+        <div id="footer"></div>
     </div>
 
     <!-- =================== Add/Edit Student Modal =================== -->
@@ -644,5 +646,6 @@
     <script src="Javascripts/auth.js"></script>
     <script src="Javascripts/modal.js"></script>
     <script src="Javascripts/admin_student.js"></script>
+    <script src="Javascripts/footer.js"></script>
 </body>
 </html>

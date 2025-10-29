@@ -19,6 +19,7 @@ body {
   position: relative;
   z-index: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
   height: calc(100vh - 50px);
@@ -389,3 +390,42 @@ body {
   background-color: #dc3545;
   color: #fff;
 }
+
+/* Footer Styles */
+.footer-container {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 20px 0;
+  text-align: center;
+  border-top: 1px solid #e9ecef;
+  margin-top: 20px;
+}
+
+.footer-container footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-links {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: #007bff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-copyright {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+
