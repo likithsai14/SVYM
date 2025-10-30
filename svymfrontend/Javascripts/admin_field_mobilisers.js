@@ -19,6 +19,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const generatedUserIdDiv = document.getElementById("generatedUserId");
   const adminApprovalMessageDiv = document.getElementById("adminapprovalMessage");
 
+  // Title case conversion for field mobiliser name in add/edit modal
+  const fieldMobiliserNameInput = document.getElementById('FieldMobiliserName');
+  if (fieldMobiliserNameInput) {
+    fieldMobiliserNameInput.addEventListener('input', function() {
+      this.value = toTitleCase(this.value);
+    });
+  }
+
   const errorSpans = {
     FieldMobiliserName: document.getElementById("FieldMobiliserNameError"),
     FieldMobiliserEmailID: document.getElementById("FieldMobiliserEmailIDError"),
@@ -220,24 +228,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   searchBtn.addEventListener("click", handleSearch);
   searchInput.addEventListener("keyup", e => { if (e.key === "Enter") handleSearch(); });
 
+  // ------------------------- Helper function to clear errors
   // -------------------------
-  // Modal Controls
-  // -------------------------
-  addfieldmobiliserBtn.addEventListener("click", () => {
-    // Clear previous messages
-    messageDiv.style.display = "none";
-    generatedUserIdDiv.style.display = "none";
-    adminApprovalMessageDiv.style.display = "none";
-
-    // Clear previous input errors
+  function clearAllErrors() {
     signupForm.querySelectorAll("input, select").forEach(input => {
       input.classList.remove("input-error");
       const errorSpan = errorSpans[input.id];
       if (errorSpan) errorSpan.textContent = "";
     });
+  }
 
-    modal.classList.add("show");
-    // Ensure Add mode UI
+  // ------------------------- Helper function to clear messages
+  // -------------------------
+  function clearMessages() {
+    messageDiv.style.display = "none";
+    generatedUserIdDiv.style.display = "none";
+    adminApprovalMessageDiv.style.display = "none";
+  }
+
+  // ------------------------- Helper function to reset modal to add mode
+  // -------------------------
+  function resetModalToAddMode() {
     const form = document.getElementById('fieldMobilizerForm');
     if (form) {
       const userIdInput = form.querySelector('#FieldMobiliserUserId');
@@ -246,16 +257,42 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (modalTitle) modalTitle.textContent = 'Add FieldMobiliser Data';
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.textContent = 'Add Field Mobiliser';
-      // also clear inputs
+      // clear inputs
       form.querySelectorAll('input').forEach(inp => { if (inp.type !== 'hidden') inp.value = ''; });
       if (generatedUserIdDiv) generatedUserIdDiv.style.display = 'none';
     }
+  }
+
+  // ------------------------- Helper function to close modal
+  // -------------------------
+  function closeModal() {
+    clearAllErrors();
+    clearMessages();
+    modal.classList.remove("show");
+  }
+
+  // ------------------------- Window click to close modal
+  // -------------------------
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
   });
-  closeModalBtn.addEventListener("click", () => modal.classList.remove("show"));
+
+  // ------------------------- Modal Controls
+  // -------------------------
+  addfieldmobiliserBtn.addEventListener("click", () => {
+    clearAllErrors();
+    clearMessages();
+    resetModalToAddMode();
+    modal.classList.add("show");
+  });
+
+  closeModalBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", () => {
     sideMenu.classList.remove("active");
     overlay.classList.remove("active");
-    modal.classList.remove("show");
+    closeModal();
   });
 
   // -------------------------
@@ -287,6 +324,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (input.hasAttribute("required") && input.value.trim() === "") showError(input, "This field is required.");
       if (input.hasAttribute("pattern") && !input.validity.valid) showError(input, input.title || "Invalid format.");
     });
+    // Specific validation for name fields (only alphabets and spaces)
+    if(input.id === 'FieldMobiliserName'){
+        input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+        input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+    }
+    // Specific validation for mobile (only digits, 10 digits)
+    if(input.id === 'FieldMobiliserMobileNo'){
+        input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+        input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+    }
+    // Specific validation for email
+    if(input.id === 'FieldMobiliserEmailID'){
+        input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) showError(input,'Invalid email format.'); else clearError(input); });
+        input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) showError(input,'Invalid email format.'); else clearError(input); });
+    }
   });
 
   signupForm.addEventListener("submit", async e => {

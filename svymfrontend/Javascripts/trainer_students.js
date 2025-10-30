@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const rowsPerPage = 5;
   let currentPage = 1;
   let studentsData = [];
+  let filteredData = [];
   let trainerCourses = [];
   let enrollments = [];
 
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       enrollments = enrollData || [];
 
       populateFilters();
+      currentPage = 1;
       applyFilters();
     } catch (error) {
       console.error("Error fetching trainer data:", error);
@@ -42,11 +44,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  const allStatuses = ["All", "Approved", "Pending", "Rejected", "Inactive"];
+  const allStatuses = [
+    { value: "All", display: "All" },
+    { value: "Active", display: "Active" },
+    { value: "followUp1", display: "Follow Up 1" },
+    { value: "followUp2", display: "Follow Up 2" },
+    { value: "droppedOut", display: "Dropped Out" }
+  ];
 
   // ✅ Populate filters dynamically
   function populateFilters() {
-    statusFilter.innerHTML = allStatuses.map(s => `<option value="${s}">${s}</option>`).join("");
+    statusFilter.innerHTML = allStatuses.map(s => `<option value="${s.value}">${s.display}</option>`).join("");
 
     courseFilter.innerHTML = [
       `<option value="All">All</option>`,
@@ -142,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const statusValue = statusFilter.value.toLowerCase();
     const courseValue = courseFilter.value;
 
-    const filtered = studentsData.filter(s => {
+    filteredData = studentsData.filter(s => {
       const courseNames = getStudentCourses(s.userId).toLowerCase();
       const matchesSearch =
         (s.candidateName || "").toLowerCase().includes(searchTerm) ||
@@ -150,7 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const matchesStatus =
         statusValue === "all" ||
-        (s.accountStatus.toLowerCase() === statusValue || s.approvalStatus.toLowerCase() === statusValue);
+        (s.accountStatus.toLowerCase() === statusValue);
 
       const matchesCourse =
         courseValue === "All" || getStudentCourses(s.userId).split(", ").some(c => trainerCourses.find(tc => tc.courseName === c && tc.courseId === courseValue));
@@ -158,26 +166,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       return matchesSearch && matchesStatus && matchesCourse;
     });
 
-    currentPage = 1;
-    displayPage(currentPage, filtered);
-    return filtered;
-  }
+    // Adjust currentPage if it's beyond the total pages
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    if (currentPage > totalPages) {
+      currentPage = totalPages || 1;
+    }
 
-  function displayPage(page, data) {
-    renderTable(data);
+    renderTable(filteredData);
   }
 
   // ✅ Pagination buttons
   prevBtn.addEventListener("click", () => {
-    if (currentPage > 1) currentPage--;
-    applyFilters();
+    if (currentPage > 1) {
+      currentPage--;
+      renderTable(filteredData);
+    }
   });
 
   nextBtn.addEventListener("click", () => {
-    const filtered = applyFilters();
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    if (currentPage < totalPages) currentPage++;
-    applyFilters();
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderTable(filteredData);
+    }
   });
 
   searchInput.addEventListener("input", applyFilters);

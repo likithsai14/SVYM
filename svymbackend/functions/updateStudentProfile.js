@@ -4,7 +4,7 @@ const User = require('./models/User');
 // Allowed fields for profile update — grouped by sections is fine but here we accept all editable fields
 const ALLOWED_FIELDS = [
   'candidateName','fatherHusbandName','villageName','talukName','districtName','dob','age',
-  'familyMembers','qualification','caste','referralSource','staffName','gender','tribal','pwd',
+  'familyMembers','qualification','otherQualification','caste','otherCaste','referralSource','staffName','gender','tribal','pwd',
   'aadharNumber','candidatePhone','parentPhone','supportedProject','email','fieldMobiliserId','fieldMobiliserName'
 ];
 

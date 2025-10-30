@@ -223,7 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
   deleteModal.innerHTML = `
     <div class="modal-content" style="max-width:400px;">
       <h3>Delete Course</h3>
-      <p id="deleteCourseInfo"></p>
+      <hr>
+      <div id="deleteCourseInfo" class="delete-details"></div>
+      <hr>
       <div style="margin-top:20px; text-align:right;">
         <button id="cancelDelete" class="icon-btn" style="background:#ccc; width: auto; padding: 5px 10px;">Cancel</button>
         <button id="confirmDelete" class="icon-btn" style="background:#e74c3c; color:white;width: auto; padding: 5px 10px;">Delete</button>
@@ -243,9 +245,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     courseToDelete = courseId;
     deleteInfo.innerHTML = `
-      <strong>Course ID:</strong> ${course.courseId}<br>
-      <strong>Name:</strong> ${course.courseName}<br>
-      <strong>Trainer:</strong> ${course.trainerName || "N/A"}
+      <div class="delete-detail-row"><span class="label">Course ID:</span> <span class="value">${course.courseId}</span></div>
+      <div class="delete-detail-row"><span class="label">Name:</span> <span class="value">${course.courseName}</span></div>
+      <div class="delete-detail-row"><span class="label">Trainer:</span> <span class="value">${course.trainerName || "N/A"}</span></div>
     `;
     deleteModal.classList.add("show");
   }
@@ -313,6 +315,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const expertise = document.getElementById("formTrainerExpertise").value.trim();
       const securityQuestion = document.getElementById("formTrainerSecurityQuestion").value.trim();
       const securityAnswer = document.getElementById("formTrainerSecurityAnswer").value.trim();
+
+      // Validation for new trainer
+      if (!name || !email || !mobile || !expertise || !securityQuestion || !securityAnswer) {
+        alert("Please fill in all required fields for the new trainer.");
+        return;
+      }
+      if (!/^[a-zA-Z\s]+$/.test(name)) {
+        alert("Trainer name must contain only alphabets and spaces.");
+        return;
+      }
+      if (!/^\d{10}$/.test(mobile)) {
+        alert("Trainer mobile number must be exactly 10 digits.");
+        return;
+      }
 
       trainerPayload = {
         isNewTrainer: true,

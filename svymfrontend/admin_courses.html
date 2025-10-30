@@ -62,6 +62,89 @@
     border: 1px solid #f5c6cb;
 }
 
+/* Delete Course Modal Styles */
+#deleteCourseModal .modal-content {
+    text-align: center;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    max-width: 400px;
+    margin: auto;
+}
+
+#deleteCourseModal h3 {
+    color: #dc3545;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+#deleteCourseModal p {
+    margin-bottom: 20px;
+    color: #333;
+    line-height: 1.5;
+}
+
+#deleteCourseModal button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 0 5px;
+}
+
+#deleteCourseModal #cancelDelete {
+    background-color: #6c757d;
+    color: white;
+}
+
+#deleteCourseModal #cancelDelete:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+#deleteCourseModal #confirmDelete {
+    background-color: #dc3545;
+    color: white;
+}
+
+#deleteCourseModal #confirmDelete:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+#deleteCourseModal hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 15px 0;
+}
+
+#deleteCourseModal .delete-details {
+    padding: 10px 0;
+}
+
+#deleteCourseModal .delete-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#deleteCourseModal .delete-detail-row .label {
+    font-weight: bold;
+    color: #555;
+    flex: 0 0 100px;
+}
+
+#deleteCourseModal .delete-detail-row .value {
+    color: #333;
+    text-align: right;
+    flex: 1;
+}
+
   </style>
 </head>
 <body>

@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const qualificationSelect = document.getElementById('qualification');
     const otherQualificationInput = document.getElementById('otherQualification');
     const otherQualificationLabel = document.querySelector('label[for="otherQualification"]');
+    const otherCasteInput = document.getElementById('otherCaste');
+    const otherCasteLabel = document.querySelector('label[for="otherCaste"]');
 
     const addStudentsBtn = document.getElementById('addStudentsBtn');
     const viewRequestsBtn = document.getElementById('viewRequestsBtn');
@@ -98,6 +100,29 @@ document.addEventListener('DOMContentLoaded', async function () {
         errorSpans[input.id] = document.getElementById(spanId);
     });
     errorSpans['otherQualification'] = document.getElementById('otherQualificationError');
+    errorSpans['otherCaste'] = document.getElementById('otherCasteError');
+
+    // Live validation
+    studentForm.querySelectorAll('input, select').forEach(input => {
+        if(input.hasAttribute('required')){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='') clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()==='') showError(input,'This field is required.'); else clearError(input); });
+        }
+        if(input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email'){
+            input.addEventListener('input',()=>{ if(!input.validity.valid) showError(input,input.title||'Invalid format.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(!input.validity.valid && input.value.trim()!=='') showError(input,input.title||'Invalid format.'); else clearError(input); });
+        }
+        // Specific validation for name fields (only alphabets and spaces)
+        if(input.id === 'candidateName' || input.id === 'fatherHusbandName'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+        }
+        // Specific validation for mobile (only digits, 10 digits)
+        if(input.id === 'candidatePhone' || input.id === 'parentPhone'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+        }
+    });
 
     function showError(input, message) {
         const span = errorSpans[input.id];
@@ -202,29 +227,60 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     casteSelect.addEventListener('change', function () {
+        const tribalSelect = document.getElementById('tribal');
+        if (this.value === 'ST') {
+            tribalSelect.disabled = false;
+            tribalSelect.required = true;
+        } else {
+            tribalSelect.disabled = true;
+            tribalSelect.required = false;
+            tribalSelect.value = '';
+        }
+        if (this.value === 'Others') {
+            otherCasteLabel.style.display = 'block';
+            otherCasteInput.style.display = 'block';
+            otherCasteInput.setAttribute('required', 'required');
+        } else {
+            otherCasteLabel.style.display = 'none';
+            otherCasteInput.style.display = 'none';
+            otherCasteInput.removeAttribute('required');
+            otherCasteInput.value = '';
+        }
         clearError(casteSelect);
+        clearError(otherCasteInput);
     });
 
     // ------------------------------
     // DOB → Age
     // ------------------------------
-    dobInput.addEventListener('change', function () {
-        const dob = new Date(this.value);
-        if (isNaN(dob)) { ageInput.value = ''; showError(dobInput, 'Invalid date'); return; }
+    function calculateAge() {
+        const dobValue = dobInput.value;
+        const dob = new Date(dobValue);
+        if (isNaN(dob) || dobValue === '') {
+            ageInput.value = '';
+            if (dobValue !== '') showError(dobInput, 'Please enter a valid date.');
+            return;
+        }
         clearError(dobInput);
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();
         const m = today.getMonth() - dob.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
         ageInput.value = age;
-        if (age < 18 || age > 45) showError(ageInput,'Age must be 18-45'); else clearError(ageInput);
-    });
+        if (age < 17 || age > 50) showError(dobInput, 'Applicant must be at least 17 years old and not greater than 50.');
+        else clearError(dobInput);
+    }
+
+    dobInput.addEventListener('change', calculateAge);
+    dobInput.addEventListener('blur', calculateAge);
+    dobInput.addEventListener('input', calculateAge);
 
     // ------------------------------
     // Fetch & Render Students
     // ------------------------------
     let studentsData = [];
     let currentPage = 1;
+    let totalPages = 1;
     const rowsPerPage = 7;
 
     async function fetchStudents() {
@@ -249,6 +305,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 age:  st.age,
                 education: st.qualification,
                 otherQualification: st.otherQualification,
+                otherCaste: st.otherCaste,
                 districtName: st.districtName,
                 talukName: st.talukName,
                 villageName: st.villageName,
@@ -292,14 +349,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    function renderStudentsTable() {
-        studentTableBody.innerHTML = "";
+    function getFilteredData() {
         const searchValue = searchInput.value.toLowerCase();
-        const filtered = studentsData.filter(student =>
+        return studentsData.filter(student =>
             student.candidateName.toLowerCase().includes(searchValue)
         );
+    }
 
-        const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+    function renderStudentsTable() {
+        studentTableBody.innerHTML = "";
+        const filtered = getFilteredData();
+
+        totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
         if (currentPage > totalPages) currentPage = totalPages;
 
         const start = (currentPage - 1) * rowsPerPage;
@@ -338,8 +399,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function updatePaginationInfo() {
-        const total = Math.ceil(studentsData.length / rowsPerPage) || 1;
+        const filtered = getFilteredData();
+        const total = Math.ceil(filtered.length / rowsPerPage) || 1;
         document.getElementById('paginationInfo').textContent = `Page ${currentPage} of ${total}`;
+
+        // Disable/Enable Previous button
+        const prevBtn = document.getElementById('prevPage');
+        prevBtn.disabled = currentPage === 1;
+
+        // Disable/Enable Next button
+        const nextBtn = document.getElementById('nextPage');
+        nextBtn.disabled = currentPage === total;
     }
 
     // ------------------------------
@@ -376,6 +446,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         districtSelect.dispatchEvent(new Event('change'));
         document.getElementById('talukName').value = student.talukName;
         document.getElementById('caste').value = student.caste;
+        document.getElementById('caste').dispatchEvent(new Event('change'));
+        document.getElementById('otherCaste').value = student.otherCaste;
         document.getElementById('aadharNumber').value = student.aadharNumber;
         document.getElementById('tribal').value = student.tribal;
         document.getElementById('pwd').value = student.pwd;
@@ -394,6 +466,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         e.preventDefault();
         const formData = new FormData(studentForm);
         const studentObj = Object.fromEntries(formData.entries());
+
+        // Special validation for qualification
+        if (qualificationSelect.value === 'Other' && otherQualificationInput.value.trim() === '') {
+            showError(otherQualificationInput, 'Please specify other qualification');
+            return;
+        }
+
+        // Special validation for caste
+        if (casteSelect.value === 'Others' && otherCasteInput.value.trim() === '') {
+            showError(otherCasteInput, 'Please specify other caste');
+            return;
+        }
 
         if (!/^\d{10}$/.test(studentObj.candidatePhone)) {
             showError(document.getElementById('candidatePhone'), 'Mobile must be exactly 10 digits');
@@ -455,9 +539,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             ]},
             { title: 'Other Details', fields: [
                 ['Caste', student.caste],
+                ['Other Caste', student.otherCaste || 'N/A'],
                 ['Tribal', student.tribal],
                 ['Pwd', student.pwd],
-                ['Education', student.education],
+                ['Education', student.education === 'Other' ? (student.otherQualification || 'N/A') : student.education],
                 ['Creation Date', student.creationDate]
             ]}
         ];

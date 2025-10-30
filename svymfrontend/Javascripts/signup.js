@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const districtSelect = document.getElementById('districtName');
     const talukSelect = document.getElementById('talukName');
     const caste = document.getElementById('caste');
+    const otherCaste = document.getElementById('otherCaste');
     const referralSource = document.getElementById('referralSource');
     const staffNameDiv = document.getElementById('staffNameDiv');
     const staffNameInput = document.getElementById('staffName');
@@ -173,6 +174,15 @@ document.addEventListener('DOMContentLoaded', function() {
             tribalSelect.required = false;
             tribalSelect.value = '';
         }
+        if (this.value === 'Others') {
+            otherCaste.style.display = 'block';
+            otherCaste.setAttribute('required', 'required');
+        } else {
+            otherCaste.style.display = 'none';
+            otherCaste.removeAttribute('required');
+            otherCaste.value = '';
+            clearError(otherCaste);
+        }
         clearError(caste);
     });
 
@@ -222,6 +232,16 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('input',()=>{ if(!input.validity.valid) showError(input,input.title||'Invalid format.'); else clearError(input); });
             input.addEventListener('blur',()=>{ if(!input.validity.valid && input.value.trim()!=='') showError(input,input.title||'Invalid format.'); else clearError(input); });
         }
+        // Specific validation for name fields (only alphabets and spaces)
+        if(input.id === 'candidateName' || input.id === 'fatherHusbandName'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+        }
+        // Specific validation for mobile (only digits, 10 digits)
+        if(input.id === 'candidatePhone' || input.id === 'parentPhone'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+        }
     });
 
     signupForm.addEventListener('submit', async function(event){
@@ -248,6 +268,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Special validation for qualification
         if (qualificationSelect.value === 'Other' && otherQualificationInput.value.trim() === '') {
             showError(otherQualificationInput, 'Please specify the qualification.');
+            isValid = false;
+        }
+
+        // Special validation for caste
+        if (caste.value === 'Others' && otherCaste.value.trim() === '') {
+            showError(otherCaste, 'Please specify the caste.');
+            isValid = false;
+        }
+
+        // Special validation for tribal status
+        if (caste.value === 'ST' && tribal.value === '') {
+            showError(tribal, 'Please select tribal status.');
             isValid = false;
         }
 

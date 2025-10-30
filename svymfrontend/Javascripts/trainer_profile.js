@@ -68,37 +68,119 @@ document.addEventListener("DOMContentLoaded", async () => {
     editModal.style.display = 'flex';
   });
 
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
+  // Error message spans
+  const errorSpans = {
+    edit_trainerName: document.getElementById('edit_trainerNameError'),
+    edit_expertise: document.getElementById('edit_expertiseError'),
+    edit_email: document.getElementById('edit_emailError'),
+    edit_mobile: document.getElementById('edit_mobileError')
+  };
+
+  function showError(inputElement, message) {
+    const errorSpan = errorSpans[inputElement.id];
+    if (errorSpan) {
+      errorSpan.textContent = message;
+      inputElement.classList.add('input-error');
+    }
+  }
+
+  function clearError(inputElement) {
+    const errorSpan = errorSpans[inputElement.id];
+    if (errorSpan) {
+      errorSpan.textContent = '';
+      inputElement.classList.remove('input-error');
+    }
+  }
+
+  // Title case for name
+  document.getElementById('edit_trainerName').addEventListener('input', function() {
+    this.value = toTitleCase(this.value);
+  });
+
+  // Live validation
+  const editForm = document.getElementById('editProfileForm');
+  editForm.querySelectorAll('input').forEach(input => {
+    if (input.hasAttribute('required')) {
+      input.addEventListener('input', () => { if (input.value.trim() !== '') clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() === '') showError(input, 'This field is required.'); else clearError(input); });
+    }
+    if (input.hasAttribute('pattern') || input.type === 'email') {
+      input.addEventListener('input', () => { if (!input.validity.valid) showError(input, input.title || 'Invalid format.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (!input.validity.valid && input.value.trim() !== '') showError(input, input.title || 'Invalid format.'); else clearError(input); });
+    }
+    // Specific validation for name field (only alphabets and spaces)
+    if (input.id === 'edit_trainerName') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+    }
+    // Specific validation for mobile (only digits, 10 digits)
+    if (input.id === 'edit_mobile') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && !/^\d{10}$/.test(input.value)) showError(input, 'Mobile number must be exactly 10 digits.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && !/^\d{10}$/.test(input.value)) showError(input, 'Mobile number must be exactly 10 digits.'); else clearError(input); });
+    }
+  });
+
   // Edit profile form submit
-  document.getElementById('editProfileForm').addEventListener('submit', async (ev) => {
+  editForm.addEventListener('submit', async (ev) => {
     ev.preventDefault();
+
+    // Clear previous errors
+    Object.values(errorSpans).forEach(span => { if (span) span.textContent = ''; });
+    editForm.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+
+    let isValid = true;
+
+    // Revalidate required fields
+    editForm.querySelectorAll('input[required]').forEach(input => {
+      if (input.value.trim() === '') {
+        showError(input, 'This field is required.');
+        isValid = false;
+      } else {
+        clearError(input);
+      }
+    });
+
+    // Validate patterns
+    editForm.querySelectorAll('input[pattern], input[type="email"]').forEach(input => {
+      if (input.value.trim() !== '' && !input.validity.valid) {
+        showError(input, input.title || 'Invalid format.');
+        isValid = false;
+      }
+    });
+
+    // Special validations
+    const name = document.getElementById('edit_trainerName').value.trim();
+    const email = document.getElementById('edit_email').value.trim();
+    const mobile = document.getElementById('edit_mobile').value.trim();
+
+    if (!email && !mobile) {
+      showError(document.getElementById('edit_email'), 'Please provide at least one contact method (email or mobile).');
+      isValid = false;
+    }
+
+    if (!isValid) {
+      const msgDiv = document.getElementById('editProfileMessage');
+      msgDiv.style.display = 'block';
+      msgDiv.className = 'message error';
+      msgDiv.textContent = 'Please correct the errors in the form.';
+      return;
+    }
+
     const trainerId = sessionUserId;
     if (!trainerId) return alert('Trainer ID missing');
 
     const payload = {
       trainerId: trainerId,
-      name: document.getElementById('edit_trainerName').value.trim(),
+      name: name,
       expertise: document.getElementById('edit_expertise').value.trim(),
-      email: document.getElementById('edit_email').value.trim(),
-      mobile: document.getElementById('edit_mobile').value.trim()
+      email: email,
+      mobile: mobile
     };
-
-    // Validate at least one contact
-    if (!payload.email && !payload.mobile) {
-      const msgDiv = document.getElementById('editProfileMessage');
-      msgDiv.style.display = 'block';
-      msgDiv.className = 'message error';
-      msgDiv.textContent = 'Please provide at least one contact method (email or mobile)';
-      return;
-    }
-
-    // Validate mobile if provided
-    if (payload.mobile && !/^\d{10}$/.test(payload.mobile)) {
-      const msgDiv = document.getElementById('editProfileMessage');
-      msgDiv.style.display = 'block';
-      msgDiv.className = 'message error';
-      msgDiv.textContent = 'Mobile number must be exactly 10 digits';
-      return;
-    }
 
     try {
       const res = await fetch('/.netlify/functions/editTrainer', {

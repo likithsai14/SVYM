@@ -15,6 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const formTrainerMessage = document.getElementById("trainerFormMessage");
   const generatedUserId = document.getElementById("generatedUserId");
 
+  // Title case conversion for trainer name in add/edit modal
+  if (formTrainerName) {
+    formTrainerName.addEventListener('input', function() {
+      this.value = toTitleCase(this.value);
+    });
+  }
+
   // Function to convert to title case
   function toTitleCase(str) {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
@@ -209,6 +216,51 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     });
+  }
+
+  // ------------------ Error handling spans ------------------
+  const errorSpans = {};
+  trainerForm.querySelectorAll('input, select').forEach(input => {
+    const spanId = input.id + 'Error';
+    errorSpans[input.id] = document.getElementById(spanId);
+  });
+
+    // Live validation
+    trainerForm.querySelectorAll('input, select').forEach(input => {
+        if(input.hasAttribute('required')){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='') clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()==='') showError(input,'This field is required.'); else clearError(input); });
+        }
+        if(input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email'){
+            input.addEventListener('input',()=>{ if(!input.validity.valid) showError(input,input.title||'Invalid format.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(!input.validity.valid && input.value.trim()!=='') showError(input,input.title||'Invalid format.'); else clearError(input); });
+        }
+        // Specific validation for name fields (only alphabets and spaces)
+        if(input.id === 'formTrainerName'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+        }
+        // Specific validation for mobile (only digits, 10 digits)
+        if(input.id === 'formTrainerMobile'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+        }
+    });
+
+  function showError(input, message) {
+    const span = errorSpans[input.id];
+    if (span) {
+      span.textContent = message;
+      input.classList.add('input-error');
+    }
+  }
+
+  function clearError(input) {
+    const span = errorSpans[input.id];
+    if (span) {
+      span.textContent = '';
+      input.classList.remove('input-error');
+    }
   }
 
   // ------------------ Helper Functions ------------------

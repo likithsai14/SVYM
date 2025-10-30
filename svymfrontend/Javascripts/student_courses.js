@@ -76,10 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
               isEnrolled
                 ? `<span class="enrolled-label">Already Enrolled</span>`
                 : course.courseStatus === 'Completed'
-                ? `<span class="enrolled-label">Course Completed</span>`
-                : `<button class="apply-btn" data-id="${course.courseId}">
-                     <i class="fas fa-paper-plane"></i> Apply Course
-                   </button>`
+                  ? `<span class="enrolled-label">Course Completed</span>`
+                  : course.courseStatus === 'Ongoing' 
+                    ? `<span class="enrolled-label">Ongoing Course</span>`
+                    :`<button class="apply-btn" data-id="${course.courseId}">
+                        <i class="fas fa-paper-plane"></i> Apply Course
+                      </button>`
             }
           </div>
         </div>

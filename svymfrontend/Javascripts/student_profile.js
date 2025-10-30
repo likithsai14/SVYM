@@ -35,12 +35,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       setText('dob', user.dob);
       setText('age', user.age);
       setText('familyMembers', user.familyMembers);
-      setText('qualification', user.qualification);
-      setText('caste', user.caste);
+      // Display qualification: if "Other", show otherQualification
+      setText('qualification', user.qualification === "Other" ? (user.otherQualification || "Other") : user.qualification);
+      // Display caste: if "Others", show otherCaste
+      setText('caste', user.caste === "Others" ? (user.otherCaste || "Others") : user.caste);
       setText('referralSource', user.referralSource);
       setText('staffName', user.staffName);
       setText('gender', user.gender);
-      setText('tribal', user.tribal);
+      // Display tribal: show if specified and not "None", else "No"
+      setText('tribal', user.tribal && user.tribal !== "None" ? user.tribal : "No");
       setText('pwd', user.pwd);
       setText('aadhaarNumber', user.aadharNumber);
       setText('candidatePhone', user.candidatePhone);
@@ -207,6 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     editAgeInput.value = user.age || '';
     document.getElementById('edit_familyMembers').value = user.familyMembers || '';
     document.getElementById('edit_qualification').value = user.qualification || '';
+    document.getElementById('edit_otherQualification').value = user.otherQualification || '';
     document.getElementById('edit_email').value = user.email || '';
     document.getElementById('edit_aadharNumber').value = user.aadharNumber || '';
     document.getElementById('edit_candidatePhone').value = user.candidatePhone || '';
@@ -214,18 +218,202 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('edit_gender').value = user.gender || '';
     editMobiliserSelect.value = user.fieldMobiliserId || '';
     document.getElementById('edit_caste').value = user.caste || '';
+    document.getElementById('edit_otherCaste').value = user.otherCaste || '';
     document.getElementById('edit_tribal').value = user.tribal || '';
     document.getElementById('edit_pwd').value = user.pwd || '';
     document.getElementById('edit_supportedProject').value = user.supportedProject || '';
     document.getElementById('edit_referralSource').value = user.referralSource || '';
     editReferralSource.dispatchEvent(new Event('change'));
     document.getElementById('edit_staffName').value = user.staffName || '';
+    // Trigger change events to show/hide additional fields
+    document.getElementById('edit_caste').dispatchEvent(new Event('change'));
+    document.getElementById('edit_qualification').dispatchEvent(new Event('change'));
     editModal.style.display = 'flex';
   });
 
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
+  // Error message spans
+  const errorSpans = {
+    edit_candidateName: document.getElementById('edit_candidateNameError'),
+    edit_fatherHusbandName: document.getElementById('edit_fatherHusbandNameError'),
+    edit_districtName: document.getElementById('edit_districtNameError'),
+    edit_talukName: document.getElementById('edit_talukNameError'),
+    edit_villageName: document.getElementById('edit_villageNameError'),
+    edit_dob: document.getElementById('edit_dobError'),
+    edit_familyMembers: document.getElementById('edit_familyMembersError'),
+    edit_qualification: document.getElementById('edit_qualificationError'),
+    edit_otherQualification: document.getElementById('edit_otherQualificationError'),
+    edit_email: document.getElementById('edit_emailError'),
+    edit_aadharNumber: document.getElementById('edit_aadharNumberError'),
+    edit_candidatePhone: document.getElementById('edit_candidatePhoneError'),
+    edit_parentPhone: document.getElementById('edit_parentPhoneError'),
+    edit_gender: document.getElementById('edit_genderError'),
+    edit_mobiliserName: document.getElementById('edit_mobiliserNameError'),
+    edit_caste: document.getElementById('edit_casteError'),
+    edit_otherCaste: document.getElementById('edit_otherCasteError'),
+    edit_tribal: document.getElementById('edit_tribalError'),
+    edit_pwd: document.getElementById('edit_pwdError'),
+    edit_referralSource: document.getElementById('edit_referralSourceError'),
+    edit_staffName: document.getElementById('edit_staffNameError')
+  };
+
+  function showError(inputElement, message) {
+    const errorSpan = errorSpans[inputElement.id];
+    if (errorSpan) {
+      errorSpan.textContent = message;
+      inputElement.classList.add('input-error');
+    }
+  }
+
+  function clearError(inputElement) {
+    const errorSpan = errorSpans[inputElement.id];
+    if (errorSpan) {
+      errorSpan.textContent = '';
+      inputElement.classList.remove('input-error');
+    }
+  }
+
+  // Title case for names
+  document.getElementById('edit_candidateName').addEventListener('input', function() {
+    this.value = toTitleCase(this.value);
+  });
+  document.getElementById('edit_fatherHusbandName').addEventListener('input', function() {
+    this.value = toTitleCase(this.value);
+  });
+
+  // Caste change handler for tribal and otherCaste
+  document.getElementById('edit_caste').addEventListener('change', function() {
+    const tribalSelect = document.getElementById('edit_tribal');
+    const otherCasteDiv = document.getElementById('edit_otherCasteDiv');
+    const otherCasteInput = document.getElementById('edit_otherCaste');
+    if (this.value === 'ST') {
+      tribalSelect.disabled = false;
+      tribalSelect.required = true;
+    } else {
+      tribalSelect.disabled = true;
+      tribalSelect.required = false;
+      tribalSelect.value = '';
+    }
+    if (this.value === 'Others') {
+      otherCasteDiv.style.display = 'block';
+      otherCasteInput.setAttribute('required', 'required');
+    } else {
+      otherCasteDiv.style.display = 'none';
+      otherCasteInput.removeAttribute('required');
+      otherCasteInput.value = '';
+      clearError(otherCasteInput);
+    }
+    clearError(this);
+  });
+
+  // Qualification change handler
+  document.getElementById('edit_qualification').addEventListener('change', function() {
+    const otherQualDiv = document.getElementById('edit_otherQualificationDiv');
+    const otherQualInput = document.getElementById('edit_otherQualification');
+    if (this.value === 'Other') {
+      otherQualDiv.style.display = 'block';
+      otherQualInput.setAttribute('required', 'required');
+    } else {
+      otherQualDiv.style.display = 'none';
+      otherQualInput.removeAttribute('required');
+      otherQualInput.value = '';
+      clearError(otherQualInput);
+    }
+    clearError(this);
+  });
+
+  // Live validation
+  const editForm = document.getElementById('editProfileForm');
+  editForm.querySelectorAll('input, select').forEach(input => {
+    if (input.hasAttribute('required')) {
+      input.addEventListener('input', () => { if (input.value.trim() !== '') clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() === '') showError(input, 'This field is required.'); else clearError(input); });
+    }
+    if (input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email') {
+      input.addEventListener('input', () => { if (!input.validity.valid) showError(input, input.title || 'Invalid format.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (!input.validity.valid && input.value.trim() !== '') showError(input, input.title || 'Invalid format.'); else clearError(input); });
+    }
+    // Specific validation for name fields (only alphabets and spaces)
+    if (input.id === 'edit_candidateName' || input.id === 'edit_fatherHusbandName') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+    }
+    // Specific validation for mobile (only digits, 10 digits)
+    if (input.id === 'edit_candidatePhone' || input.id === 'edit_parentPhone') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && !/^\d{10}$/.test(input.value)) showError(input, 'Mobile number must be exactly 10 digits.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && !/^\d{10}$/.test(input.value)) showError(input, 'Mobile number must be exactly 10 digits.'); else clearError(input); });
+    }
+  });
+
   // Edit form submit
-  document.getElementById('editProfileForm').addEventListener('submit', async (ev) => {
+  editForm.addEventListener('submit', async (ev) => {
     ev.preventDefault();
+
+    // Clear previous errors
+    Object.values(errorSpans).forEach(span => { if (span) span.textContent = ''; });
+    editForm.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+
+    let isValid = true;
+
+    // Revalidate required fields
+    editForm.querySelectorAll('input[required], select[required]').forEach(input => {
+      if (input.value.trim() === '') {
+        showError(input, 'This field is required.');
+        isValid = false;
+      } else {
+        clearError(input);
+      }
+    });
+
+    // Validate patterns
+    editForm.querySelectorAll('input[pattern], input[type="email"], input[type="date"]').forEach(input => {
+      if (input.value.trim() !== '' && !input.validity.valid) {
+        showError(input, input.title || 'Invalid format.');
+        isValid = false;
+      }
+    });
+
+    // Special validations
+    const age = parseInt(editAgeInput.value);
+    if (age < 17 || age > 50) {
+      showError(editDobInput, 'Applicant must be at least 17 years old and not greater than 50.');
+      isValid = false;
+    }
+
+    const caste = document.getElementById('edit_caste').value;
+    const tribal = document.getElementById('edit_tribal').value;
+    if (caste === 'ST' && tribal === '') {
+      showError(document.getElementById('edit_tribal'), 'Please select tribal status.');
+      isValid = false;
+    }
+
+    // Special validation for qualification
+    const qualification = document.getElementById('edit_qualification').value;
+    const otherQualInput = document.getElementById('edit_otherQualification');
+    if (qualification === 'Other' && otherQualInput.value.trim() === '') {
+      showError(otherQualInput, 'Please specify the qualification.');
+      isValid = false;
+    }
+
+    // Special validation for caste
+    const otherCasteInput = document.getElementById('edit_otherCaste');
+    if (caste === 'Others' && otherCasteInput.value.trim() === '') {
+      showError(otherCasteInput, 'Please specify the caste.');
+      isValid = false;
+    }
+
+    if (!isValid) {
+      const msgDiv = document.getElementById('editProfileMessage');
+      msgDiv.style.display = 'block';
+      msgDiv.style.color = 'red';
+      msgDiv.textContent = 'Please correct the errors in the form.';
+      return;
+    }
+
     const userId = sessionUserId || (window.__currentUserProfile && window.__currentUserProfile.userId);
     if (!userId) return alert('User ID missing');
     const payload = {
@@ -239,6 +427,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       age: Number(editAgeInput.value) || undefined,
       familyMembers: Number(document.getElementById('edit_familyMembers').value) || undefined,
       qualification: document.getElementById('edit_qualification').value.trim(),
+      otherQualification: document.getElementById('edit_otherQualification').value.trim(),
       email: document.getElementById('edit_email').value.trim(),
       aadharNumber: document.getElementById('edit_aadharNumber').value.trim(),
       candidatePhone: document.getElementById('edit_candidatePhone').value.trim(),
@@ -246,6 +435,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       gender: document.getElementById('edit_gender').value.trim(),
       fieldMobiliserId: document.getElementById('edit_mobiliserName').value.trim(),
       caste: document.getElementById('edit_caste').value.trim(),
+      otherCaste: document.getElementById('edit_otherCaste').value.trim(),
       tribal: document.getElementById('edit_tribal').value.trim(),
       pwd: document.getElementById('edit_pwd').value.trim(),
       supportedProject: document.getElementById('edit_supportedProject').value.trim(),

@@ -461,7 +461,7 @@
                       <span id="emailError" class="error-message"></span>
                     </div>
                     <div class="form-group">
-                      <label for="aadharNumber">Aadhar Number:</label>
+                      <label for="aadharNumber">Aadhaar Number:</label>
                       <input type="text" id="aadharNumber" name="aadharNumber" required pattern="\d{12}" maxlength="12" title="Aadhar number must be 12 digits"/>
                       <span id="aadharNumberError" class="error-message"></span>
                     </div>
@@ -484,7 +484,7 @@
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
-                        <option value="Other">Other</option>
+                        <option value="Transgender">Transgender</option>
                       </select>
                       <span id="genderError" class="error-message"></span>
                     </div>
@@ -501,11 +501,14 @@
                         <option value="Minority">Minority</option>
                         <option value="Others">Others</option>
                       </select>
+                      <label for="otherCaste" style="display:none;">Specify Other Caste:</label>
+                      <input type="text" id="otherCaste" name="otherCaste" style="display:none;" placeholder="Enter caste">
                       <span id="casteError" class="error-message"></span>
+                      <span id="otherCasteError" class="error-message"></span>
                     </div>
                     <div class="form-group">
                       <label for="tribal">Tribal Status:</label>
-                      <select id="tribal" name="tribal" required>
+                      <select id="tribal" name="tribal" disabled>
                         <option value="">Select Option</option>
                         <option value="Jenu Kuruba">Jenu Kuruba</option>
                         <option value="Betta Kuruba">Betta Kuruba</option>
@@ -521,7 +524,7 @@
                       <label for="pwd">Person with Disability (PWD):</label>
                       <select id="pwd" name="pwd" required>
                         <option value="">Select Option</option>
-                        <option value="Locomotor Diability">Locomotor Diability</option>
+                        <option value="Locomotor Diability">Locomotor Disability</option>
                         <option value="Leprosy Cured Person">Leprosy Cured Person</option>
                         <option value="Cerebral Palsy">Cerebral Palsy</option>
                         <option value="Dwarfism">Dwarfism</option>
@@ -531,7 +534,6 @@
                         <option value="Low Vision">Low Vision</option>
                         <option value="Deaf">Deaf</option>
                         <option value="Hard of Hearing">Hard of Hearing</option>
-                        <option value="Speech and Language Disability">Speech and Language Disability</option>
                         <option value="Intellectual Disability">Intellectual Disability</option>
                         <option value="Specific Learning Disability">Specific Learning Disability</option>
                         <option value="Mental Illness">Mental Illness</option>

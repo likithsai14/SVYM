@@ -22,7 +22,7 @@ exports.handler = async (event) => {
     // --- Validation ---
     const requiredFields = [
       'candidateName', 'email', 'dob', 'age', 'familyMembers', 'qualification',
-      'caste', 'referralSource', 'gender', 'tribal', 'pwd', 'aadharNumber',
+      'caste', 'referralSource', 'gender', 'pwd', 'aadharNumber',
       'candidatePhone', 'parentPhone', 'fieldMobiliserName', 'fieldMobiliserId', 'supportedProject'
     ];
 

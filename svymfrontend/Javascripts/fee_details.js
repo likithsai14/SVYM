@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backdrop.innerHTML = `
             <div class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="payModalTitle">
                 <span class="close-btn" id="payModalCloseBtn" aria-label="Close">&times;</span>
-                <h3 id="payModalTitle">Pay Dues</h3>
+                <h3 id="payModalTitle">Pay Due</h3>
                     <div class="row">
                         <label for="payCourseSelect">Select Course</label>
                         <select id="payCourseSelect"><option value="">Loading...</option></select>
