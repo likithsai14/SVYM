@@ -1,11 +1,7 @@
 {
   "name": "netlify-mongodb-functions",
   "version": "1.0.0",
-<<<<<<< HEAD
-  "description": "Backend functions for secure mongoDB interaction via Netlify",
-=======
   "description": "Backend functions for secure MongoDB interaction via Netlify",
->>>>>>> d61c9d42240d2d4b36680be5f4daa3af65dbdab9
   "main": "signup.js",
   "scripts": {},
   "keywords": [],
