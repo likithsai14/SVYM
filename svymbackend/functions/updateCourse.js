@@ -43,7 +43,7 @@ exports.handler = async (event) => {
 
     // ✅ Handle new trainer creation
     if (trainer.isNewTrainer) {
-      const requiredFields = ["name", "email", "mobile", "expertise", "securityQuestion", "securityAnswer"];
+      const requiredFields = ["name", "email", "mobile", "expertise"];
       for (const field of requiredFields) {
         if (!trainer[field]) {
           return {

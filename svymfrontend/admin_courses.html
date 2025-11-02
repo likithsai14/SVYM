@@ -8,6 +8,7 @@
   <script src="./Javascripts/auth.js" defer></script>
   <script src="./Javascripts/modal.js" defer></script>
   <script src="./Javascripts/admin_courses.js" defer></script>
+    <link rel="icon" type="image/png" href="public/favicon.png" />
   <link rel="stylesheet" href="css/nav.css" />
   <link rel="stylesheet" href="css/modal.css" />
   <link rel="stylesheet" href="css/admin_courses.css" />
@@ -23,6 +24,7 @@
     .form-row { display: flex; gap: 20px; margin-bottom: 15px; }
     .form-group { flex: 1; display: flex; flex-direction: column; }
     .form-group input, .form-group select, .form-group textarea { padding: 6px 10px; font-size: 14px; margin-top: 4px; border: 1px solid var(--border-color); border-radius: 4px; }
+    .input-error { border-color: red; }
     .icon-btn { width: 30px; height: 30px; border: none; background: var(--primary-color); color: white; font-size: 16px; cursor: pointer; border-radius: 4px; margin-left: 5px; }
     .icon-btn:hover { background: var(--primary-hover); }
     .save-btn, .cancel-btn, .add-button { padding: 8px 16px; margin-top: 10px; cursor: pointer; border-radius: 4px; border: none; color: white; }
@@ -176,6 +178,7 @@
             <div class="form-group">
               <label for="trainingName">Course Name:</label>
               <input type="text" id="trainingName" required />
+              <span id="trainingNameError" class="error-message" style="color:red;font-size:12px;"></span>
             </div>
             <div class="form-group">
               <label for="price">Price (₹):</label>
@@ -232,6 +235,7 @@
               <div class="form-group">
                 <label for="trainerName">Name:</label>
                 <input type="text" id="formTrainerName" />
+                <span id="formTrainerNameError" class="error-message" style="color:red;font-size:12px;"></span>
               </div>
               <div class="form-group">
                 <label for="trainerExpertise">Expertise:</label>
@@ -242,20 +246,12 @@
               <div class="form-group">
                 <label for="trainerMobile">Phone:</label>
                 <input type="text" id="formTrainerMobile" />
+                <span id="formTrainerMobileError" class="error-message" style="color:red;font-size:12px;"></span>
               </div>
               <div class="form-group">
                 <label for="trainerEmail">Email:</label>
                 <input type="text" id="formTrainerEmail" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="trainerSecurityQuestion">Security Question:</label>
-                <input type="text" id="formTrainerSecurityQuestion" />
-              </div>
-              <div class="form-group">
-                <label for="trainerSecurityAnswer">Security Answer:</label>
-                <input type="text" id="formTrainerSecurityAnswer" />
+                <span id="formTrainerEmailError" class="error-message" style="color:red;font-size:12px;"></span>
               </div>
             </div>
           </div>

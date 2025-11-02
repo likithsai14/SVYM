@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVYM Tech4Hope - Admin Edit/View Trainer Data</title>
-
+  <link rel="icon" type="image/png" href="public/favicon.png" />
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -320,6 +320,12 @@
       cursor: not-allowed;
     }
 
+    .error-message{
+      color: #dc3545;
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
     .page-info {
       color: #374151;
       font-size: 1.125rem;
@@ -502,8 +508,8 @@
 
         <!-- Buttons -->
         <div class="form-actions" style="display: flex; justify-content: space-between; gap: 5px;">
-          <button type="submit" class="add-button"><i class="fas fa-check"></i> Submit</button>
-          <button type="reset" class="view-button">Clear</button>
+          <button type="reset" class="view-button" style="width: 120px;">Cancel</button>
+          <button type="submit" class="add-button" style="width: 120px;"><i class="fas fa-check"></i> Submit</button>
         </div>
 
         <!-- Generated User ID (hidden until created) -->

@@ -148,7 +148,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         sel.addEventListener("change", () => {
           const tr = sel.closest("tr");
           const remarks = tr.querySelector(".remarksInput");
-          if (sel.value === "Present") remarks.value = "";
+          if (sel.value === "Present") {
+            remarks.value = "";
+            remarks.disabled = true;
+          } else {
+            remarks.disabled = false;
+          }
         });
       });
     }

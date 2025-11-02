@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SVYM Tech4Hope - Admin Students Management</title>
 
+      <link rel="icon" type="image/png" href="public/favicon.png" />
     <!-- CSS Files -->
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/modal.css">
@@ -499,7 +500,7 @@
                         <option value="SC">SC</option>
                         <option value="ST">ST</option>
                         <option value="Minority">Minority</option>
-                        <option value="Others">Others</option>
+                        <option value="General">General</option>
                       </select>
                       <label for="otherCaste" style="display:none;">Specify Other Caste:</label>
                       <input type="text" id="otherCaste" name="otherCaste" style="display:none;" placeholder="Enter caste">
@@ -518,7 +519,10 @@
                         <option value="Others">Others</option>
                         <option value="None">None</option>
                       </select>
+                      <label for="otherTribal" style="display:none;">Specify Other Tribal:</label>
+                      <input type="text" id="otherTribal" name="otherTribal" style="display:none;" placeholder="Enter tribal status">
                       <span id="tribalError" class="error-message"></span>
+                      <span id="otherTribalError" class="error-message"></span>
                     </div>
                     <div class="form-group">
                       <label for="pwd">Person with Disability (PWD):</label>
@@ -548,7 +552,10 @@
                         <option value="Others">Others</option>
                         <option value="None">None</option>
                       </select>
+                      <label for="otherPwd" style="display:none;">Specify Other PWD:</label>
+                      <input type="text" id="otherPwd" name="otherPwd" style="display:none;" placeholder="Enter PWD status">
                       <span id="pwdError" class="error-message"></span>
+                      <span id="otherPwdError" class="error-message"></span>
                     </div>
                   </div>
 

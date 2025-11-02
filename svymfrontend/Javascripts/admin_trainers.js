@@ -15,10 +15,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const formTrainerMessage = document.getElementById("trainerFormMessage");
   const generatedUserId = document.getElementById("generatedUserId");
 
-  // Title case conversion for trainer name in add/edit modal
+  // Title case conversion and input restriction for trainer name in add/edit modal
   if (formTrainerName) {
     formTrainerName.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
       this.value = toTitleCase(this.value);
+    });
+  }
+
+  // Restrict mobile input to digits only, max 10
+  if (formTrainerContact) {
+    formTrainerContact.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10);
     });
   }
 
@@ -154,6 +162,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
+      if (formTrainerEmail.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formTrainerEmail.value)) {
+        showFormMessage(formTrainerMessage, "error", "Invalid email format.");
+        return;
+      }
+
       const newTrainerData = {
         name: toTitleCase(formTrainerName.value),
         expertise: formTrainerExpertise.value,
@@ -204,7 +217,8 @@ document.addEventListener("DOMContentLoaded", function () {
           const trainer = await response.json();
 
           if (response.ok) {
-            showFormMessage(formTrainerMessage, "success", `Trainer ${trainer.id} updated successfully!`);
+            console.log("Updated trainer:", trainer);
+            showFormMessage(formTrainerMessage, "success", `Trainer updated successfully!`);
             fetchTrainers();
           } else {
             showFormMessage(formTrainerMessage, "error", "Error: Trainer not found for update.");

@@ -43,10 +43,13 @@ document.addEventListener('DOMContentLoaded', function() {
         qualification: document.getElementById('qualificationError'),
         otherQualification: document.getElementById('otherQualificationError'),
         caste: document.getElementById('casteError'),
+        otherCaste: document.getElementById('otherCasteError'),
         referralSource: document.getElementById('referralSourceError'),
         gender: document.getElementById('genderError'),
         tribal: document.getElementById('tribalError'),
+        otherTribal: document.getElementById('otherTribalError'),
         pwd: document.getElementById('pwdError'),
+        otherPwd: document.getElementById('otherPwdError'),
         aadharNumber: document.getElementById('aadharNumberError'),
         candidatePhone: document.getElementById('candidatePhoneError'),
         parentPhone: document.getElementById('parentPhoneError'),
@@ -166,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     caste.addEventListener('change', function() {
         const tribalSelect = document.getElementById('tribal');
+        const otherTribalInput = document.getElementById('otherTribal');
         if (this.value === 'ST') {
             tribalSelect.disabled = false;
             tribalSelect.required = true;
@@ -173,6 +177,10 @@ document.addEventListener('DOMContentLoaded', function() {
             tribalSelect.disabled = true;
             tribalSelect.required = false;
             tribalSelect.value = '';
+            otherTribalInput.style.display = 'none';
+            otherTribalInput.removeAttribute('required');
+            otherTribalInput.value = '';
+            clearError(otherTribalInput);
         }
         if (this.value === 'Others') {
             otherCaste.style.display = 'block';
@@ -186,6 +194,38 @@ document.addEventListener('DOMContentLoaded', function() {
         clearError(caste);
     });
 
+    // Tribal select change handler
+    const tribalSelect = document.getElementById('tribal');
+    const otherTribalInput = document.getElementById('otherTribal');
+    tribalSelect.addEventListener('change', function() {
+        if (this.value === 'Others') {
+            otherTribalInput.style.display = 'block';
+            otherTribalInput.setAttribute('required', 'required');
+        } else {
+            otherTribalInput.style.display = 'none';
+            otherTribalInput.removeAttribute('required');
+            otherTribalInput.value = '';
+            clearError(otherTribalInput);
+        }
+        clearError(tribalSelect);
+    });
+
+    // PWD select change handler
+    const pwdSelect = document.getElementById('pwd');
+    const otherPwdInput = document.getElementById('otherPwd');
+    pwdSelect.addEventListener('change', function() {
+        if (this.value === 'Others') {
+            otherPwdInput.style.display = 'block';
+            otherPwdInput.setAttribute('required', 'required');
+        } else {
+            otherPwdInput.style.display = 'none';
+            otherPwdInput.removeAttribute('required');
+            otherPwdInput.value = '';
+            clearError(otherPwdInput);
+        }
+        clearError(pwdSelect);
+    });
+
     function showError(inputElement, message) {
         const errorSpan = errorSpans[inputElement.id];
         if (errorSpan) { errorSpan.textContent = message; inputElement.classList.add('input-error'); }
@@ -196,13 +236,45 @@ document.addEventListener('DOMContentLoaded', function() {
         if (errorSpan) { errorSpan.textContent = ''; inputElement.classList.remove('input-error'); }
     }
 
-    // Title case conversion for candidate name and father/husband name
+    // Title case conversion and input restriction for candidate name and father/husband name
     candidateNameInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
         this.value = toTitleCase(this.value);
     });
 
     fatherHusbandNameInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
         this.value = toTitleCase(this.value);
+    });
+
+    // Input restriction for village name
+    const villageNameInput = document.getElementById('villageName');
+    villageNameInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+        this.value = toTitleCase(this.value);
+    });
+
+    // Input restriction for staff name (alphabets and spaces, title case)
+    staffNameInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+        this.value = toTitleCase(this.value);
+    });
+
+    // Input restriction for Aadhaar number (only digits)
+    const aadharNumberInput = document.getElementById('aadharNumber');
+    aadharNumberInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, ''); // restrict to digits only
+    });
+
+    // Input restriction for phone numbers (only digits)
+    const candidatePhoneInput = document.getElementById('candidatePhone');
+    candidatePhoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, ''); // restrict to digits only
+    });
+
+    const parentPhoneInput = document.getElementById('parentPhone');
+    parentPhoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, ''); // restrict to digits only
     });
 
     // Qualification dropdown change handler
@@ -280,6 +352,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Special validation for tribal status
         if (caste.value === 'ST' && tribal.value === '') {
             showError(tribal, 'Please select tribal status.');
+            isValid = false;
+        }
+
+        // Special validation for otherTribal
+        if (tribal.value === 'Others' && otherTribal.value.trim() === '') {
+            showError(otherTribal, 'Please specify the tribal status.');
+            isValid = false;
+        }
+
+        // Special validation for otherPwd
+        if (pwd.value === 'Others' && otherPwd.value.trim() === '') {
+            showError(otherPwd, 'Please specify the PWD status.');
             isValid = false;
         }
 

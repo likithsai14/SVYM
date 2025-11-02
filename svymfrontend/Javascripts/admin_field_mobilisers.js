@@ -19,11 +19,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   const generatedUserIdDiv = document.getElementById("generatedUserId");
   const adminApprovalMessageDiv = document.getElementById("adminapprovalMessage");
 
-  // Title case conversion for field mobiliser name in add/edit modal
+  // Title case conversion and input restriction for field mobiliser name in add/edit modal
   const fieldMobiliserNameInput = document.getElementById('FieldMobiliserName');
   if (fieldMobiliserNameInput) {
     fieldMobiliserNameInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
       this.value = toTitleCase(this.value);
+    });
+  }
+
+  // Restrict mobile input to digits only, max 10
+  const fieldMobiliserMobileInput = document.getElementById('FieldMobiliserMobileNo');
+  if (fieldMobiliserMobileInput) {
+    fieldMobiliserMobileInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10);
     });
   }
 
@@ -366,6 +375,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (input.hasAttribute("required") && input.value.trim() === "") { showError(input, "This field is required."); isValid=false; }
       if (input.hasAttribute("pattern") && !input.validity.valid) { showError(input, input.title || "Invalid format."); isValid=false; }
     });
+
+    // Additional email validation
+    const emailInput = signupForm.querySelector('#FieldMobiliserEmailID');
+    if (emailInput && emailInput.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+      showError(emailInput, "Invalid email format.");
+      isValid = false;
+    }
+
+    // Additional mobile validation
+    const mobileInput = signupForm.querySelector('#FieldMobiliserMobileNo');
+    if (mobileInput && mobileInput.value.trim() && !/^\d{10}$/.test(mobileInput.value)) {
+      showError(mobileInput, "Mobile number must be exactly 10 digits.");
+      isValid = false;
+    }
 
     if (!isValid) { showMessage("error", "Please correct the errors in the form."); return; }
 

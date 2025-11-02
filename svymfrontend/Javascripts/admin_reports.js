@@ -169,18 +169,18 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Prepare Data
     const data = students.map(st => ({
-      "User ID": st.userId,
+      "Student ID": st.userId,
       "Name": st.candidateName,
-      "Father/Husband": st.fatherHusbandName,
+      "Father/Husband Name": st.fatherHusbandName,
       "Email": st.email,
       "Mobile": st.candidatePhone,
       "Parent Phone": st.parentPhone,
-      "Aadhar": st.aadharNumber,
+      "Aadhaar": st.aadharNumber,
       "Gender": st.gender,
       "Caste": st.caste,
-      "DOB": st.dob,
+      "DOB": st.dob ? new Date(st.dob).toLocaleDateString('en-GB') : 'N/A',
       "Age": st.age,
-      "Education": st.qualification,
+      "Education": st.qualification && st.qualification.toLowerCase() === 'others' && st.qualificationOther ? `others | ${st.qualificationOther}` : st.qualification,
       "District": st.districtName,
       "Taluk": st.talukName,
       "Village": st.villageName,
@@ -189,8 +189,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Supported Project": st.supportedProject,
       "Referral Source": st.referralSource,
       "Staff Name": st.staffName,
-      "Tribal": st.tribal,
-      "PWD": st.pwd,
+      "Tribal": st.tribal && st.tribal.toLowerCase() === 'others' && st.tribalOther ? `others | ${st.tribalOther}` : st.tribal,
+      "PWD": st.pwd && st.pwd.toLowerCase() === 'others' && st.pwdOther ? `others | ${st.pwdOther}` : st.pwd,
       "Status": st.approvalStatus,
       "Account Status": st.accountStatus,
       "Joined Date": st.createdAt ? new Date(st.createdAt).toLocaleDateString('en-IN') : 'N/A'
@@ -225,8 +225,6 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Mobile": tr.mobile,
       "Expertise": tr.expertise,
       "Status": tr.status,
-      "Security Question": tr.securityQuestion,
-      "Security Answer": tr.securityAnswer,
       "Joined Date": tr.createdAt ? new Date(tr.createdAt).toLocaleDateString('en-IN') : 'N/A'
     }));
 

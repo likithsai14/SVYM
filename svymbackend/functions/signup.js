@@ -23,7 +23,7 @@ exports.handler = async (event) => {
     const requiredFields = [
       'candidateName', 'email', 'dob', 'age', 'familyMembers', 'qualification',
       'caste', 'referralSource', 'gender', 'pwd', 'aadharNumber',
-      'candidatePhone', 'parentPhone', 'fieldMobiliserName', 'fieldMobiliserId', 'supportedProject'
+      'candidatePhone', 'parentPhone', 'fieldMobiliserName', 'fieldMobiliserId'
     ];
 
     for (const field of requiredFields) {

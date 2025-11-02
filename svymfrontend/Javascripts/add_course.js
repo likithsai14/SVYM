@@ -79,6 +79,72 @@ document.addEventListener("DOMContentLoaded", () => {
     newTrainerFields.style.display = trainerSelect.value === "addNewTrainer" ? "block" : "none";
   });
 
+  // Validation for course name: should not start with digit, may contain in between
+  const trainingNameInput = document.getElementById("trainingName");
+  if (trainingNameInput) {
+    trainingNameInput.addEventListener('input', function() {
+      const errorSpan = document.getElementById("trainingNameError");
+      if (/^\d/.test(this.value)) {
+        errorSpan.textContent = "Course name should not start with a digit.";
+        this.classList.add('input-error');
+      } else {
+        errorSpan.textContent = "";
+        this.classList.remove('input-error');
+      }
+    });
+  }
+
+  // Validation for new trainer name: only alphabets and spaces
+  if (formTrainerName) {
+    formTrainerName.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+      this.value = toTitleCase(this.value);
+      const errorSpan = document.getElementById("formTrainerNameError");
+      if (/[^a-zA-Z\s]/.test(this.value)) {
+        errorSpan.textContent = "Only alphabets and spaces allowed.";
+        this.classList.add('input-error');
+      } else {
+        errorSpan.textContent = "";
+        this.classList.remove('input-error');
+      }
+    });
+  }
+
+  // Validation for new trainer mobile: exactly 10 digits
+  if (formTrainerMobile) {
+    formTrainerMobile.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10); // restrict to digits only, max 10
+      const errorSpan = document.getElementById("formTrainerMobileError");
+      if (!/^\d{10}$/.test(this.value)) {
+        errorSpan.textContent = "Mobile number must be exactly 10 digits.";
+        this.classList.add('input-error');
+      } else {
+        errorSpan.textContent = "";
+        this.classList.remove('input-error');
+      }
+    });
+  }
+
+  // Validation for new trainer email: valid email format
+  if (formTrainerEmail) {
+    formTrainerEmail.addEventListener('input', function() {
+      const errorSpan = document.getElementById("formTrainerEmailError");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.value)) {
+        errorSpan.textContent = "Please enter a valid email address.";
+        this.classList.add('input-error');
+      } else {
+        errorSpan.textContent = "";
+        this.classList.remove('input-error');
+      }
+    });
+  }
+
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
   // Open modal & populate trainers
   addCourseBtn.addEventListener("click", async () => {
     modal.classList.add("show");
@@ -111,6 +177,17 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     errorMsg.textContent = "";
 
+    // Check for validation errors
+    const trainingNameError = document.getElementById("trainingNameError").textContent;
+    const formTrainerNameError = document.getElementById("formTrainerNameError").textContent;
+    const formTrainerMobileError = document.getElementById("formTrainerMobileError").textContent;
+    const formTrainerEmailError = document.getElementById("formTrainerEmailError").textContent;
+
+    if (trainingNameError || formTrainerNameError || formTrainerMobileError || formTrainerEmailError) {
+      errorMsg.textContent = "Please fix the validation errors before submitting.";
+      return;
+    }
+
     const courseName = document.getElementById("trainingName").value.trim();
     const price = document.getElementById("price").value;
     const startDate = startDateInput.value;
@@ -129,6 +206,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (selectedTrainer === "addNewTrainer") {
       if (!formTrainerName.value || !formTrainerExpertise.value || !formTrainerSecurityQuestion.value || !formTrainerSecurityAnswer.value) {
         return (errorMsg.textContent = "All new trainer fields are required.");
+      }
+      // Additional validations for new trainer
+      if (/[^a-zA-Z\s]/.test(formTrainerName.value)) {
+        return (errorMsg.textContent = "Trainer name must contain only alphabets and spaces.");
+      }
+      if (!/^\d{10}$/.test(formTrainerMobile.value)) {
+        return (errorMsg.textContent = "Trainer mobile number must be exactly 10 digits.");
       }
       trainerPayload = {
         isNewTrainer: true,
@@ -183,6 +267,9 @@ document.addEventListener("DOMContentLoaded", () => {
       durationInput.value = "";
       modulesWrapper.innerHTML = "";
       modulesWrapper.appendChild(moduleRow);
+      modal.classList.remove("show");
+      // Refresh the page to show updated course data
+      location.reload();
     } catch (err) {
       console.error(err);
       errorMsg.textContent = "Error: " + err.message;

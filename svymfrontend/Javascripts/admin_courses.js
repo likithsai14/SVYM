@@ -144,6 +144,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Show/hide new trainer fields
+  const trainerSelect = document.getElementById("trainerSelect");
+  const newTrainerFields = document.getElementById("newTrainerFields");
+  trainerSelect.addEventListener("change", () => {
+    newTrainerFields.style.display = trainerSelect.value === "addNewTrainer" ? "block" : "none";
+  });
+
+  // Validation for new trainer name: only alphabets and spaces
+  const formTrainerName = document.getElementById("formTrainerName");
+  if (formTrainerName) {
+    formTrainerName.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+      this.value = toTitleCase(this.value);
+    });
+  }
+
+  // Validation for new trainer mobile: exactly 10 digits
+  const formTrainerMobile = document.getElementById("formTrainerMobile");
+  if (formTrainerMobile) {
+    formTrainerMobile.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10); // restrict to digits only, max 10
+    });
+  }
+
+  // Validation for new trainer email: valid email format
+  const formTrainerEmail = document.getElementById("formTrainerEmail");
+  if (formTrainerEmail) {
+    formTrainerEmail.addEventListener('input', function() {
+      // Real-time validation can be added here if needed
+    });
+  }
+
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
   // Close Add Course Modal
   closeModal.addEventListener("click", () => modal.classList.remove("show"));
   cancelModal.addEventListener("click", () => modal.classList.remove("show"));
@@ -313,11 +350,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("formTrainerEmail").value.trim();
       const mobile = document.getElementById("formTrainerMobile").value.trim();
       const expertise = document.getElementById("formTrainerExpertise").value.trim();
-      const securityQuestion = document.getElementById("formTrainerSecurityQuestion").value.trim();
-      const securityAnswer = document.getElementById("formTrainerSecurityAnswer").value.trim();
 
       // Validation for new trainer
-      if (!name || !email || !mobile || !expertise || !securityQuestion || !securityAnswer) {
+      if (!name || !email || !mobile || !expertise) {
         alert("Please fill in all required fields for the new trainer.");
         return;
       }
@@ -329,15 +364,18 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Trainer mobile number must be exactly 10 digits.");
         return;
       }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address for the trainer.");
+        return;
+      }
 
       trainerPayload = {
         isNewTrainer: true,
         name,
         email,
         mobile,
-        expertise,
-        securityQuestion,
-        securityAnswer
+        expertise
       };
     } else {
       trainerPayload = { trainerId, trainerName };
@@ -364,6 +402,8 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.classList.remove("show");
       editingCourseId = null;
       fetchCourses();
+      // Refresh the page to show updated course data
+      location.reload();
     } catch (err) {
       alert("Error updating course: " + err.message);
     }

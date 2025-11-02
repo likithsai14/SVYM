@@ -277,13 +277,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Title case for names
+  // Title case and input restriction for names
   document.getElementById('edit_candidateName').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
     this.value = toTitleCase(this.value);
   });
   document.getElementById('edit_fatherHusbandName').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
     this.value = toTitleCase(this.value);
   });
+
+  // Restrict mobile input to digits only, max 10
+  const editCandidatePhoneInput = document.getElementById('edit_candidatePhone');
+  if (editCandidatePhoneInput) {
+    editCandidatePhoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10);
+    });
+  }
+  const editParentPhoneInput = document.getElementById('edit_parentPhone');
+  if (editParentPhoneInput) {
+    editParentPhoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10);
+    });
+  }
 
   // Caste change handler for tribal and otherCaste
   document.getElementById('edit_caste').addEventListener('change', function() {

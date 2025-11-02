@@ -173,7 +173,7 @@ function initLogin() {
       <div class="modal-content" style="max-width:520px;padding:20px;">
         <span class="close-btn" id="forgotClose">&times;</span>
         <h3>Forgot PIN / Password</h3>
-        <p>Enter your User ID to receive a one-time OTP to your registered email.</p>
+        <p>Enter your User ID to receive OTP to your registered email.</p>
         <div style="margin-top:12px;">
           <label>User ID</label>
           <input type="text" id="fpUserId" placeholder="SVYM12345" style="width:100%;padding:8px;margin-top:6px;" value="${userIdInput.value || ''}" />

@@ -97,10 +97,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Title case for name
+  // Title case and input restriction for name
   document.getElementById('edit_trainerName').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
     this.value = toTitleCase(this.value);
   });
+
+  // Restrict mobile input to digits only, max 10
+  const editMobileInput = document.getElementById('edit_mobile');
+  if (editMobileInput) {
+    editMobileInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10);
+    });
+  }
 
   // Live validation
   const editForm = document.getElementById('editProfileForm');

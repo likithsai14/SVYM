@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     const otherQualificationLabel = document.querySelector('label[for="otherQualification"]');
     const otherCasteInput = document.getElementById('otherCaste');
     const otherCasteLabel = document.querySelector('label[for="otherCaste"]');
+    const otherTribalInput = document.getElementById('otherTribal');
+    const otherTribalLabel = document.querySelector('label[for="otherTribal"]');
+    const otherPwdInput = document.getElementById('otherPwd');
+    const otherPwdLabel = document.querySelector('label[for="otherPwd"]');
 
     const addStudentsBtn = document.getElementById('addStudentsBtn');
     const viewRequestsBtn = document.getElementById('viewRequestsBtn');
@@ -43,19 +47,61 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const studentFormModal = document.getElementById('studentFormModal');
 
-    // Title case conversion for candidate name and father/husband name in add/edit modal
+    // Title case conversion and input restriction for candidate name and father/husband name
     const candidateNameInput = document.getElementById('candidateName');
     const fatherHusbandNameInput = document.getElementById('fatherHusbandName');
 
     if (candidateNameInput) {
         candidateNameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
             this.value = toTitleCase(this.value);
         });
     }
 
     if (fatherHusbandNameInput) {
         fatherHusbandNameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
             this.value = toTitleCase(this.value);
+        });
+    }
+
+    // Input restriction for village name
+    const villageNameInput = document.getElementById('villageName');
+    if (villageNameInput) {
+        villageNameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+            this.value = toTitleCase(this.value);
+        });
+    }
+
+    // Input restriction for staff name (alphabets and spaces, title case)
+    if (staffNameInput) {
+        staffNameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+            this.value = toTitleCase(this.value);
+        });
+    }
+
+    // Input restriction for Aadhaar number (only digits)
+    const aadharNumberInput = document.getElementById('aadharNumber');
+    if (aadharNumberInput) {
+        aadharNumberInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, ''); // restrict to digits only
+        });
+    }
+
+    // Input restriction for phone numbers (only digits)
+    const candidatePhoneInput = document.getElementById('candidatePhone');
+    if (candidatePhoneInput) {
+        candidatePhoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, ''); // restrict to digits only
+        });
+    }
+
+    const parentPhoneInput = document.getElementById('parentPhone');
+    if (parentPhoneInput) {
+        parentPhoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, ''); // restrict to digits only
         });
     }
 
@@ -101,6 +147,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
     errorSpans['otherQualification'] = document.getElementById('otherQualificationError');
     errorSpans['otherCaste'] = document.getElementById('otherCasteError');
+    errorSpans['otherTribal'] = document.getElementById('otherTribalError');
+    errorSpans['otherPwd'] = document.getElementById('otherPwdError');
 
     // Live validation
     studentForm.querySelectorAll('input, select').forEach(input => {
@@ -114,6 +162,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
         // Specific validation for name fields (only alphabets and spaces)
         if(input.id === 'candidateName' || input.id === 'fatherHusbandName'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
+        }
+        // Specific validation for other fields (only alphabets and spaces)
+        if(input.id === 'otherTribal' || input.id === 'otherPwd' || input.id === 'otherCaste' || input.id === 'otherQualification'){
             input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
             input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Only alphabets and spaces allowed.'); else clearError(input); });
         }
@@ -250,6 +303,38 @@ document.addEventListener('DOMContentLoaded', async function () {
         clearError(otherCasteInput);
     });
 
+    const tribalSelect = document.getElementById('tribal');
+    tribalSelect.addEventListener('change', function () {
+        if (this.value === 'Others') {
+            otherTribalLabel.style.display = 'block';
+            otherTribalInput.style.display = 'block';
+            otherTribalInput.setAttribute('required', 'required');
+        } else {
+            otherTribalLabel.style.display = 'none';
+            otherTribalInput.style.display = 'none';
+            otherTribalInput.removeAttribute('required');
+            otherTribalInput.value = '';
+        }
+        clearError(tribalSelect);
+        clearError(otherTribalInput);
+    });
+
+    const pwdSelect = document.getElementById('pwd');
+    pwdSelect.addEventListener('change', function () {
+        if (this.value === 'Others') {
+            otherPwdLabel.style.display = 'block';
+            otherPwdInput.style.display = 'block';
+            otherPwdInput.setAttribute('required', 'required');
+        } else {
+            otherPwdLabel.style.display = 'none';
+            otherPwdInput.style.display = 'none';
+            otherPwdInput.removeAttribute('required');
+            otherPwdInput.value = '';
+        }
+        clearError(pwdSelect);
+        clearError(otherPwdInput);
+    });
+
     // ------------------------------
     // DOB → Age
     // ------------------------------
@@ -306,6 +391,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 education: st.qualification,
                 otherQualification: st.otherQualification,
                 otherCaste: st.otherCaste,
+                otherTribal: st.otherTribal,
+                otherPwd: st.otherPwd,
                 districtName: st.districtName,
                 talukName: st.talukName,
                 villageName: st.villageName,
@@ -450,7 +537,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('otherCaste').value = student.otherCaste;
         document.getElementById('aadharNumber').value = student.aadharNumber;
         document.getElementById('tribal').value = student.tribal;
+        document.getElementById('tribal').dispatchEvent(new Event('change'));
+        document.getElementById('otherTribal').value = student.otherTribal;
         document.getElementById('pwd').value = student.pwd;
+        document.getElementById('pwd').dispatchEvent(new Event('change'));
+        document.getElementById('otherPwd').value = student.otherPwd;
         document.getElementById('mobiliserName').value = student.fieldMobiliserId;
         document.getElementById('parentPhone').value = student.parentPhone;
         document.getElementById('familyMembers').value = student.familyMembers;
@@ -517,6 +608,22 @@ document.addEventListener('DOMContentLoaded', async function () {
         const table = viewModalBody;
         table.innerHTML = '';
 
+        const otherDetailsFields = [
+            ['Caste', student.caste],
+            ['Other Caste', student.otherCaste || 'N/A'],
+            ['Tribal', student.tribal],
+            ['Pwd', student.pwd],
+            ['Education', student.education === 'Other' ? (student.otherQualification || 'N/A') : student.education],
+            ['Creation Date', student.creationDate]
+        ];
+
+        if (student.otherTribal) {
+            otherDetailsFields.splice(3, 0, ['Other Tribal', student.otherTribal]);
+        }
+        if (student.otherPwd) {
+            otherDetailsFields.splice(5, 0, ['Other PWD', student.otherPwd]);
+        }
+
         const groups = [
             { title: 'Basic Details', fields: [
                 ['User ID', student.userId],
@@ -537,14 +644,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 ['Aadhaar Number', student.aadharNumber],
                 ['Field Mobiliser', student.fieldMobiliserName]
             ]},
-            { title: 'Other Details', fields: [
-                ['Caste', student.caste],
-                ['Other Caste', student.otherCaste || 'N/A'],
-                ['Tribal', student.tribal],
-                ['Pwd', student.pwd],
-                ['Education', student.education === 'Other' ? (student.otherQualification || 'N/A') : student.education],
-                ['Creation Date', student.creationDate]
-            ]}
+            { title: 'Other Details', fields: otherDetailsFields }
         ];
 
         groups.forEach(group => {
