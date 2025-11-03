@@ -1,2 +1,3 @@
 - [x] Edit svymfrontend/css/nav.css to change .side-menu background to #2E4F8F
 - [x] Verify the color change by viewing one of the dashboard pages (server running on port 8000)
+- [x] Fix tribal status logic in admin_students.html to hide "Specify Other Tribal" when tribal status is disabled

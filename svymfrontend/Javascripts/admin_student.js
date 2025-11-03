@@ -297,6 +297,11 @@ document.addEventListener('DOMContentLoaded', async function () {
             tribalSelect.disabled = true;
             tribalSelect.required = false;
             tribalSelect.value = '';
+            // Hide otherTribal when tribal is disabled
+            otherTribalLabel.style.display = 'none';
+            otherTribalInput.style.display = 'none';
+            otherTribalInput.removeAttribute('required');
+            otherTribalInput.value = '';
         }
         if (this.value === 'Others') {
             otherCasteLabel.style.display = 'block';
@@ -548,9 +553,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('caste').dispatchEvent(new Event('change'));
         document.getElementById('otherCaste').value = student.otherCaste;
         document.getElementById('aadharNumber').value = student.aadharNumber;
-        document.getElementById('tribal').value = student.tribal;
-        document.getElementById('tribal').dispatchEvent(new Event('change'));
-        document.getElementById('otherTribal').value = student.otherTribal;
+        // Set tribal to default "Select Option" in edit mode
+        document.getElementById('tribal').value = '';
+        // Hide otherTribal by default in edit mode
+        otherTribalLabel.style.display = 'none';
+        otherTribalInput.style.display = 'none';
+        otherTribalInput.removeAttribute('required');
+        otherTribalInput.value = '';
+        // Note: otherTribal value is not set, as tribal is reset
         document.getElementById('pwd').value = student.pwd;
         document.getElementById('pwd').dispatchEvent(new Event('change'));
         document.getElementById('otherPwd').value = student.otherPwd;
