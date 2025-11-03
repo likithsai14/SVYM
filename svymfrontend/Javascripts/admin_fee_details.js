@@ -411,7 +411,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updatePaginationControls(totalItems) {
         const pageInfo = document.getElementById("pageInfo");
-        pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(totalItems/rowsPerPage) || 1}`;
+        const prevBtn = document.getElementById("prevPageBtn");
+        const nextBtn = document.getElementById("nextPageBtn");
+        const totalPages = Math.ceil(totalItems / rowsPerPage) || 1;
+
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+        // Disable prev button if on first page
+        prevBtn.disabled = currentPage === 1;
+
+        // Disable next button if on last page
+        nextBtn.disabled = currentPage === totalPages;
     }
 
     function getCurrentData() {

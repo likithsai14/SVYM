@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tableBody = document.getElementById("fieldmobiliserTableBody");
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
+  const statusFilter = document.getElementById("statusFilter");
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const pageInfo = document.getElementById("page-info");
@@ -174,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (generated) { generated.style.display = 'block'; generated.textContent = `Editing User: ${selected.id}`; }
           // change modal title and submit button text
           const modalTitle = modal.querySelector('h2');
-          if (modalTitle) modalTitle.textContent = 'Edit FieldMobiliser Data';
+          if (modalTitle) modalTitle.textContent = 'Edit Field Mobiliser Data';
           const submitBtn = form.querySelector('button[type="submit"]');
           if (submitBtn) submitBtn.textContent = 'Submit';
         }
@@ -226,9 +227,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function handleSearch() {
     const searchTerm = searchInput.value.trim().toLowerCase();
-    filteredData = searchTerm
-      ? fieldmobilisersData.filter(f => f.name.toLowerCase().includes(searchTerm))
-      : [...fieldmobilisersData];
+    const statusValue = statusFilter.value.toLowerCase();
+    filteredData = fieldmobilisersData.filter(f => {
+      const matchesSearch = searchTerm ? f.name.toLowerCase().includes(searchTerm) : true;
+      const matchesStatus = statusValue === '' || f.status.toLowerCase() === statusValue;
+      return matchesSearch && matchesStatus;
+    });
     currentPage = 1;
     renderTable();
     renderPagination();
@@ -236,6 +240,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   searchBtn.addEventListener("click", handleSearch);
   searchInput.addEventListener("keyup", e => { if (e.key === "Enter") handleSearch(); });
+  statusFilter.addEventListener("change", handleSearch);
 
   // ------------------------- Helper function to clear errors
   // -------------------------
@@ -263,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const userIdInput = form.querySelector('#FieldMobiliserUserId');
       if (userIdInput) userIdInput.value = '';
       const modalTitle = modal.querySelector('h2');
-      if (modalTitle) modalTitle.textContent = 'Add FieldMobiliser Data';
+      if (modalTitle) modalTitle.textContent = 'Add Field Mobiliser Data';
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.textContent = 'Add Field Mobiliser';
       // clear inputs

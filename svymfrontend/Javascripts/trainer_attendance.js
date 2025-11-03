@@ -156,6 +156,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         });
       });
+
+      // Restrict remarks input to alphabets and spaces only
+      document.querySelectorAll(".remarksInput").forEach(input => {
+        input.addEventListener("input", function() {
+          this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
+        });
+      });
     }
   }
 

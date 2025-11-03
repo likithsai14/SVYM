@@ -105,6 +105,24 @@
           background-color: #0056b3;
         }
 
+        .filter-box {
+          display: flex;
+          align-items: center;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .status-filter {
+          padding: 8px 10px;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+          width: 150px;
+          background: transparent;
+        }
+
         /* Notification badge for requests */
         .badge {
             display: inline-block;
@@ -294,6 +312,15 @@
               <button id="searchBtn" class="search-btn">
                 <i class="fas fa-search"></i>
               </button>
+            </div>
+            <!-- Status Filter -->
+            <div class="filter-box">
+              <select id="statusFilter" class="status-filter">
+                <option value="">All</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
             </div>
             <div class="button-group">
             <!-- View Requests Button -->

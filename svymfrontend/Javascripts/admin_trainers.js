@@ -23,6 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Input restriction for expertise (alphabets and spaces, title case)
+  if (formTrainerExpertise) {
+    formTrainerExpertise.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+      this.value = toTitleCase(this.value);
+    });
+  }
+
   // Restrict mobile input to digits only, max 10
   if (formTrainerContact) {
     formTrainerContact.addEventListener('input', function() {
@@ -41,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const trainersTableBody = document.getElementById("fieldmobiliserTableBody");
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
+  const statusFilter = document.getElementById("statusFilter");
 
   let allTrainers = [];
   let currentPage = 1;
@@ -149,8 +158,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const isEditMode = formTrainerId && formTrainerId.value;
 
-      if (!formTrainerContact.value && !formTrainerEmail.value) {
-        showFormMessage(formTrainerMessage, "error", "Please provide at least one contact detail: Email or Phone.");
+      if (!formTrainerName.value || !formTrainerExpertise.value || !formTrainerContact.value || !formTrainerEmail.value) {
+        showFormMessage(formTrainerMessage, "error", "Required field not specified");
         return;
       }
 
@@ -286,9 +295,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updatePaginationInfo() {
     const searchValue = searchInput.value.toLowerCase();
-    const filtered = allTrainers.filter((t) =>
-      t.name.toLowerCase().includes(searchValue)
-    );
+    const statusValue = statusFilter.value.toLowerCase();
+    const filtered = allTrainers.filter((t) => {
+      const matchesSearch = t.name.toLowerCase().includes(searchValue);
+      const matchesStatus = statusValue === "" || t.status.toLowerCase() === statusValue;
+      return matchesSearch && matchesStatus;
+    });
     const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
     document.getElementById("page-info").textContent = `Page ${currentPage} of ${totalPages}`;
     document.getElementById("prevBtn").disabled = currentPage === 1;
@@ -318,9 +330,12 @@ document.addEventListener("DOMContentLoaded", function () {
   trainersTableBody.innerHTML = "";
 
   const searchValue = searchInput.value.toLowerCase();
-  const filtered = allTrainers.filter(trainer =>
-    trainer.name.toLowerCase().includes(searchValue)
-  );
+  const statusValue = statusFilter.value.toLowerCase();
+  const filtered = allTrainers.filter(trainer => {
+    const matchesSearch = trainer.name.toLowerCase().includes(searchValue);
+    const matchesStatus = statusValue === "" || trainer.status.toLowerCase() === statusValue;
+    return matchesSearch && matchesStatus;
+  });
 
   const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
   if (currentPage > totalPages) currentPage = totalPages;
@@ -407,7 +422,7 @@ function formatStatusDisplay(status) {
     if (trainer) trainer.status = newStatus;
 
     renderTrainersTable();
-    showMainMessage("success", `Trainer ${userId} ${actionText}d successfully.`);
+    showMainMessage("success", `Trainer ${trainerId} ${actionText}d successfully.`);
   } catch (error) {
     console.error(`Error trying to ${actionText} trainer:`, error);
     showMainMessage("error", `Error trying to ${actionText} trainer.`);
@@ -434,6 +449,12 @@ function formatStatusDisplay(status) {
   currentPage = 1; // reset to first page
   renderTrainersTable();
 });
+
+  // ------------------ Status Filter Functionality ------------------
+  statusFilter.addEventListener("change", () => {
+    currentPage = 1;
+    renderTrainersTable();
+  });
 
 
   // ------------------ Initial Fetch ------------------

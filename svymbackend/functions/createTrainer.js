@@ -38,7 +38,19 @@ exports.handler = async (event) => {
     trainer.trainerId = userId;
     trainer.password = hashedPassword;
 
-    await trainer.save();
+    try {
+      await trainer.save();
+    } catch (validationError) {
+      if (validationError.name === 'ValidationError') {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            message: "Required field not specified",
+          }),
+        };
+      }
+      throw validationError;
+    }
 
     return {
       statusCode: 200,

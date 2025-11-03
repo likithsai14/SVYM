@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const studentTableBody = document.getElementById('studentTableBody');
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
+    const statusFilter = document.getElementById('statusFilter');
 
     // Function to convert to title case
     function toTitleCase(str) {
@@ -136,6 +137,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         clearError(qualificationSelect);
         clearError(otherQualificationInput);
     });
+
+    // Restrict otherQualification to alphabets and spaces only
+    if (otherQualificationInput) {
+        otherQualificationInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+            this.value = toTitleCase(this.value);
+        });
+    }
 
     // ------------------------------
     // Error handling spans
@@ -438,9 +447,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     function getFilteredData() {
         const searchValue = searchInput.value.toLowerCase();
-        return studentsData.filter(student =>
-            student.candidateName.toLowerCase().includes(searchValue)
-        );
+        const statusValue = statusFilter.value.toLowerCase();
+        return studentsData.filter(student => {
+            const matchesSearch = student.candidateName.toLowerCase().includes(searchValue);
+            const matchesStatus = statusValue === '' || student.status.toLowerCase() === statusValue;
+            return matchesSearch && matchesStatus;
+        });
     }
 
     function renderStudentsTable() {
@@ -697,6 +709,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     searchInput.addEventListener('keyup', e => {
         if (e.key === 'Enter') { currentPage = 1; renderStudentsTable(); }
+    });
+
+    statusFilter.addEventListener("change", () => {
+        currentPage = 1;
+        renderStudentsTable();
     });
 
     // ------------------------------

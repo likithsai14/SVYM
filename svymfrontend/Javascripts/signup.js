@@ -294,6 +294,12 @@ document.addEventListener('DOMContentLoaded', function() {
         clearError(qualificationSelect);
     });
 
+    // Restrict otherQualification to alphabets and spaces only
+    otherQualificationInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+        this.value = toTitleCase(this.value);
+    });
+
     // Live validation
     signupForm.querySelectorAll('input, select').forEach(input => {
         if(input.hasAttribute('required')){

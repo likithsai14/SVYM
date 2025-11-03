@@ -115,6 +115,23 @@
       border: 1px solid #e0e0e0;
     }
 
+    .filter-container {
+      display: flex;
+      background-color: #f1f3f5;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+
+    .status-filter {
+      padding: 12px 15px;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-color);
+    }
+
     #searchInput {
       flex-grow: 1;
       border: none;
@@ -419,6 +436,14 @@
       <input type="text" id="searchInput" placeholder="Search by Name...">
       <button id="searchBtn"><i class="fas fa-search"></i></button>
     </div>
+      <!-- Status Filter -->
+      <div class="filter-container">
+        <select id="statusFilter" class="status-filter">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
       <button class="add-button" id="openAddTrainerModal"><i class="fas fa-plus"></i> Add Trainer</button>
     </div>
 
