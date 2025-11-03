@@ -1,4 +1,4 @@
-const Trainer = require("../../../models/Trainer"); // assuming you define the schema in models/FieldMobiliser.js
+const Trainer = require("./models/Trainer"); // assuming you define the schema in models/FieldMobiliser.js
 const { connectDB } = require("./utils/mongodb");
 const bcrypt = require("bcrypt");
 
