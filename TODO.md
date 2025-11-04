@@ -1,3 +1,10 @@
-- [x] Edit svymfrontend/css/nav.css to change .side-menu background to #2E4F8F
-- [x] Verify the color change by viewing one of the dashboard pages (server running on port 8000)
-- [x] Fix tribal status logic in admin_students.html to hide "Specify Other Tribal" when tribal status is disabled
+- [x] Add "Supported Project" field to the field mobilizer form in admin_field_mobilisers.html
+- [x] Add "Supported Project" column to the table header in admin_field_mobilisers.html
+- [x] Update saveMobilizer function in admin_field_mobilisers.js to include supportedProject in data and validate Region and Supported Project to only allow alphabets and spaces
+- [x] Update renderMobilizerList function to display supportedProject in the table row
+- [x] Update editMobilizer function to populate supportedProject input when editing
+- [x] Update clearMobilizerForm function to clear supportedProject input
+- [x] Update search functionality to include supportedProject in the filter and update placeholder text
+- [x] Testing skipped as per user request
+- [x] Add validation to prevent digits in Region and Supported Project fields in admin_addfieldmobiliser.js (keypress, input, and paste events)
+- [x] Add validation to prevent digits in Region and Supported Project fields in admin_field_mobilisers.js (keypress, input, and paste events)

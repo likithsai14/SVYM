@@ -73,6 +73,24 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             });
         }
+        // Prevent digits in Region and Supported Project fields
+        if (input.id === 'FieldMobiliserRegion' || input.id === 'FieldMobiliserSupportedProject') {
+            input.addEventListener('keypress', function(event) {
+                const char = String.fromCharCode(event.which);
+                if (!/[a-zA-Z\s]/.test(char)) {
+                    event.preventDefault();
+                }
+            });
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+            });
+            input.addEventListener('paste', function(event) {
+                const paste = (event.clipboardData || window.clipboardData).getData('text');
+                if (!/^[a-zA-Z\s]*$/.test(paste)) {
+                    event.preventDefault();
+                }
+            });
+        }
     });
 
     signupForm.addEventListener('submit', async function(event) {

@@ -43,7 +43,7 @@
     <h2>Manage Field Mobilizers</h2>
 
     <div class="search-bar">
-      <input type="text" id="searchMobilizer" placeholder="Search by name or region" />
+      <input type="text" id="searchMobilizer" placeholder="Search by name, region, or supported project" />
     </div>
 
     <table class="table">
@@ -51,6 +51,7 @@
         <tr>
           <th>Name</th>
           <th>Region</th>
+          <th>Supported Project</th>
           <th>Phone</th>
           <th>Email</th>
           <th>Actions</th>
@@ -65,6 +66,7 @@
       <h3 id="mobilizerFormTitle">Add Field Mobilizer</h3>
       <input type="text" id="mobilizerName" placeholder="Name" />
       <input type="text" id="mobilizerRegion" placeholder="Region" />
+      <input type="text" id="mobilizerSupportedProject" placeholder="Supported Project" />
       <input type="text" id="mobilizerPhone" placeholder="Phone Number" />
       <input type="email" id="mobilizerEmail" placeholder="Email" />
       <button onclick="saveMobilizer()">Save</button>
