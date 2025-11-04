@@ -110,6 +110,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Validation for new trainer expertise: only alphabets and spaces
+  if (formTrainerExpertise) {
+    formTrainerExpertise.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+      this.value = toTitleCase(this.value);
+      const errorSpan = document.getElementById("formTrainerExpertiseError");
+      if (/[^a-zA-Z\s]/.test(this.value)) {
+        errorSpan.textContent = "Only alphabets and spaces allowed.";
+        this.classList.add('input-error');
+      } else {
+        errorSpan.textContent = "";
+        this.classList.remove('input-error');
+      }
+    });
+  }
+
   // Validation for new trainer mobile: exactly 10 digits
   if (formTrainerMobile) {
     formTrainerMobile.addEventListener('input', function() {
@@ -180,10 +196,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check for validation errors
     const trainingNameError = document.getElementById("trainingNameError").textContent;
     const formTrainerNameError = document.getElementById("formTrainerNameError").textContent;
+    const formTrainerExpertiseError = document.getElementById("formTrainerExpertiseError").textContent;
     const formTrainerMobileError = document.getElementById("formTrainerMobileError").textContent;
     const formTrainerEmailError = document.getElementById("formTrainerEmailError").textContent;
 
-    if (trainingNameError || formTrainerNameError || formTrainerMobileError || formTrainerEmailError) {
+    if (trainingNameError || formTrainerNameError || formTrainerExpertiseError || formTrainerMobileError || formTrainerEmailError) {
       errorMsg.textContent = "Please fix the validation errors before submitting.";
       return;
     }

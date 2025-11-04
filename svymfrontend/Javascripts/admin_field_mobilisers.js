@@ -37,6 +37,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Prevent digits in Region and Supported Project fields
+  const fieldMobiliserRegionInput = document.getElementById('FieldMobiliserRegion');
+  if (fieldMobiliserRegionInput) {
+    fieldMobiliserRegionInput.addEventListener('keypress', function(event) {
+      const char = String.fromCharCode(event.which);
+      if (!/[a-zA-Z\s]/.test(char)) {
+        event.preventDefault();
+      }
+    });
+    fieldMobiliserRegionInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+    fieldMobiliserRegionInput.addEventListener('paste', function(event) {
+      const paste = (event.clipboardData || window.clipboardData).getData('text');
+      if (!/^[a-zA-Z\s]*$/.test(paste)) {
+        event.preventDefault();
+      }
+    });
+  }
+
+  const fieldMobiliserSupportedProjectInput = document.getElementById('FieldMobiliserSupportedProject');
+  if (fieldMobiliserSupportedProjectInput) {
+    fieldMobiliserSupportedProjectInput.addEventListener('keypress', function(event) {
+      const char = String.fromCharCode(event.which);
+      if (!/[a-zA-Z\s]/.test(char)) {
+        event.preventDefault();
+      }
+    });
+    fieldMobiliserSupportedProjectInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+    fieldMobiliserSupportedProjectInput.addEventListener('paste', function(event) {
+      const paste = (event.clipboardData || window.clipboardData).getData('text');
+      if (!/^[a-zA-Z\s]*$/.test(paste)) {
+        event.preventDefault();
+      }
+    });
+  }
+
   const errorSpans = {
     FieldMobiliserName: document.getElementById("FieldMobiliserNameError"),
     FieldMobiliserEmailID: document.getElementById("FieldMobiliserEmailIDError"),

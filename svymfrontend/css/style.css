@@ -85,7 +85,7 @@ body::-webkit-scrollbar {
 
 h1 {
     text-align: center;
-    color: #007bff; /* Primary color */
+    color: #2e4f8f; /* Primary color */
     margin-bottom: 10px;
     letter-spacing: 0.5px;
 }
@@ -140,16 +140,16 @@ input[type="date"]:focus,
 input[type="number"]:focus,
 input[type="tel"]:focus,
 select:focus {
-    border-color: #007bff; /* Highlight border on focus */
+    border-color: #2e4f8f; /* Highlight border on focus */
     outline: none; /* Remove default outline */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Soft blue glow on focus */
+    box-shadow: 0 0 0 3px rgba(46, 79, 143, 0.2); /* Soft blue glow on focus */
 }
 
 
 button {
     width: 100%;
     padding: 10px; /* Larger button */
-    background-color: #007bff;
+    background-color: #2e4f8f;
     color: white;
     border: none;
     border-radius: 4px; /* More rounded button */
@@ -173,7 +173,7 @@ p {
 }
 
 p a {
-    color: #007bff;
+    color: #2e4f8f;
     text-decoration: none;
     font-weight: 600;
 }
@@ -303,14 +303,14 @@ p a:hover {
   justify-content: center;
   gap: 3px;
   padding: 2px;
-  border: 2px solid #007bff;
+  border: 2px solid #2e4f8f;
   border-radius: 8px;
 }
 
 .tab-button{
     border: none;
     background-color: #f0f8ff;
-    color: #007bff;
+    color: #2e4f8f;
     margin: 0px;
     border-radius: 8px;
     margin-top: 3px;
@@ -319,7 +319,7 @@ p a:hover {
 }
 
 .tab-button:hover, .tab-button.active{
-    background-color: #007bff;
+    background-color: #2e4f8f;
     color: white;
     cursor: pointer;
 }

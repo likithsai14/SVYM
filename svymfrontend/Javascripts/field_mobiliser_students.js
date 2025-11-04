@@ -12,7 +12,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentPage = 1;
   let studentsData = [];
 
-  const allStatuses = ["All", "Active", "followUp1", "followUp2", "droppedOut"];
+  const allStatuses = [
+    { value: "All", display: "All" },
+    { value: "active", display: "Active" },
+    { value: "followUp1", display: "Follow Up 1" },
+    { value: "followUp2", display: "Follow Up 2" },
+    { value: "droppedOut", display: "Dropped Out" }
+  ];
+
+  function getStatusDisplay(status) {
+    const statusMap = {
+      'active': 'Active',
+      'followUp1': 'Follow Up 1',
+      'followUp2': 'Follow Up 2',
+      'droppedOut': 'Dropped Out'
+    };
+    return statusMap[status] || status;
+  }
 
   // ✅ Fetch students from backend
   async function fetchMobiliserData() {
@@ -42,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ✅ Populate filters
   function populateFilters() {
-    statusFilter.innerHTML = allStatuses.map(s => `<option value="${s}">${s}</option>`).join("");
+    statusFilter.innerHTML = allStatuses.map(s => `<option value="${s.value}">${s.display}</option>`).join("");
   }
 
   // ✅ Render table
@@ -70,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${student.userId || "N/A"}</td>
         <td>${student.candidateName || "N/A"}</td>
         <td>${student.email || "N/A"}</td>
-        <td><span class="status" style="background-color: ${statusBgColor}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${accountStatus.charAt(0).toUpperCase() + accountStatus.slice(1)}</span></td>
+        <td><span class="status" style="background-color: ${statusBgColor}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${getStatusDisplay(accountStatus)}</span></td>
         <td>
           <button class="action-btn view-btn"><i class="fas fa-eye"></i> View</button>
           <button class="action-btn dropout-btn"><i class="fas fa-user-slash"></i> Drop Out</button>
@@ -143,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       { title: 'Basic Details', fields: [
         ['User ID', student.userId],
         ['Name', student.candidateName],
-        ['Status', student.accountStatus],
+        ['Status', getStatusDisplay(student.accountStatus)],
         ['Date of Birth', student.dob],
         ['Age', student.age],
         ['Gender', student.gender]
@@ -226,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("dropoutUserId").value = student.userId;
     document.getElementById("dropoutStudentName").value = student.candidateName;
-    document.getElementById("dropoutStatus").innerHTML = `<option value="${nextStatus}">${nextStatus}</option>`;
+    document.getElementById("dropoutStatus").innerHTML = `<option value="${nextStatus}">${getStatusDisplay(nextStatus)}</option>`;
 
     document.getElementById("dropoutModal").style.display = "flex";
   }

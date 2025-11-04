@@ -58,7 +58,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .content-section p {
-            font-size: 1em;
+            font-size: 1.0em;
             line-height: 1.6;
             color: #444;
             margin: 0;
@@ -91,7 +91,7 @@
             text-align: center;
             margin-top: 30px;
             font-size: 1.1em;
-            color: #007bff;
+            color: #2e4f8f;
             text-decoration: none;
             transition: color 0.3s ease;
         }
@@ -125,7 +125,7 @@
         }
 
         .fee-card h3 {
-            color: #007bff;
+            color: #2e4f8f;
             margin-top: 0;
             margin-bottom: 10px;
             font-size: 1.3em;
@@ -148,7 +148,7 @@
 
 
         .download-button {
-            background-color: #007bff;
+            background-color: #2e4f8f;
             color: white;
             padding: 12px 25px;
             border: none;
@@ -172,22 +172,36 @@
 
         /* Specific styles for tables inside content section */
         #paymentHistoryTable thead th {
-            background-color: #007bff;
+            background-color: #2e4f8f;
             color: white;
         }
         #paymentHistoryTable tbody td {
             vertical-align: middle;
         }
+        
+        /* Optional: Style for the small download buttons in the table */
+        .download-receipt-btn {
+            background-color: #2e4f8f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-receipt-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Navigation structure added -->
     <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
     <div class="overlay" id="overlay"></div>
     <aside class="side-menu" id="sideMenu"></aside>
 
-    <!-- Main content container -->
     <div class="container">
         <div class="header-container">
             <h1><i class="fas fa-money-bill-wave"></i> My Fee Payments</h1>
@@ -239,10 +253,8 @@
         <div id="footer"></div>
     </div>
 
-    <!-- Fee details JS -->
     <script src="Javascripts/fee_details.js" defer></script>
 
-    <!-- Navigation JS -->
     <script src="Javascripts/nav.js" defer></script>
     <script src="Javascripts/modal.js" defer></script>
     <script src="Javascripts/footer.js"></script>

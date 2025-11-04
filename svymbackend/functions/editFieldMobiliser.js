@@ -29,6 +29,14 @@ exports.handler = async function(event, context) {
       }
     }
 
+    // Validate Region and Supported Project if provided: only alphabets and spaces
+    if (body.FieldMobiliserRegion && !/^[a-zA-Z\s]+$/.test(body.FieldMobiliserRegion)) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'FieldMobiliserRegion must contain only alphabets and spaces.' }) };
+    }
+    if (body.FieldMobiliserSupportedProject && !/^[a-zA-Z\s]+$/.test(body.FieldMobiliserSupportedProject)) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'FieldMobiliserSupportedProject must contain only alphabets and spaces.' }) };
+    }
+
     // Allowed fields to update
     const updates = {};
     const allowed = ['FieldMobiliserName','FieldMobiliserEmailID','FieldMobiliserMobileNo','FieldMobiliserRegion','FieldMobiliserSupportedProject','addedBy'];

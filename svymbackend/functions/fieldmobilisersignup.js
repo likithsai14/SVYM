@@ -46,6 +46,20 @@ exports.handler = async (event, context) => {
       }
     }
 
+    // Validate Region and Supported Project: only alphabets and spaces
+    if (!/^[a-zA-Z\s]+$/.test(data.FieldMobiliserRegion)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "FieldMobiliserRegion must contain only alphabets and spaces." }),
+      };
+    }
+    if (!/^[a-zA-Z\s]+$/.test(data.FieldMobiliserSupportedProject)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "FieldMobiliserSupportedProject must contain only alphabets and spaces." }),
+      };
+    }
+
     // ✅ addedBy from frontend
     if (!data.addedBy) {
       return {

@@ -37,7 +37,7 @@ body {
 }
 
 .main-content h3 {
-  color: #007bff;
+  color: #2e4f8f;
   margin-top: 25px;
   margin-bottom: 15px;
   font-size: 1.6em;
@@ -142,7 +142,7 @@ body {
   display: block;
   font-size: 2em;
   font-weight: 700;
-  color: #007bff;
+  color: #2e4f8f;
 }
 
 .stat-item .stat-label {
@@ -382,7 +382,7 @@ body {
 }
 
 .edit-btn {
-  background-color: #007bff;
+  background-color: #2e4f8f;
   color: #fff;
 }
 
@@ -412,7 +412,7 @@ body {
 }
 
 .footer-links a {
-  color: #007bff;
+  color: #2e4f8f;
   text-decoration: none;
   margin: 0 15px;
   font-size: 14px;

@@ -132,7 +132,7 @@
 .hamburger {
   display: none;
   font-size: 1.3em;
-  color: #007bff;
+  color: #2e4f8f;
   cursor: pointer;
   position: fixed;
   top: 25px;
@@ -262,7 +262,7 @@ body {
 }
 
 #footer .footer-links a {
-  color: #007bff;
+  color: #2e4f8f;
   text-decoration: none;
   margin: 0 15px;
   font-weight: 500;

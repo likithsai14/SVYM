@@ -146,6 +146,22 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+    // Restrict otherTribal to alphabets and spaces only
+    if (otherTribalInput) {
+        otherTribalInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+            this.value = toTitleCase(this.value);
+        });
+    }
+
+    // Restrict otherPwd to alphabets and spaces only
+    if (otherPwdInput) {
+        otherPwdInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+            this.value = toTitleCase(this.value);
+        });
+    }
+
     // ------------------------------
     // Error handling spans
     // ------------------------------

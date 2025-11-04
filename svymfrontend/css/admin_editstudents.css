@@ -25,7 +25,7 @@
 
 .card-header h4 i {
   margin-right: 10px;
-  color: #007bff;
+  color: #2e4f8f;
 }
 
 /* "Add New Student" Button */
@@ -71,11 +71,11 @@
 }
 
 #studentSearchInput:focus {
-  border-color: #007bff;
+  border-color: #2e4f8f;
 }
 
 #studentSearchBtn {
-  background-color: #007bff;
+  background-color: #2e4f8f;
   color: white;
   border: none;
   padding: 12px 18px;
@@ -164,11 +164,11 @@
 }
 
 .view-btn {
-  color: #007bff;
-  border-color: #007bff;
+  color: #2e4f8f;
+  border-color: #2e4f8f;
 }
 .view-btn:hover {
-  background-color: #007bff;
+  background-color: #2e4f8f;
   color: white;
 }
 
