@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 (item.studentName && item.studentName.toLowerCase().includes(filterText)) ||
                 (item.courseName && item.courseName.toLowerCase().includes(filterText))
             );
-            headers = ["Transaction ID","Student ID","Student Name","Course","Amount","Payment Medium","Paid To","Transaction Date"];
+            headers = ["Transaction ID","Student ID","Student Name","Course","Amount","Payment Mode","Paid To","Transaction Date"];
         }
 
         feeTableHead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;

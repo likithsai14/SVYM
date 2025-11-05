@@ -111,6 +111,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updatePaginationInfo(data) {
     const totalPages = Math.ceil(data.length / rowsPerPage);
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    // Disable buttons if only one page or no pages
+    if (totalPages <= 1) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    } else {
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+    }
   }
 
   // ✅ Apply search & filter

@@ -1,36 +1,16 @@
-# TODO: Replace #007bff with #2e4f8f in entire application
+# TODO: Add Validations to Field Mobiliser Edit Profile
 
-- [x] Edit svymfrontend/css/modal.css
-- [x] Edit svymfrontend/css/admin_courses.css
-- [x] Edit svymfrontend/css/admin_dashboard.css
-- [x] Edit svymfrontend/css/style.css
-- [x] Edit svymfrontend/css/nav.css
-- [x] Edit svymfrontend/admin/css/style.css
-- [x] Edit svymfrontend/css/admin_editstudents.css
-- [x] Edit svymfrontend/css/tableList.css
-- [x] Edit svymfrontend/css/trainer_editstudents.css
-- [x] Edit svymfrontend/trainer_dashboard.html
-- [x] Edit svymfrontend/student_fee_details.html
-- [x] Edit svymfrontend/admin_trainers.html
-- [x] Edit svymfrontend/admin_courses.html
-- [x] Edit svymfrontend/trainer_profile.html
-- [x] Edit svymfrontend/student_forum.html
-- [x] Edit svymfrontend/student_dashboard.html
-- [x] Edit svymfrontend/admin_field_mobilisers.html
-- [x] Edit svymfrontend/about_us.html
-- [x] Edit svymfrontend/submit_feedback.html
-- [x] Edit svymfrontend/trainer_attendance.html
-- [x] Edit svymfrontend/trainer_courses.html
-- [x] Edit svymfrontend/Javascripts/fee_details.js
-- [x] Edit svymfrontend/admin_students.html
-- [x] Edit svymfrontend/field_mobiliser_dashboard.html
-- [x] Edit svymfrontend/student_attendance.html
-- [x] Edit svymfrontend/admin_reports.html
-- [x] Edit svymfrontend/student_courses.html
-- [x] Edit svymfrontend/help_faqs.html
-- [x] Edit svymfrontend/contact.html
-- [x] Edit svymfrontend/admin/admin_trainers.html
-- [x] Edit svymfrontend/admin/admin_field_mobilisers.html
-- [x] Edit svymfrontend/admin/admin_students.html
-- [x] Edit svymfrontend/field_mobiliser_students.html
-- [x] Edit svymfrontend/field_mobiliser_profile.html
+## Steps to Complete
+- [x] Add input restrictions and title case for Region field (only alphabets and spaces)
+- [x] Add input restrictions and title case for Supported Project field (only alphabets and spaces)
+- [x] Enhance email validation with stricter regex check
+- [x] Update live validation logic for Region, Supported Project, and Email fields
+- [x] Ensure submit-time validation includes the new checks
+- [x] Test the changes (skipped as per user request)
+
+## Progress Tracking
+- Completed input restrictions and title case for Region and Supported Project.
+- Added stricter email validation with regex.
+- Updated live validation for all fields.
+- Added submit-time custom validations.
+- Task completed successfully.

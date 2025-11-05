@@ -105,6 +105,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     this.value = toTitleCase(this.value);
   });
 
+  // Title case and input restriction for region (only alphabets and spaces)
+  document.getElementById('edit_fieldMobiliserRegion').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+
+  // Title case and input restriction for supported project (only alphabets and spaces)
+  document.getElementById('edit_fieldMobiliserProject').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+
   // Restrict mobile input to digits only, max 10
   const editMobileInput = document.getElementById('edit_fieldMobiliserMobile');
   if (editMobileInput) {
@@ -126,6 +138,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     // Specific validation for name field (only alphabets and spaces)
     if (input.id === 'edit_fieldMobiliserName') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+    }
+    // Specific validation for email (stricter regex)
+    if (input.id === 'edit_fieldMobiliserEmail') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) showError(input, 'Please enter a valid email address.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) showError(input, 'Please enter a valid email address.'); else clearError(input); });
+    }
+    // Specific validation for region (only alphabets and spaces)
+    if (input.id === 'edit_fieldMobiliserRegion') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+    }
+    // Specific validation for supported project (only alphabets and spaces)
+    if (input.id === 'edit_fieldMobiliserProject') {
       input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
       input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
     }
@@ -163,6 +190,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         isValid = false;
       }
     });
+
+    // Additional custom validations
+    const emailInput = document.getElementById('edit_fieldMobiliserEmail');
+    if (emailInput.value.trim() !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+      showError(emailInput, 'Please enter a valid email address.');
+      isValid = false;
+    }
+
+    const regionInput = document.getElementById('edit_fieldMobiliserRegion');
+    if (regionInput.value.trim() !== '' && /[^a-zA-Z\s]/.test(regionInput.value)) {
+      showError(regionInput, 'Only alphabets and spaces allowed.');
+      isValid = false;
+    }
+
+    const projectInput = document.getElementById('edit_fieldMobiliserProject');
+    if (projectInput.value.trim() !== '' && /[^a-zA-Z\s]/.test(projectInput.value)) {
+      showError(projectInput, 'Only alphabets and spaces allowed.');
+      isValid = false;
+    }
 
     if (!isValid) {
       const msgDiv = document.getElementById('editProfileMessage');

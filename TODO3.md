@@ -1,0 +1,4 @@
+- [x] Modify createModuleInput in svymfrontend/Javascripts/add_course.js to add validation for module names: prevent first character from being a digit, and apply title case.
+- [x] Modify createModuleInput in svymfrontend/Javascripts/admin_courses.js to add the same validation.
+- [x] In admin_courses.js, in handleEdit function, when populating existing modules, add the validation listener to each module input.
+- [ ] Test the changes by adding/editing a course and trying to enter a digit as the first character in module names.

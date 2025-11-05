@@ -14,10 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchStudentFeeData() {
         try {
             const studentId = sessionStorage.getItem('userId'); // or however you store it
-            
-            // --- Get student name from session storage ---
-            // Assuming you store the user's name in 'userName' upon login
-            studentName = sessionStorage.getItem('userName') || "Student Name"; 
+
+            // Fetch student profile to get the name
+            const profileRes = await fetch("/.netlify/functions/getStudentProfile?userId=" + studentId, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (profileRes.ok) {
+                const profileData = await profileRes.json();
+                studentName = profileData.user.candidateName || "Student Name";
+            } else {
+                studentName = sessionStorage.getItem('userName') || "Student Name";
+            }
 
             const res = await fetch("/.netlify/functions/getStudentFees", {
                 method: "POST",
@@ -416,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input id="payAmountInput" type="number" step="0.01" min="0" />
                     </div>
                     <div class="row">
-                        <label for="payMethodSelect">Payment Method</label>
+                        <label for="payMethodSelect">Payment Mode</label>
                         <select id="payMethodSelect">
                             <option value="UPI">UPI</option>
                             <option value="Card">Card</option>

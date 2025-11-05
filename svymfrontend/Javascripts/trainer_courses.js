@@ -143,6 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ${first ? "" : `<button type="button" class="icon-btn removeBtn"> X </button>`}
     `;
 
+    const input = div.querySelector(".moduleName");
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/^\d/, ''); // Remove leading digit
+      this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1); // Capitalize first letter
+    });
+
     if (!first) {
       div.querySelector(".removeBtn").addEventListener("click", () => div.remove());
     }

@@ -220,13 +220,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('edit_caste').value = user.caste || '';
     document.getElementById('edit_otherCaste').value = user.otherCaste || '';
     document.getElementById('edit_tribal').value = user.tribal || '';
+    document.getElementById('edit_otherTribal').value = user.otherTribal || '';
     document.getElementById('edit_pwd').value = user.pwd || '';
+    document.getElementById('edit_otherPwd').value = user.otherPwd || '';
     document.getElementById('edit_supportedProject').value = user.supportedProject || '';
     document.getElementById('edit_referralSource').value = user.referralSource || '';
     editReferralSource.dispatchEvent(new Event('change'));
     document.getElementById('edit_staffName').value = user.staffName || '';
     // Trigger change events to show/hide additional fields
     document.getElementById('edit_caste').dispatchEvent(new Event('change'));
+    document.getElementById('edit_tribal').dispatchEvent(new Event('change'));
+    document.getElementById('edit_pwd').dispatchEvent(new Event('change'));
     document.getElementById('edit_qualification').dispatchEvent(new Event('change'));
     editModal.style.display = 'flex';
   });
@@ -255,8 +259,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     edit_mobiliserName: document.getElementById('edit_mobiliserNameError'),
     edit_caste: document.getElementById('edit_casteError'),
     edit_otherCaste: document.getElementById('edit_otherCasteError'),
+    edit_otherTribal: document.getElementById('edit_otherTribalError'),
     edit_tribal: document.getElementById('edit_tribalError'),
     edit_pwd: document.getElementById('edit_pwdError'),
+    edit_otherPwd: document.getElementById('edit_otherPwdError'),
     edit_referralSource: document.getElementById('edit_referralSourceError'),
     edit_staffName: document.getElementById('edit_staffNameError')
   };
@@ -287,6 +293,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     this.value = toTitleCase(this.value);
   });
 
+  // Input restriction for other qualification, other caste, other tribal, and other pwd (only alphabets and spaces)
+  document.getElementById('edit_otherQualification').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+  document.getElementById('edit_otherCaste').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+  document.getElementById('edit_otherTribal').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+  document.getElementById('edit_otherPwd').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+
   // Restrict mobile input to digits only, max 10
   const editCandidatePhoneInput = document.getElementById('edit_candidatePhone');
   if (editCandidatePhoneInput) {
@@ -304,6 +328,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Caste change handler for tribal and otherCaste
   document.getElementById('edit_caste').addEventListener('change', function() {
     const tribalSelect = document.getElementById('edit_tribal');
+    const otherTribalDiv = document.getElementById('edit_otherTribalDiv');
+    const otherTribalInput = document.getElementById('edit_otherTribal');
     const otherCasteDiv = document.getElementById('edit_otherCasteDiv');
     const otherCasteInput = document.getElementById('edit_otherCaste');
     if (this.value === 'ST') {
@@ -322,6 +348,38 @@ document.addEventListener("DOMContentLoaded", async () => {
       otherCasteInput.removeAttribute('required');
       otherCasteInput.value = '';
       clearError(otherCasteInput);
+    }
+    clearError(this);
+  });
+
+  // Tribal change handler for otherTribal
+  document.getElementById('edit_tribal').addEventListener('change', function() {
+    const otherTribalDiv = document.getElementById('edit_otherTribalDiv');
+    const otherTribalInput = document.getElementById('edit_otherTribal');
+    if (this.value === 'Others') {
+      otherTribalDiv.style.display = 'block';
+      otherTribalInput.setAttribute('required', 'required');
+    } else {
+      otherTribalDiv.style.display = 'none';
+      otherTribalInput.removeAttribute('required');
+      otherTribalInput.value = '';
+      clearError(otherTribalInput);
+    }
+    clearError(this);
+  });
+
+  // PWD change handler for otherPwd
+  document.getElementById('edit_pwd').addEventListener('change', function() {
+    const otherPwdDiv = document.getElementById('edit_otherPwdDiv');
+    const otherPwdInput = document.getElementById('edit_otherPwd');
+    if (this.value === 'Others') {
+      otherPwdDiv.style.display = 'block';
+      otherPwdInput.setAttribute('required', 'required');
+    } else {
+      otherPwdDiv.style.display = 'none';
+      otherPwdInput.removeAttribute('required');
+      otherPwdInput.value = '';
+      clearError(otherPwdInput);
     }
     clearError(this);
   });
@@ -354,7 +412,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       input.addEventListener('blur', () => { if (!input.validity.valid && input.value.trim() !== '') showError(input, input.title || 'Invalid format.'); else clearError(input); });
     }
     // Specific validation for name fields (only alphabets and spaces)
-    if (input.id === 'edit_candidateName' || input.id === 'edit_fatherHusbandName') {
+    if (input.id === 'edit_candidateName' || input.id === 'edit_fatherHusbandName' || input.id === 'edit_otherQualification' || input.id === 'edit_otherCaste' || input.id === 'edit_otherTribal' || input.id === 'edit_otherPwd') {
       input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
       input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
     }
@@ -422,6 +480,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       isValid = false;
     }
 
+    // Special validation for tribal
+    const tribalValue = document.getElementById('edit_tribal').value;
+    const otherTribalInput = document.getElementById('edit_otherTribal');
+    if (tribalValue === 'Others' && otherTribalInput.value.trim() === '') {
+      showError(otherTribalInput, 'Please specify the tribal status.');
+      isValid = false;
+    }
+
+    // Special validation for pwd
+    const pwdValue = document.getElementById('edit_pwd').value;
+    const otherPwdInput = document.getElementById('edit_otherPwd');
+    if (pwdValue === 'Others' && otherPwdInput.value.trim() === '') {
+      showError(otherPwdInput, 'Please specify the disability.');
+      isValid = false;
+    }
+
     if (!isValid) {
       const msgDiv = document.getElementById('editProfileMessage');
       msgDiv.style.display = 'block';
@@ -453,7 +527,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       caste: document.getElementById('edit_caste').value.trim(),
       otherCaste: document.getElementById('edit_otherCaste').value.trim(),
       tribal: document.getElementById('edit_tribal').value.trim(),
+      otherTribal: document.getElementById('edit_otherTribal').value.trim(),
       pwd: document.getElementById('edit_pwd').value.trim(),
+      otherPwd: document.getElementById('edit_otherPwd').value.trim(),
       supportedProject: document.getElementById('edit_supportedProject').value.trim(),
       referralSource: document.getElementById('edit_referralSource').value.trim(),
       staffName: document.getElementById('edit_staffName').value.trim()

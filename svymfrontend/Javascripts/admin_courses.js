@@ -205,8 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("location").value = course.location;
 
     // Disable non-editable fields
-    document.getElementById("trainingName").disabled = true;
-    document.getElementById("price").disabled = true;
     document.getElementById("location").disabled = true;
 
     // Trainer
@@ -240,6 +238,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <input type="text" name="moduleNames" class="moduleName" value="${m}" required style="flex:1; padding:5px; margin-right:5px;">
         <button type="button" class="icon-btn removeBtn">X</button>
       `;
+      const input = div.querySelector(".moduleName");
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/^\d/, ''); // Remove leading digit
+        this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1); // Capitalize first letter
+      });
       div.querySelector(".removeBtn").addEventListener("click", () => div.remove());
       moduleRow.appendChild(div);
     });
@@ -319,6 +322,11 @@ document.addEventListener("DOMContentLoaded", () => {
       <input type="text" name="moduleNames" class="moduleName" placeholder="Module name" required style="flex:1; padding:5px; margin-right:5px;">
       <button type="button" class="icon-btn removeBtn">X</button>
     `;
+    const input = div.querySelector(".moduleName");
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/^\d/, ''); // Remove leading digit
+      this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1); // Capitalize first letter
+    });
     div.querySelector(".removeBtn").addEventListener("click", () => div.remove());
     return div;
   }

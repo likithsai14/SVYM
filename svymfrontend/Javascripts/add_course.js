@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded", () => {
   const addCourseBtn = document.getElementById("openAddCourseModal");
   const modal = document.getElementById("addCourseModal");
   const closeModal = document.getElementById("closeModal");
@@ -40,6 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
       <input type="text" name="moduleNames" class="moduleName" placeholder="Module name" required style="flex:1; padding:5px; margin-right:5px;">
       <button type="button" class="icon-btn removeBtn">X</button>
     `;
+    const input = div.querySelector(".moduleName");
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/^\d/, ''); // Remove leading digit
+      this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1); // Capitalize first letter
+    });
     div.querySelector(".removeBtn").addEventListener("click", () => div.remove());
     return div;
   }
@@ -79,10 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
     newTrainerFields.style.display = trainerSelect.value === "addNewTrainer" ? "block" : "none";
   });
 
-  // Validation for course name: should not start with digit, may contain in between
+  // Validation for course name: should not start with digit, may contain in between, and auto-capitalize first letter of each word
   const trainingNameInput = document.getElementById("trainingName");
   if (trainingNameInput) {
     trainingNameInput.addEventListener('input', function() {
+      this.value = toTitleCase(this.value);
       const errorSpan = document.getElementById("trainingNameError");
       if (/^\d/.test(this.value)) {
         errorSpan.textContent = "Course name should not start with a digit.";

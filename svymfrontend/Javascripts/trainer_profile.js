@@ -103,6 +103,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     this.value = toTitleCase(this.value);
   });
 
+  // Input restriction for expertise (only alphabets and spaces)
+  document.getElementById('edit_expertise').addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    this.value = toTitleCase(this.value);
+  });
+
   // Restrict mobile input to digits only, max 10
   const editMobileInput = document.getElementById('edit_mobile');
   if (editMobileInput) {
@@ -122,8 +128,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       input.addEventListener('input', () => { if (!input.validity.valid) showError(input, input.title || 'Invalid format.'); else clearError(input); });
       input.addEventListener('blur', () => { if (!input.validity.valid && input.value.trim() !== '') showError(input, input.title || 'Invalid format.'); else clearError(input); });
     }
-    // Specific validation for name field (only alphabets and spaces)
-    if (input.id === 'edit_trainerName') {
+    // Specific validation for name and expertise fields (only alphabets and spaces)
+    if (input.id === 'edit_trainerName' || input.id === 'edit_expertise') {
       input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
       input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
     }
@@ -161,6 +167,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         isValid = false;
       }
     });
+
+    // Validate email format
+    const emailInput = document.getElementById('edit_email');
+    const emailValue = emailInput.value.trim();
+    if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+      showError(emailInput, 'Please enter a valid email address.');
+      isValid = false;
+    }
+
+    // Validate expertise (no digits)
+    const expertiseInput = document.getElementById('edit_expertise');
+    const expertiseValue = expertiseInput.value.trim();
+    if (expertiseValue && /\d/.test(expertiseValue)) {
+      showError(expertiseInput, 'Expertise should not contain digits.');
+      isValid = false;
+    }
 
     // Special validations
     const name = document.getElementById('edit_trainerName').value.trim();
