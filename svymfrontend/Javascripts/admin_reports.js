@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       return;
     }
 
-    const today = new Date().toLocaleDateString('en-IN');
+    const today = formatDate(new Date());
     const reportTitle = `Student_Report_${today.replace(/\//g, '-')}.xlsx`;
 
     // Prepare Data
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Aadhaar": st.aadharNumber,
       "Gender": st.gender,
       "Caste": st.caste,
-      "DOB": st.dob ? new Date(st.dob).toLocaleDateString('en-GB') : 'N/A',
+      "DOB": st.dob ? formatDate(st.dob) : 'N/A',
       "Age": st.age,
       "Education": st.qualification && st.qualification.toLowerCase() === 'others' && st.qualificationOther ? `others | ${st.qualificationOther}` : st.qualification,
       "District": st.districtName,
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       "PWD": st.pwd && st.pwd.toLowerCase() === 'others' && st.pwdOther ? `others | ${st.pwdOther}` : st.pwd,
       "Status": st.approvalStatus,
       "Account Status": st.accountStatus,
-      "Joined Date": st.createdAt ? new Date(st.createdAt).toLocaleDateString('en-IN') : 'N/A'
+      "Joined Date": st.createdAt ? formatDate(st.createdAt) : 'N/A'
     }));
 
     // Convert to worksheet
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       return;
     }
 
-    const today = new Date().toLocaleDateString('en-IN');
+    const today = formatDate(new Date());
     const reportTitle = `Trainer_Report_${today.replace(/\//g, '-')}.xlsx`;
 
     // Prepare Data
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Mobile": tr.mobile,
       "Expertise": tr.expertise,
       "Status": tr.status,
-      "Joined Date": tr.createdAt ? new Date(tr.createdAt).toLocaleDateString('en-IN') : 'N/A'
+      "Joined Date": tr.createdAt ? formatDate(tr.createdAt) : 'N/A'
     }));
 
     // Convert to worksheet
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       return;
     }
 
-    const today = new Date().toLocaleDateString('en-IN');
+    const today = formatDate(new Date());
     const reportTitle = `Field_Mobiliser_Report_${today.replace(/\//g, '-')}.xlsx`;
 
     // Prepare Data
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Region": fm.FieldMobiliserRegion,
       "Supported Project": fm.FieldMobiliserSupportedProject,
       "Status": fm.accountStatus,
-      "Joined Date": fm.createdAt ? new Date(fm.createdAt).toLocaleDateString('en-IN') : 'N/A'
+      "Joined Date": fm.createdAt ? formatDate(fm.createdAt) : 'N/A'
     }));
 
     // Convert to worksheet
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       return;
     }
 
-    const today = new Date().toLocaleDateString('en-IN');
+    const today = formatDate(new Date());
     const reportTitle = `Courses_Report_${today.replace(/\//g, '-')}.xlsx`;
 
     // Prepare Data
@@ -289,13 +289,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       "Description": c.description,
       "Duration (Days)": c.durationMonths,
       "Fee": c.price,
-      "Start Date": c.startDate ? new Date(c.startDate).toLocaleDateString('en-IN') : 'N/A',
-      "End Date": c.endDate ? new Date(c.endDate).toLocaleDateString('en-IN') : 'N/A',
+      "Start Date": c.startDate ? formatDate(c.startDate) : 'N/A',
+      "End Date": c.endDate ? formatDate(c.endDate) : 'N/A',
       "Modules": c.moduleNames ? c.moduleNames.join(', ') : 'N/A',
       "Trainer ID": c.trainerId || 'N/A',
       "Trainer Name": c.trainerName || 'N/A',
       "Status": c.courseStatus,
-      "Created Date": c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-IN') : 'N/A'
+      "Created Date": c.createdAt ? formatDate(c.createdAt) : 'N/A'
     }));
 
     // Convert to worksheet
@@ -368,14 +368,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         "Course": t.courseName,
         "Amount": t.amount,
         "Payment Method": t.paymentMedium,
-        "Date": t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('en-IN') : 'N/A'
+        "Date": t.transactionDate ? formatDate(t.transactionDate) : 'N/A'
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(data);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
 
-      const today = new Date().toLocaleDateString('en-IN');
+      const today = formatDate(new Date());
       const filename = `Transactions_Report_${today.replace(/\//g, '-')}.xlsx`;
 
       // Generate table HTML
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Student Fees");
 
-      const today = new Date().toLocaleDateString('en-IN');
+      const today = formatDate(new Date());
       const filename = `Student_Fees_Report_${today.replace(/\//g, '-')}.xlsx`;
 
       // Generate table HTML
@@ -627,9 +627,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
         if (record) {
           const studentEntry = record.students.find(s => s.studentId === student.userId);
-          row[date.toLocaleDateString('en-IN')] = studentEntry ? (studentEntry.present ? 'Present' : 'Absent') : '';
+          row[formatDate(date)] = studentEntry ? (studentEntry.present ? 'Present' : 'Absent') : '';
         } else {
-          row[date.toLocaleDateString('en-IN')] = '';
+          row[formatDate(date)] = '';
         }
       });
       reportData.push(row);

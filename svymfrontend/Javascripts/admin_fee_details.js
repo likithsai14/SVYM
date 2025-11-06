@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
             (course.transactions || []).forEach(payment => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${new Date(payment.transactionDate).toLocaleDateString()}</td>
+                    <td>${formatDate(payment.transactionDate)}</td>
                     <td>${course.courseName}</td>
                     <td>${payment.transactionId}</td>
                     <td>${payment.amount}</td>
@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             data-transaction-id="${payment.transactionId}"
                             data-course-name="${course.courseName}"
                             data-amount="${payment.amount}"
-                            data-date="${new Date(payment.transactionDate).toLocaleDateString()}"
+                            data-date="${formatDate(payment.transactionDate)}"
                             data-method="${payment.paymentMedium}"
                             data-student-name="${student.studentName}">
                             <i class="fas fa-file-download"></i>

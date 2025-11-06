@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       setText('fieldMobiliserMobile', fm.FieldMobiliserMobileNo || 'Not provided');
       setText('fieldMobiliserRegion', fm.FieldMobiliserRegion);
       setText('fieldMobiliserProject', fm.FieldMobiliserSupportedProject);
-      setText('fieldMobiliserJoined', fm.createdAt ? new Date(fm.createdAt).toLocaleDateString() : '—');
+      setText('fieldMobiliserJoined', fm.createdAt ? formatDate(fm.createdAt) : '—');
       setText('fieldMobiliserStatus', fm.accountStatus);
 
       // Store for edit modal

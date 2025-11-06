@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ['Tribal', student.tribal],
         ['Pwd', student.pwd],
         ['Education', student.qualification],
-        ['Creation Date', new Date(student.createdAt).toLocaleDateString('en-IN')]
+        ['Creation Date', formatDate(student.createdAt)]
       ]}
     ];
 

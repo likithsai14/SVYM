@@ -64,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
           <p>${course.description}</p>
           <div class="course-details-grid">
-            <p><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</p>
-            <p><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</p>
+            <p><strong>Start Date:</strong> ${formatDate(course.startDate)}</p>
+            <p><strong>End Date:</strong> ${formatDate(course.endDate)}</p>
             <p><strong>Duration:</strong> ${course.durationMonths} days</p>
             <p class="full-width"><strong>Center:</strong> ${course.location}</p>
           </div>

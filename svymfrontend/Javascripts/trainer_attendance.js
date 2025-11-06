@@ -168,8 +168,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Set default date to today
   const today = new Date();
-  const formatDate = d => d.toISOString().split("T")[0];
-  dateInput.value = formatDate(today);
 
   // Submit or update attendance
   submitBtn.addEventListener("click", async () => {

@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // --- Added 'data-student-name' to the button ---
                     row.innerHTML = `
-                        <td>${new Date(record.date).toLocaleDateString()}</td>
+                        <td>${formatDate(record.date)}</td>
                         <td>${course.courseName || "Course Name"}</td>
                         <td>${record.transactionId}</td>
                         <td>INR ${record.amount.toFixed(2)}</td>
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 data-transaction-id="${record.transactionId}"
                                 data-course-name="${course.courseName || "Course Name"}"
                                 data-amount="${record.amount.toFixed(2)}"
-                                data-date="${new Date(record.date).toLocaleDateString()}"
+                                data-date="${formatDate(record.date)}"
                                 data-method="${record.method}"
                                 data-student-name="${studentName}">
                                 <i class="fas fa-file-download"></i>

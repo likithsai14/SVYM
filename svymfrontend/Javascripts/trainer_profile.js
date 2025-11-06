@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       setText('trainerEmail', trainer.email || 'Not provided');
       setText('trainerPhone', trainer.mobile || 'Not provided');
       setText('trainerExpertise', trainer.expertise);
-      setText('trainerJoined', trainer.createdAt ? new Date(trainer.createdAt).toLocaleDateString() : '—');
+      setText('trainerJoined', trainer.createdAt ? formatDate(trainer.createdAt) : '—');
       setText('trainerStatus', trainer.status);
 
       // Store for edit modal

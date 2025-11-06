@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 tribal: st.tribal,
                 pwd: st.pwd,
                 status: st.approvalStatus || "Active",
-                creationDate: new Date(st.createdAt).toLocaleDateString('en-IN')
+                creationDate: formatDate(st.createdAt)
             }));
             renderStudentsTable();
         } catch (err) {
@@ -781,7 +781,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <td>${req.userId}</td>
                     <td>${req.candidateName}</td>
                     <td>${req.email}</td>
-                    <td>${new Date(req.createdAt).toLocaleDateString('en-IN')}</td>
+                    <td>${formatDate(req.createdAt)}</td>
                     <td>
                         <button class="approve-btn" data-id="${req.userId}">Approve</button>
                         <button class="reject-btn" data-id="${req.userId}">Reject</button>
