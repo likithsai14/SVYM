@@ -1,16 +1,8 @@
-# TODO: Add Validations to Field Mobiliser Edit Profile
-
-## Steps to Complete
-- [x] Add input restrictions and title case for Region field (only alphabets and spaces)
-- [x] Add input restrictions and title case for Supported Project field (only alphabets and spaces)
-- [x] Enhance email validation with stricter regex check
-- [x] Update live validation logic for Region, Supported Project, and Email fields
-- [x] Ensure submit-time validation includes the new checks
-- [x] Test the changes (skipped as per user request)
-
-## Progress Tracking
-- Completed input restrictions and title case for Region and Supported Project.
-- Added stricter email validation with regex.
-- Updated live validation for all fields.
-- Added submit-time custom validations.
-- Task completed successfully.
+- [x] Make formAge readonly
+- [x] Add event listener to formDateOfBirth for age calculation and validation (>=18)
+- [x] Add input restrictions for formAadhaarNumber (12 digits only)
+- [x] Add input restrictions for formAccNumber (digits only)
+- [x] Add input restrictions for formBankFullName (convert to upper case)
+- [x] Add input restrictions for formBankBranch (alphabets and spaces only)
+- [x] Update live validation for new fields
+- [x] Add submit validations for DOB age and Aadhaar

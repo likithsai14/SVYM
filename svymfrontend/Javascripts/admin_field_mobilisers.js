@@ -96,9 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   // Field Mobiliser View Modal Elements
   // -------------------------
-  const viewFieldModal = document.getElementById("viewFieldModal");
-  const closeFieldBtn = viewFieldModal.querySelector(".close-btn");
-  const fieldMobiliserDetailsTable = document.getElementById("fieldMobiliserDetailsTable");
+  // Modal is now created dynamically
 
   // -------------------------
   // Pagination / Table Data
@@ -184,7 +182,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const selected = fieldmobilisersData.find(d => d.id === id);
         if (selected) {
           populateFieldMobiliserModal(selected);
-          viewFieldModal.style.display = "flex";
         }
       });
     });
@@ -232,21 +229,65 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function populateFieldMobiliserModal(data) {
-    fieldMobiliserDetailsTable.innerHTML = `
-      <tr><td><strong>Field Mobiliser ID</strong></td><td>${data.id}</td></tr>
-      <tr><td><strong>Name</strong></td><td>${data.name}</td></tr>
-      <tr><td><strong>Email</strong></td><td>${data.email}</td></tr>
-      <tr><td><strong>Mobile</strong></td><td>${data.mobile}</td></tr>
-      <tr><td><strong>Region</strong></td><td>${data.region}</td></tr>
-      <tr><td><strong>Supported Project</strong></td><td>${data.supportedProject}</td></tr>
-      <tr><td><strong>Added By</strong></td><td>${data.addedBy}</td></tr>
-  <tr><td><strong>Status</strong></td><td>${formatStatusDisplay(data.status)}</td></tr>
-      <tr><td><strong>Created At</strong></td><td>${new Date(data.createdAt).toLocaleString()}</td></tr>
+    const existingModal = document.getElementById("viewFieldMobiliserModal");
+    if (existingModal) existingModal.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "viewFieldMobiliserModal";
+    modal.className = "modal show";
+    modal.style.display = "block";
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 1100px; width: 900px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #fff;">
+        <button class="close-btn" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
+        <h2 style="text-align:center; margin-bottom: 20px; color: #333; font-weight: bold;">Field Mobiliser Details</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-id-card" style="margin-right: 10px; color: #007bff;"></i>
+            <div><strong>User ID:</strong> ${data.id || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-user" style="margin-right: 10px; color: #28a745;"></i>
+            <div><strong>Name:</strong> ${data.name || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i>
+            <div><strong>Email:</strong> ${data.email || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-mobile-alt" style="margin-right: 10px; color: #17a2b8;"></i>
+            <div><strong>Mobile:</strong> ${data.mobile || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #e83e8c;"></i>
+            <div><strong>Region:</strong> ${data.region || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-project-diagram" style="margin-right: 10px; color: #6f42c1;"></i>
+            <div><strong>Supported Project:</strong> ${data.supportedProject || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-user-plus" style="margin-right: 10px; color: #fd7e14;"></i>
+            <div><strong>Added By:</strong> ${data.addedBy || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-toggle-on" style="margin-right: 10px; color: #20c997;"></i>
+            <div><strong>Status:</strong> ${formatStatusDisplay(data.status) || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff; grid-column: span 2;">
+            <i class="fas fa-clock" style="margin-right: 10px; color: #007bff;"></i>
+            <div><strong>Created At:</strong> ${data.createdAt ? new Date(data.createdAt).toLocaleString() : '-'}</div>
+          </div>
+        </div>
+      </div>
     `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector(".close-btn").addEventListener("click", () => modal.remove());
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
   }
 
-  closeFieldBtn.addEventListener("click", () => viewFieldModal.style.display = "none");
-  window.addEventListener("click", e => { if (e.target === viewFieldModal) viewFieldModal.style.display = "none"; });
+
 
   function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;

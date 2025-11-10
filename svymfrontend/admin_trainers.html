@@ -491,48 +491,131 @@
 
     <div class="modal-body">
       <form id="addTrainerForm" novalidate>
-        <!-- Trainer ID (readonly for edit) -->
-        <div class="form-group">
-          <label for="formTrainerId">Trainer ID:</label>
-          <input type="text" id="formTrainerId" name="formTrainerId" readonly />
-          <span id="formTrainerIdError" class="error-message"></span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <!-- Trainer ID (readonly for edit) -->
+          <div class="form-group">
+            <label for="formTrainerId">Trainer ID:</label>
+            <input type="text" id="formTrainerId" name="formTrainerId" readonly />
+            <span id="formTrainerIdError" class="error-message"></span>
+          </div>
+
+          <!-- Name -->
+          <div class="form-group">
+            <label for="formTrainerName">Name:</label>
+            <input type="text" id="formTrainerName" name="formTrainerName" required />
+            <span id="formTrainerNameError" class="error-message"></span>
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="form-group">
+            <label for="formDateOfBirth">Date of Birth:</label>
+            <input type="date" id="formDateOfBirth" name="formDateOfBirth" required />
+            <span id="formDateOfBirthError" class="error-message"></span>
+          </div>
+
+          <!-- Age -->
+          <div class="form-group">
+            <label for="formAge">Age:</label>
+            <input type="number" id="formAge" name="formAge" required min="18" max="100" />
+            <span id="formAgeError" class="error-message"></span>
+          </div>
+
+          <!-- Qualification -->
+          <div class="form-group">
+            <label for="formQualification">Qualification:</label>
+            <input type="text" id="formQualification" name="formQualification" required />
+            <span id="formQualificationError" class="error-message"></span>
+          </div>
+
+          <!-- Expertise -->
+          <div class="form-group">
+            <label for="formTrainerExpertise">Expertise:</label>
+            <input type="text" id="formTrainerExpertise" name="formTrainerExpertise" required />
+            <span id="formTrainerExpertiseError" class="error-message"></span>
+          </div>
+
+          <!-- Mobile -->
+          <div class="form-group">
+            <label for="formTrainerMobile">Phone:</label>
+            <input type="text" id="formTrainerMobile" name="formTrainerMobile" required pattern="\d{10}" title="Phone number must be exactly 10 digits" />
+            <span id="formTrainerMobileError" class="error-message"></span>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="formTrainerEmail">Email:</label>
+            <input type="email" id="formTrainerEmail" name="formTrainerEmail" required />
+            <span id="formTrainerEmailError" class="error-message"></span>
+          </div>
+
+          <!-- Aadhaar Number -->
+          <div class="form-group">
+            <label for="formAadhaarNumber">Aadhaar Number:</label>
+            <input type="text" id="formAadhaarNumber" name="formAadhaarNumber" required pattern="\d{12}" title="Aadhaar number must be exactly 12 digits" />
+            <span id="formAadhaarNumberError" class="error-message"></span>
+          </div>
+
+          <!-- Joining Date -->
+          <div class="form-group">
+            <label for="formJoiningDate">Joining Date:</label>
+            <input type="date" id="formJoiningDate" name="formJoiningDate" required />
+            <span id="formJoiningDateError" class="error-message"></span>
+          </div>
+
+          <!-- Address (full width) -->
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="formAddress">Address:</label>
+            <textarea id="formAddress" name="formAddress" required rows="3"></textarea>
+            <span id="formAddressError" class="error-message"></span>
+          </div>
         </div>
 
-        <!-- Name -->
-        <div class="form-group">
-          <label for="formTrainerName">Name:</label>
-          <input type="text" id="formTrainerName" name="formTrainerName" required />
-          <span id="formTrainerNameError" class="error-message"></span>
-        </div>
+        <!-- Bank Details Section -->
+        <fieldset style="margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+          <legend style="font-weight: bold; color: #004080;">Bank Details</legend>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <!-- Account Number -->
+            <div class="form-group">
+              <label for="formAccNumber">Account Number:</label>
+              <input type="text" id="formAccNumber" name="formAccNumber" required />
+              <span id="formAccNumberError" class="error-message"></span>
+            </div>
 
-        <!-- Expertise -->
-        <div class="form-group">
-          <label for="formTrainerExpertise">Expertise:</label>
-          <input type="text" id="formTrainerExpertise" name="formTrainerExpertise" required />
-          <span id="formTrainerExpertiseError" class="error-message"></span>
-        </div>
+            <!-- IFSC Code -->
+            <div class="form-group">
+              <label for="formIfscCode">IFSC Code:</label>
+              <input type="text" id="formIfscCode" name="formIfscCode" required pattern="[A-Z]{4}0[A-Z0-9]{6}" title="IFSC code must be 11 characters, starting with 4 letters, 0, then 6 alphanumeric" />
+              <span id="formIfscCodeError" class="error-message"></span>
+            </div>
 
-        <!-- Mobile -->
-        <div class="form-group">
-          <label for="formTrainerMobile">Phone:</label>
-          <input type="text" id="formTrainerMobile" name="formTrainerMobile" required />
-          <span id="formTrainerMobileError" class="error-message"></span>
-        </div>
+            <!-- Bank Name -->
+            <div class="form-group">
+              <label for="formBankName">Bank Name:</label>
+              <input type="text" id="formBankName" name="formBankName" required />
+              <span id="formBankNameError" class="error-message"></span>
+            </div>
 
-        <!-- Email -->
-        <div class="form-group">
-          <label for="formTrainerEmail">Email:</label>
-          <input type="email" id="formTrainerEmail" name="formTrainerEmail" required />
-          <span id="formTrainerEmailError" class="error-message"></span>
-        </div>
+            <!-- Full Name on Account -->
+            <div class="form-group">
+              <label for="formBankFullName">Account Holder Name(As on Bank Passbook):</label>
+              <input type="text" id="formBankFullName" name="formBankFullName" required />
+              <span id="formBankFullNameError" class="error-message"></span>
+            </div>
 
-        <!-- Security Question -->
+            <!-- Branch -->
+            <div class="form-group">
+              <label for="formBankBranch">Branch:</label>
+              <input type="text" id="formBankBranch" name="formBankBranch" required />
+              <span id="formBankBranchError" class="error-message"></span>
+            </div>
+          </div>
+        </fieldset>
 
         <!-- Form message -->
         <div id="trainerFormMessage" class="form-message"></div>
 
         <!-- Buttons -->
-        <div class="form-actions" style="display: flex; justify-content: space-between; gap: 5px;">
+        <div class="form-actions" style="display: flex; justify-content: space-between; gap: 5px; margin-top: 20px;">
           <button type="reset" class="view-button" style="width: 120px;">Clear</button>
           <button type="submit" class="add-button" style="width: 120px;"><i class="fas fa-check"></i> Submit</button>
         </div>

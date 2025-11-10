@@ -37,6 +37,7 @@ exports.handler = async (event) => {
     const hashedPassword = await bcrypt.hash(uniqueSuffix, 10);
     trainer.trainerId = userId;
     trainer.password = hashedPassword;
+    trainer.activeDate = new Date();
 
     try {
       await trainer.save();
