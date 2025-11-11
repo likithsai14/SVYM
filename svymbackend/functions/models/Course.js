@@ -17,6 +17,11 @@ const courseSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  donorFundAmount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
   startDate: {
     type: Date,
     required: true,

@@ -8,18 +8,198 @@
   const trainerSelect = document.getElementById("trainerSelect");
   const newTrainerFields = document.getElementById("newTrainerFields");
 
-  const formTrainerName = document.getElementById("formTrainerName");
-  const formTrainerExpertise = document.getElementById("formTrainerExpertise");
-  const formTrainerMobile = document.getElementById("formTrainerMobile");
-  const formTrainerEmail = document.getElementById("formTrainerEmail");
-  const formTrainerSecurityQuestion = document.getElementById("formTrainerSecurityQuestion");
-  const formTrainerSecurityAnswer = document.getElementById("formTrainerSecurityAnswer");
+  // Add Trainer Modal elements
+  const openAddTrainerModalFromCourse = document.getElementById("openAddTrainerModalFromCourse");
+  const addTrainerModalFromCourse = document.getElementById("addTrainerModalFromCourse");
+  const closeAddTrainerModalFromCourse = document.getElementById("closeAddTrainerModalFromCourse");
+  const addTrainerFormFromCourse = document.getElementById("addTrainerFormFromCourse");
+
+  // Trainer form elements from course modal
+  const formTrainerIdFromCourse = document.getElementById("formTrainerIdFromCourse");
+  const formTrainerNameFromCourse = document.getElementById("formTrainerNameFromCourse");
+  const formDateOfBirthFromCourse = document.getElementById("formDateOfBirthFromCourse");
+  const formAgeFromCourse = document.getElementById("formAgeFromCourse");
+  const formQualificationFromCourse = document.getElementById("formQualificationFromCourse");
+  const formTrainerExpertiseFromCourse = document.getElementById("formTrainerExpertiseFromCourse");
+  const formTrainerMobileFromCourse = document.getElementById("formTrainerMobileFromCourse");
+  const formTrainerEmailFromCourse = document.getElementById("formTrainerEmailFromCourse");
+  const formAadhaarNumberFromCourse = document.getElementById("formAadhaarNumberFromCourse");
+  const formJoiningDateFromCourse = document.getElementById("formJoiningDateFromCourse");
+  const formAddressFromCourse = document.getElementById("formAddressFromCourse");
+  const formAccNumberFromCourse = document.getElementById("formAccNumberFromCourse");
+  const formIfscCodeFromCourse = document.getElementById("formIfscCodeFromCourse");
+  const formBankNameFromCourse = document.getElementById("formBankNameFromCourse");
+  const formBankFullNameFromCourse = document.getElementById("formBankFullNameFromCourse");
+  const formBankBranchFromCourse = document.getElementById("formBankBranchFromCourse");
+  const trainerFormMessageFromCourse = document.getElementById("trainerFormMessageFromCourse");
+  const generatedUserIdFromCourse = document.getElementById("generatedUserIdFromCourse");
+
+  const formTrainerName = document.getElementById("formTrainerNameFromCourse");
+  const formTrainerExpertise = document.getElementById("formTrainerExpertiseFromCourse");
+  const formTrainerMobile = document.getElementById("formTrainerMobileFromCourse");
+  const formTrainerEmail = document.getElementById("formTrainerEmailFromCourse");
+  const formDateOfBirth = document.getElementById("formDateOfBirthFromCourse");
+  const formAge = document.getElementById("formAgeFromCourse");
+  const formQualification = document.getElementById("formQualificationFromCourse");
+  const formAddress = document.getElementById("formAddressFromCourse");
+  const formAadhaarNumber = document.getElementById("formAadhaarNumberFromCourse");
+  const formJoiningDate = document.getElementById("formJoiningDateFromCourse");
+  const formAccNumber = document.getElementById("formAccNumberFromCourse");
+  const formIfscCode = document.getElementById("formIfscCodeFromCourse");
+  const formBankName = document.getElementById("formBankNameFromCourse");
+  const formBankFullName = document.getElementById("formBankFullNameFromCourse");
+  const formBankBranch = document.getElementById("formBankBranchFromCourse");
+  const trainerFormMessage = document.getElementById("trainerFormMessageFromCourse");
+  const generatedUserId = document.getElementById("generatedUserIdFromCourse");
 
   const startDateInput = document.getElementById("startDate");
   const endDateInput = document.getElementById("endDate");
   const durationInput = document.getElementById("duration");
   const locationSelect = document.getElementById("location");
   const modulesWrapper = document.getElementById("modulesWrapper");
+  const donorFundAmountInput = document.getElementById("donorFundAmount");
+  const priceInput = document.getElementById("price");
+
+  // Input restriction for trainer name in add/edit modal
+  if (formTrainerName) {
+    formTrainerName.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    });
+    formTrainerName.addEventListener('blur', function() {
+      this.value = toTitleCase(this.value);
+    });
+  }
+
+  // Input restriction for expertise (alphabets and spaces, title case)
+  if (formTrainerExpertise) {
+    formTrainerExpertise.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+      this.value = toTitleCase(this.value);
+    });
+  }
+
+  // Restrict mobile input to digits only, max 10
+  if (formTrainerMobile) {
+    formTrainerMobile.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 10);
+    });
+  }
+
+  // Make age field readonly
+  if (formAge) {
+    formAge.setAttribute('readonly', true);
+  }
+
+  // Calculate age from DOB and validate >=18
+  if (formDateOfBirth) {
+    formDateOfBirth.addEventListener('change', function() {
+      const dob = new Date(this.value);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      formAge.value = age;
+      if (age < 18) {
+        showError(formDateOfBirth, 'Date of birth must be such that age is at least 18.');
+      } else {
+        clearError(formDateOfBirth);
+      }
+    });
+  }
+
+  // Restrict Aadhaar to 12 digits only
+  if (formAadhaarNumber) {
+    formAadhaarNumber.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 12);
+    });
+  }
+
+  // Restrict account number to digits only
+  if (formAccNumber) {
+    formAccNumber.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '');
+    });
+  }
+
+  // Convert account holder name to upper case
+  if (formBankFullName) {
+    formBankFullName.addEventListener('input', function() {
+      this.value = this.value.toUpperCase();
+    });
+  }
+
+  // Restrict branch to alphabets and spaces only
+  if (formBankBranch) {
+    formBankBranch.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+  }
+
+  // Function to convert to title case
+  function toTitleCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  }
+
+  const errorSpans = {};
+  addTrainerFormFromCourse.querySelectorAll('input, select').forEach(input => {
+    const spanId = input.id + 'Error';
+    errorSpans[input.id] = document.getElementById(spanId);
+  });
+
+  // Live validation
+  addTrainerFormFromCourse.querySelectorAll('input, select').forEach(input => {
+    if (input.hasAttribute('required')) {
+      input.addEventListener('input', () => { if (input.value.trim() !== '') clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() === '') showError(input, 'This field is required.'); else clearError(input); });
+    }
+    if (input.hasAttribute('pattern') || input.type === 'date' || input.type === 'email') {
+      input.addEventListener('input', () => { if (!input.validity.valid) showError(input, input.title || 'Invalid format.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (!input.validity.valid && input.value.trim() !== '') showError(input, input.title || 'Invalid format.'); else clearError(input); });
+    }
+    // Specific validation for name fields (only alphabets and spaces)
+    if (input.id === 'formTrainerNameFromCourse') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Only alphabets and spaces allowed.'); else clearError(input); });
+    }
+    // Specific validation for mobile (only digits, 10 digits)
+    if (input.id === 'formTrainerMobileFromCourse') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && !/^\d{10}$/.test(input.value)) showError(input, 'Mobile number must be exactly 10 digits.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && !/^\d{10}$/.test(input.value)) showError(input, 'Mobile number must be exactly 10 digits.'); else clearError(input); });
+    }
+    // Specific validation for Aadhaar (12 digits)
+    if (input.id === 'formAadhaarNumberFromCourse') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && !/^\d{12}$/.test(input.value)) showError(input, 'Aadhaar number must be exactly 12 digits.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && !/^\d{12}$/.test(input.value)) showError(input, 'Aadhaar number must be exactly 12 digits.'); else clearError(input); });
+    }
+    // Specific validation for account number (digits only)
+    if (input.id === 'formAccNumberFromCourse') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /\D/.test(input.value)) showError(input, 'Account number must contain only digits.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /\D/.test(input.value)) showError(input, 'Account number must contain only digits.'); else clearError(input); });
+    }
+    // Specific validation for bank branch (alphabets and spaces)
+    if (input.id === 'formBankBranchFromCourse') {
+      input.addEventListener('input', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Branch must contain only alphabets and spaces.'); else clearError(input); });
+      input.addEventListener('blur', () => { if (input.value.trim() !== '' && /[^a-zA-Z\s]/.test(input.value)) showError(input, 'Branch must contain only alphabets and spaces.'); else clearError(input); });
+    }
+  });
+
+  function showError(input, message) {
+    const span = errorSpans[input.id];
+    if (span) {
+      span.textContent = message;
+      input.classList.add('input-error');
+    }
+  }
+
+  function clearError(input) {
+    const span = errorSpans[input.id];
+    if (span) {
+      span.textContent = '';
+      input.classList.remove('input-error');
+    }
+  }
 
   // Dummy locations
   const locations = ["Bangalore", "Mysore", "Hyderabad", "Chennai"];
@@ -79,10 +259,149 @@
   startDateInput.addEventListener("change", calculateDuration);
   endDateInput.addEventListener("change", calculateDuration);
 
-  // Show/hide new trainer fields
+  // Disable/enable Add Trainer button based on trainer selection
   trainerSelect.addEventListener("change", () => {
-    newTrainerFields.style.display = trainerSelect.value === "addNewTrainer" ? "block" : "none";
+    if (openAddTrainerModalFromCourse) {
+      openAddTrainerModalFromCourse.disabled = trainerSelect.value !== "";
+    }
+    if (newTrainerFields) {
+      newTrainerFields.style.display = trainerSelect.value === "addNewTrainer" ? "block" : "none";
+    }
   });
+
+  // Open Add Trainer Modal from Course Form
+  if (openAddTrainerModalFromCourse) {
+    openAddTrainerModalFromCourse.addEventListener("click", () => {
+      addTrainerModalFromCourse.classList.remove("hide");
+      addTrainerModalFromCourse.style.display = "flex";
+    });
+  }
+
+  // Close Add Trainer Modal from Course Form
+  if (closeAddTrainerModalFromCourse) {
+    closeAddTrainerModalFromCourse.addEventListener("click", () => {
+      addTrainerModalFromCourse.classList.add("hide");
+      addTrainerModalFromCourse.style.display = "none";
+    });
+  }
+
+  // Handle Add Trainer Form Submission from Course Form
+  if (addTrainerFormFromCourse) {
+    addTrainerFormFromCourse.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Clear previous messages
+      if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "";
+      if (generatedUserIdFromCourse) generatedUserIdFromCourse.textContent = "";
+
+      // Get form data
+      const newTrainerData = {
+        name: formTrainerNameFromCourse ? formTrainerNameFromCourse.value : "",
+        expertise: formTrainerExpertiseFromCourse ? formTrainerExpertiseFromCourse.value : "",
+        mobile: formTrainerMobileFromCourse ? formTrainerMobileFromCourse.value : "",
+        email: formTrainerEmailFromCourse ? formTrainerEmailFromCourse.value : "",
+        dateOfBirth: formDateOfBirthFromCourse ? formDateOfBirthFromCourse.value : "",
+        age: formAgeFromCourse ? parseInt(formAgeFromCourse.value) : 0,
+        qualification: formQualificationFromCourse ? formQualificationFromCourse.value : "",
+        address: formAddressFromCourse ? formAddressFromCourse.value : "",
+        aadhaarNumber: formAadhaarNumberFromCourse ? formAadhaarNumberFromCourse.value : "",
+        joiningDate: formJoiningDateFromCourse ? formJoiningDateFromCourse.value : "",
+        bankDetails: {
+          accNumber: formAccNumberFromCourse ? formAccNumberFromCourse.value : "",
+          ifscCode: formIfscCodeFromCourse ? formIfscCodeFromCourse.value : "",
+          bankName: formBankNameFromCourse ? formBankNameFromCourse.value : "",
+          fullName: formBankFullNameFromCourse ? formBankFullNameFromCourse.value : "",
+          branch: formBankBranchFromCourse ? formBankBranchFromCourse.value : ""
+        }
+      };
+
+      // Basic validation
+      if (!newTrainerData.name || !newTrainerData.expertise || !newTrainerData.mobile || !newTrainerData.email) {
+        if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Required field not specified";
+        return;
+      }
+
+      // Mobile validation
+      if (newTrainerData.mobile && !/^\d{10}$/.test(newTrainerData.mobile)) {
+        if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Mobile number must be exactly 10 digits.";
+        return;
+      }
+
+      // Email validation
+      if (newTrainerData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newTrainerData.email)) {
+        if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Invalid email format.";
+        return;
+      }
+
+      // Age validation
+      if (newTrainerData.dateOfBirth) {
+        const dob = new Date(newTrainerData.dateOfBirth);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+        if (age < 18) {
+          if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Date of birth must be such that age is at least 18.";
+          return;
+        }
+      }
+
+      // Aadhaar validation
+      if (newTrainerData.aadhaarNumber && !/^\d{12}$/.test(newTrainerData.aadhaarNumber)) {
+        if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Aadhaar number must be exactly 12 digits.";
+        return;
+      }
+
+      const newTrainer = {
+        role: "trainer",
+        ...newTrainerData,
+        isFirstLogin: true,
+        status: "Active",
+      };
+
+      try {
+        const response = await fetch("/.netlify/functions/createTrainer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newTrainer)
+        });
+
+        const trainer = await response.json();
+
+        if (response.ok) {
+          if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Trainer created successfully!";
+          if (generatedUserIdFromCourse) {
+            generatedUserIdFromCourse.style.display = "block";
+            generatedUserIdFromCourse.textContent = `Generated User ID: ${trainer.trainerId}. Please share this with the trainer.`;
+          }
+          addTrainerFormFromCourse.reset();
+
+          // Refresh trainer list in course form
+          const trainerRes = await fetch("/.netlify/functions/allTrainers");
+          const trainerDataRes = await trainerRes.json();
+          const activeTrainers = trainerDataRes.trainers.filter(t => t.status === "Active");
+          trainerSelect.innerHTML = `
+            <option value="">Select Trainer</option>
+            <option value="addNewTrainer">+ Add New Trainer</option>
+            ${activeTrainers.map(t => `<option value="${t.trainerId}">${t.name}</option>`).join("")}
+          `;
+
+          // Close modal after success
+          setTimeout(() => {
+            addTrainerModalFromCourse.classList.add("hide");
+            addTrainerModalFromCourse.style.display = "none";
+          }, 2000);
+        } else {
+          if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = `Failed to create the trainer. ${trainer.message || ""}`;
+        }
+      } catch (error) {
+        console.error("Error creating trainer:", error);
+        if (trainerFormMessageFromCourse) trainerFormMessageFromCourse.textContent = "Failed to create trainer. Please try again.";
+      }
+    });
+  }
 
   // Validation for course name: should not start with digit, may contain in between, and auto-capitalize first letter of each word
   const trainingNameInput = document.getElementById("trainingName");
@@ -90,82 +409,35 @@
     trainingNameInput.addEventListener('input', function() {
       this.value = toTitleCase(this.value);
       const errorSpan = document.getElementById("trainingNameError");
-      if (/^\d/.test(this.value)) {
-        errorSpan.textContent = "Course name should not start with a digit.";
-        this.classList.add('input-error');
-      } else {
-        errorSpan.textContent = "";
-        this.classList.remove('input-error');
+      if (errorSpan) {
+        if (/^\d/.test(this.value)) {
+          errorSpan.textContent = "Course name should not start with a digit.";
+          this.classList.add('input-error');
+        } else {
+          errorSpan.textContent = "";
+          this.classList.remove('input-error');
+        }
       }
     });
   }
 
-  // Validation for new trainer name: only alphabets and spaces
-  if (formTrainerName) {
-    formTrainerName.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
-      this.value = toTitleCase(this.value);
-      const errorSpan = document.getElementById("formTrainerNameError");
-      if (/[^a-zA-Z\s]/.test(this.value)) {
-        errorSpan.textContent = "Only alphabets and spaces allowed.";
-        this.classList.add('input-error');
+  // Validation for donor fund amount: must be <= price
+  function validateDonorFund() {
+    const price = parseFloat(priceInput.value) || 0;
+    const donorFund = parseFloat(donorFundAmountInput.value) || 0;
+    const errorSpan = document.getElementById("donorFundError");
+    if (errorSpan) {
+      if (donorFund > price) {
+        errorSpan.textContent = "Donor fund amount cannot exceed the course price.";
+        donorFundAmountInput.classList.add('input-error');
       } else {
         errorSpan.textContent = "";
-        this.classList.remove('input-error');
+        donorFundAmountInput.classList.remove('input-error');
       }
-    });
+    }
   }
-
-  // Validation for new trainer expertise: only alphabets and spaces
-  if (formTrainerExpertise) {
-    formTrainerExpertise.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
-      this.value = toTitleCase(this.value);
-      const errorSpan = document.getElementById("formTrainerExpertiseError");
-      if (/[^a-zA-Z\s]/.test(this.value)) {
-        errorSpan.textContent = "Only alphabets and spaces allowed.";
-        this.classList.add('input-error');
-      } else {
-        errorSpan.textContent = "";
-        this.classList.remove('input-error');
-      }
-    });
-  }
-
-  // Validation for new trainer mobile: exactly 10 digits
-  if (formTrainerMobile) {
-    formTrainerMobile.addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '').substring(0, 10); // restrict to digits only, max 10
-      const errorSpan = document.getElementById("formTrainerMobileError");
-      if (!/^\d{10}$/.test(this.value)) {
-        errorSpan.textContent = "Mobile number must be exactly 10 digits.";
-        this.classList.add('input-error');
-      } else {
-        errorSpan.textContent = "";
-        this.classList.remove('input-error');
-      }
-    });
-  }
-
-  // Validation for new trainer email: valid email format
-  if (formTrainerEmail) {
-    formTrainerEmail.addEventListener('input', function() {
-      const errorSpan = document.getElementById("formTrainerEmailError");
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(this.value)) {
-        errorSpan.textContent = "Please enter a valid email address.";
-        this.classList.add('input-error');
-      } else {
-        errorSpan.textContent = "";
-        this.classList.remove('input-error');
-      }
-    });
-  }
-
-  // Function to convert to title case
-  function toTitleCase(str) {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
-  }
+  priceInput.addEventListener('input', validateDonorFund);
+  donorFundAmountInput.addEventListener('input', validateDonorFund);
 
   // Open modal & populate trainers
   addCourseBtn.addEventListener("click", async () => {
@@ -179,9 +451,10 @@
 
       trainerSelect.innerHTML = `
         <option value="">Select Trainer</option>
-        <option value="addNewTrainer">+ Add New Trainer</option>
         ${activeTrainers.map(t => `<option value="${t.trainerId}">${t.name}</option>`).join("")}
       `;
+      // Enable Add Trainer button by default
+      if (openAddTrainerModalFromCourse) openAddTrainerModalFromCourse.disabled = false;
     } catch (err) {
       console.error(err);
       trainerSelect.innerHTML = `<option value="">Error loading trainers</option>`;
@@ -200,13 +473,14 @@
     errorMsg.textContent = "";
 
     // Check for validation errors
-    const trainingNameError = document.getElementById("trainingNameError").textContent;
-    const formTrainerNameError = document.getElementById("formTrainerNameError").textContent;
-    const formTrainerExpertiseError = document.getElementById("formTrainerExpertiseError").textContent;
-    const formTrainerMobileError = document.getElementById("formTrainerMobileError").textContent;
-    const formTrainerEmailError = document.getElementById("formTrainerEmailError").textContent;
+    const trainingNameError = document.getElementById("trainingNameError")?.textContent || "";
+    const formTrainerNameError = document.getElementById("formTrainerNameError")?.textContent || "";
+    const formTrainerExpertiseError = document.getElementById("formTrainerExpertiseError")?.textContent || "";
+    const formTrainerMobileError = document.getElementById("formTrainerMobileError")?.textContent || "";
+    const formTrainerEmailError = document.getElementById("formTrainerEmailError")?.textContent || "";
+    const donorFundError = document.getElementById("donorFundError")?.textContent || "";
 
-    if (trainingNameError || formTrainerNameError || formTrainerExpertiseError || formTrainerMobileError || formTrainerEmailError) {
+    if (trainingNameError || formTrainerNameError || formTrainerExpertiseError || formTrainerMobileError || formTrainerEmailError || donorFundError) {
       errorMsg.textContent = "Please fix the validation errors before submitting.";
       return;
     }
@@ -227,7 +501,7 @@
 
     // ✅ Updated logic — pass isNewTrainer and trainerName
     if (selectedTrainer === "addNewTrainer") {
-      if (!formTrainerName.value || !formTrainerExpertise.value || !formTrainerSecurityQuestion.value || !formTrainerSecurityAnswer.value) {
+      if (!formTrainerName.value || !formTrainerExpertise.value) {
         return (errorMsg.textContent = "All new trainer fields are required.");
       }
       // Additional validations for new trainer
@@ -243,9 +517,7 @@
         trainerName: formTrainerName.value,
         expertise: formTrainerExpertise.value,
         mobile: formTrainerMobile.value,
-        email: formTrainerEmail.value,
-        securityQuestion: formTrainerSecurityQuestion.value,
-        securityAnswer: formTrainerSecurityAnswer.value
+        email: formTrainerEmail.value
       };
     } else if (selectedTrainer) {
       const selectedTrainerName = trainerSelect.options[trainerSelect.selectedIndex].textContent;
@@ -258,11 +530,14 @@
       return (errorMsg.textContent = "Please select or add a trainer.");
     }
 
+    const donorFundAmount = document.getElementById("donorFundAmount").value;
+
     // ✅ Fix: wrap all course fields in `course` object (matches backend)
     const payload = {
       course: {
         courseName,
         price,
+        donorFundAmount,
         startDate,
         endDate,
         duration,
@@ -286,7 +561,9 @@
 
       alert("✅ Course added successfully!");
       form.reset();
-      newTrainerFields.style.display = "none";
+      if (newTrainerFields) {
+        newTrainerFields.style.display = "none";
+      }
       durationInput.value = "";
       modulesWrapper.innerHTML = "";
       modulesWrapper.appendChild(moduleRow);
