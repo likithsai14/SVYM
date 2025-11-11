@@ -12,13 +12,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const formTrainerExpertise = document.getElementById("formTrainerExpertise");
   const formTrainerContact = document.getElementById("formTrainerMobile");
   const formTrainerEmail = document.getElementById("formTrainerEmail");
+  const formDateOfBirth = document.getElementById("formDateOfBirth");
+  const formAge = document.getElementById("formAge");
+  const formQualification = document.getElementById("formQualification");
+  const formAddress = document.getElementById("formAddress");
+  const formAadhaarNumber = document.getElementById("formAadhaarNumber");
+  const formJoiningDate = document.getElementById("formJoiningDate");
+  const formAccNumber = document.getElementById("formAccNumber");
+  const formIfscCode = document.getElementById("formIfscCode");
+  const formBankName = document.getElementById("formBankName");
+  const formBankFullName = document.getElementById("formBankFullName");
+  const formBankBranch = document.getElementById("formBankBranch");
   const formTrainerMessage = document.getElementById("trainerFormMessage");
   const generatedUserId = document.getElementById("generatedUserId");
 
-  // Title case conversion and input restriction for trainer name in add/edit modal
+  // Input restriction for trainer name in add/edit modal
   if (formTrainerName) {
     formTrainerName.addEventListener('input', function() {
       this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // restrict to alphabets and spaces
+    });
+    formTrainerName.addEventListener('blur', function() {
       this.value = toTitleCase(this.value);
     });
   }
@@ -35,6 +48,58 @@ document.addEventListener("DOMContentLoaded", function () {
   if (formTrainerContact) {
     formTrainerContact.addEventListener('input', function() {
       this.value = this.value.replace(/\D/g, '').substring(0, 10);
+    });
+  }
+
+  // Make age field readonly
+  if (formAge) {
+    formAge.setAttribute('readonly', true);
+  }
+
+  // Calculate age from DOB and validate >=18
+  if (formDateOfBirth) {
+    formDateOfBirth.addEventListener('change', function() {
+      const dob = new Date(this.value);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      formAge.value = age;
+      if (age < 18) {
+        showError(formDateOfBirth, 'Date of birth must be such that age is at least 18.');
+      } else {
+        clearError(formDateOfBirth);
+      }
+    });
+  }
+
+  // Restrict Aadhaar to 12 digits only
+  if (formAadhaarNumber) {
+    formAadhaarNumber.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').substring(0, 12);
+    });
+  }
+
+  // Restrict account number to digits only
+  if (formAccNumber) {
+    formAccNumber.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '');
+    });
+  }
+
+  // Convert account holder name to upper case
+  if (formBankFullName) {
+    formBankFullName.addEventListener('input', function() {
+      this.value = this.value.toUpperCase();
+    });
+  }
+
+  // Restrict branch to alphabets and spaces only
+  if (formBankBranch) {
+    formBankBranch.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
     });
   }
 
@@ -103,6 +168,17 @@ document.addEventListener("DOMContentLoaded", function () {
         formTrainerExpertise.value = trainerToEdit.expertise || "";
         formTrainerContact.value = trainerToEdit.mobile || "";
         formTrainerEmail.value = trainerToEdit.email || "";
+        formDateOfBirth.value = trainerToEdit.dateOfBirth ? new Date(trainerToEdit.dateOfBirth).toISOString().split('T')[0] : "";
+        formAge.value = trainerToEdit.age || "";
+        formQualification.value = trainerToEdit.qualification || "";
+        formAddress.value = trainerToEdit.address || "";
+        formAadhaarNumber.value = trainerToEdit.aadhaarNumber || "";
+        formJoiningDate.value = trainerToEdit.joiningDate ? new Date(trainerToEdit.joiningDate).toISOString().split('T')[0] : "";
+        formAccNumber.value = trainerToEdit.bankDetails?.accNumber || "";
+        formIfscCode.value = trainerToEdit.bankDetails?.ifscCode || "";
+        formBankName.value = trainerToEdit.bankDetails?.bankName || "";
+        formBankFullName.value = trainerToEdit.bankDetails?.fullName || "";
+        formBankBranch.value = trainerToEdit.bankDetails?.branch || "";
         formTrainerId.setAttribute("disabled", "disabled");
         trainerModal.classList.add("show");
         trainerModal.classList.remove("hide");
@@ -128,20 +204,83 @@ document.addEventListener("DOMContentLoaded", function () {
     modal.className = "modal show";
     modal.style.display = "block";
     modal.innerHTML = `
-      <div class="modal-content">
-        <button class="close-btn">&times;</button>
-        <h2 style="text-align:center; margin-bottom:15px;">Trainer Details</h2>
-        <table id="fieldMobiliserDetailsTable" style="width:100%; border-collapse:collapse;">
-          <tbody>
-            <tr><td><strong>Trainer ID</strong></td><td>${trainer.trainerId || '-'}</td></tr>
-            <tr><td><strong>Name</strong></td><td>${trainer.name || '-'}</td></tr>
-            <tr><td><strong>Email</strong></td><td>${trainer.email || '-'}</td></tr>
-            <tr><td><strong>Expertise</strong></td><td>${trainer.expertise || '-'}</td></tr>
-            <tr><td><strong>Phone</strong></td><td>${trainer.mobile || '-'}</td></tr>
-            <tr><td><strong>Status</strong></td><td>${trainer.status || '-'}</td></tr>
-            <tr><td><strong>Created At</strong></td><td>${trainer.createdAt ? new Date(trainer.createdAt).toLocaleString() : '-'}</td></tr>
-          </tbody>
-        </table>
+      <div class="modal-content" style="max-width: 800px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #fff;">
+        <button class="close-btn" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
+        <h2 style="text-align:center; margin-bottom: 20px; color: #333; font-weight: bold;">Trainer Details</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-id-card" style="margin-right: 10px; color: #007bff;"></i>
+            <div><strong>Trainer ID:</strong> ${trainer.trainerId || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-user" style="margin-right: 10px; color: #28a745;"></i>
+            <div><strong>Name:</strong> ${trainer.name || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i>
+            <div><strong>Email:</strong> ${trainer.email || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-tools" style="margin-right: 10px; color: #ffc107;"></i>
+            <div><strong>Expertise:</strong> ${trainer.expertise || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-phone" style="margin-right: 10px; color: #17a2b8;"></i>
+            <div><strong>Phone:</strong> ${trainer.mobile || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-birthday-cake" style="margin-right: 10px; color: #e83e8c;"></i>
+            <div><strong>Date of Birth:</strong> ${trainer.dateOfBirth ? new Date(trainer.dateOfBirth).toLocaleDateString() : '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-calendar-alt" style="margin-right: 10px; color: #6f42c1;"></i>
+            <div><strong>Age:</strong> ${trainer.age || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-graduation-cap" style="margin-right: 10px; color: #fd7e14;"></i>
+            <div><strong>Qualification:</strong> ${trainer.qualification || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #20c997;"></i>
+            <div><strong>Address:</strong> ${trainer.address || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-id-badge" style="margin-right: 10px; color: #007bff;"></i>
+            <div><strong>Aadhaar Number:</strong> ${trainer.aadhaarNumber || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-calendar-check" style="margin-right: 10px; color: #28a745;"></i>
+            <div><strong>Joining Date:</strong> ${trainer.joiningDate ? new Date(trainer.joiningDate).toLocaleDateString() : '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-credit-card" style="margin-right: 10px; color: #dc3545;"></i>
+            <div><strong>Bank Account Number:</strong> ${trainer.bankDetails?.accNumber || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-code-branch" style="margin-right: 10px; color: #ffc107;"></i>
+            <div><strong>IFSC Code:</strong> ${trainer.bankDetails?.ifscCode || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-university" style="margin-right: 10px; color: #17a2b8;"></i>
+            <div><strong>Bank Name:</strong> ${trainer.bankDetails?.bankName || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-user-tie" style="margin-right: 10px; color: #e83e8c;"></i>
+            <div><strong>Bank Full Name:</strong> ${trainer.bankDetails?.fullName || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-building" style="margin-right: 10px; color: #6f42c1;"></i>
+            <div><strong>Bank Branch:</strong> ${trainer.bankDetails?.branch || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-toggle-on" style="margin-right: 10px; color: #fd7e14;"></i>
+            <div><strong>Status:</strong> ${trainer.status || '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-clock" style="margin-right: 10px; color: #20c997;"></i>
+            <div><strong>Created At:</strong> ${trainer.createdAt ? new Date(trainer.createdAt).toLocaleString() : '-'}</div>
+          </div>
+        </div>
       </div>
     `;
 
@@ -176,11 +315,45 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
+      // Validate DOB age >=18
+      if (formDateOfBirth.value) {
+        const dob = new Date(formDateOfBirth.value);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+        if (age < 18) {
+          showFormMessage(formTrainerMessage, "error", "Date of birth must be such that age is at least 18.");
+          return;
+        }
+      }
+
+      // Validate Aadhaar (12 digits)
+      if (formAadhaarNumber.value && !/^\d{12}$/.test(formAadhaarNumber.value)) {
+        showFormMessage(formTrainerMessage, "error", "Aadhaar number must be exactly 12 digits.");
+        return;
+      }
+
       const newTrainerData = {
         name: toTitleCase(formTrainerName.value),
         expertise: formTrainerExpertise.value,
         mobile: formTrainerContact.value,
         email: formTrainerEmail.value,
+        dateOfBirth: formDateOfBirth.value,
+        age: parseInt(formAge.value),
+        qualification: formQualification.value,
+        address: formAddress.value,
+        aadhaarNumber: formAadhaarNumber.value,
+        joiningDate: formJoiningDate.value,
+        bankDetails: {
+          accNumber: formAccNumber.value,
+          ifscCode: formIfscCode.value,
+          bankName: formBankName.value,
+          fullName: formBankFullName.value,
+          branch: formBankBranch.value
+        }
       };
 
       if (!isEditMode) {
@@ -267,6 +440,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if(input.id === 'formTrainerMobile'){
             input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
             input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^\d{10}$/.test(input.value)) showError(input,'Mobile number must be exactly 10 digits.'); else clearError(input); });
+        }
+        // Specific validation for Aadhaar (12 digits)
+        if(input.id === 'formAadhaarNumber'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && !/^\d{12}$/.test(input.value)) showError(input,'Aadhaar number must be exactly 12 digits.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && !/^\d{12}$/.test(input.value)) showError(input,'Aadhaar number must be exactly 12 digits.'); else clearError(input); });
+        }
+        // Specific validation for account number (digits only)
+        if(input.id === 'formAccNumber'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /\D/.test(input.value)) showError(input,'Account number must contain only digits.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /\D/.test(input.value)) showError(input,'Account number must contain only digits.'); else clearError(input); });
+        }
+        // Specific validation for bank branch (alphabets and spaces)
+        if(input.id === 'formBankBranch'){
+            input.addEventListener('input',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Branch must contain only alphabets and spaces.'); else clearError(input); });
+            input.addEventListener('blur',()=>{ if(input.value.trim()!=='' && /[^a-zA-Z\s]/.test(input.value)) showError(input,'Branch must contain only alphabets and spaces.'); else clearError(input); });
         }
     });
 

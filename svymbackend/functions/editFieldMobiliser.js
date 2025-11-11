@@ -29,6 +29,11 @@ exports.handler = async function(event, context) {
       }
     }
 
+    // Validate Email if provided: basic email format
+    if (body.FieldMobiliserEmailID && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.FieldMobiliserEmailID)) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'FieldMobiliserEmailID must be a valid email address.' }) };
+    }
+
     // Validate Region and Supported Project if provided: only alphabets and spaces
     if (body.FieldMobiliserRegion && !/^[a-zA-Z\s]+$/.test(body.FieldMobiliserRegion)) {
       return { statusCode: 400, body: JSON.stringify({ message: 'FieldMobiliserRegion must contain only alphabets and spaces.' }) };

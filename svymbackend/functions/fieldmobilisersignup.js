@@ -46,6 +46,14 @@ exports.handler = async (event, context) => {
       }
     }
 
+    // Validate Email: basic email format
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.FieldMobiliserEmailID)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "FieldMobiliserEmailID must be a valid email address." }),
+      };
+    }
+
     // Validate Region and Supported Project: only alphabets and spaces
     if (!/^[a-zA-Z\s]+$/.test(data.FieldMobiliserRegion)) {
       return {

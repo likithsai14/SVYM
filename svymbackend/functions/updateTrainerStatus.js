@@ -20,9 +20,16 @@ exports.handler = async (event) => {
     }
 
     await connectDB();
+    const updateObj = { $set: { status } };
+    if (status === "Active") {
+      updateObj.$set.activeDate = new Date();
+      updateObj.$unset = { deactivateDate: 1 };
+    } else if (status === "Inactive") {
+      updateObj.$set.deactivateDate = new Date();
+    }
     const updatedTrainer = await Trainer.findOneAndUpdate(
       { trainerId },
-      { status },
+      updateObj,
       { new: true }
     );
 

@@ -643,86 +643,134 @@ document.addEventListener('DOMContentLoaded', async function () {
         const student = studentsData.find(s => s.userId === id);
         if (!student) return;
 
-        const table = viewModalBody;
-        table.innerHTML = '';
+        const existingModal = document.getElementById("viewStudentModal");
+        if (existingModal) existingModal.remove();
 
-        const otherDetailsFields = [
-            ['Caste', student.caste],
-            ['Other Caste', student.otherCaste || 'N/A'],
-            ['Tribal', student.tribal],
-            ['Pwd', student.pwd],
-            ['Education', student.education === 'Other' ? (student.otherQualification || 'N/A') : student.education],
-            ['Creation Date', student.creationDate]
-        ];
+        const modal = document.createElement("div");
+        modal.id = "viewStudentModal";
+        modal.className = "modal show";
+        modal.style.display = "block";
+        modal.innerHTML = `
+          <div class="modal-content" style="max-width: 900px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #fff;">
+            <button class="close-btn" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
+            <h2 style="text-align:center; margin-bottom: 20px; color: #333; font-weight: bold;">Student Details</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-id-card" style="margin-right: 10px; color: #007bff;"></i>
+                <div><strong>User ID:</strong> ${student.userId || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user" style="margin-right: 10px; color: #28a745;"></i>
+                <div><strong>Name:</strong> ${student.candidateName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i>
+                <div><strong>Email:</strong> ${student.email || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-mobile-alt" style="margin-right: 10px; color: #17a2b8;"></i>
+                <div><strong>Mobile:</strong> ${student.mobile || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-birthday-cake" style="margin-right: 10px; color: #e83e8c;"></i>
+                <div><strong>Date of Birth:</strong> ${student.dob || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-calendar-alt" style="margin-right: 10px; color: #6f42c1;"></i>
+                <div><strong>Age:</strong> ${student.age || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-venus-mars" style="margin-right: 10px; color: #fd7e14;"></i>
+                <div><strong>Gender:</strong> ${student.gender || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-graduation-cap" style="margin-right: 10px; color: #20c997;"></i>
+                <div><strong>Education:</strong> ${student.education === 'Other' ? (student.otherQualification || '-') : (student.education || '-')}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-id-badge" style="margin-right: 10px; color: #007bff;"></i>
+                <div><strong>Aadhaar Number:</strong> ${student.aadharNumber || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-users" style="margin-right: 10px; color: #28a745;"></i>
+                <div><strong>Father/Husband Name:</strong> ${student.fatherHusbandName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-home" style="margin-right: 10px; color: #dc3545;"></i>
+                <div><strong>Village:</strong> ${student.villageName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #17a2b8;"></i>
+                <div><strong>District:</strong> ${student.districtName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-city" style="margin-right: 10px; color: #e83e8c;"></i>
+                <div><strong>Taluk:</strong> ${student.talukName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user-friends" style="margin-right: 10px; color: #6f42c1;"></i>
+                <div><strong>Caste:</strong> ${student.caste || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user-tag" style="margin-right: 10px; color: #fd7e14;"></i>
+                <div><strong>Other Caste:</strong> ${student.otherCaste || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-users-cog" style="margin-right: 10px; color: #20c997;"></i>
+                <div><strong>Tribal:</strong> ${student.tribal || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-wheelchair" style="margin-right: 10px; color: #007bff;"></i>
+                <div><strong>PWD:</strong> ${student.pwd || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user-check" style="margin-right: 10px; color: #28a745;"></i>
+                <div><strong>Other Tribal:</strong> ${student.otherTribal || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user-injured" style="margin-right: 10px; color: #dc3545;"></i>
+                <div><strong>Other PWD:</strong> ${student.otherPwd || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-phone" style="margin-right: 10px; color: #17a2b8;"></i>
+                <div><strong>Parent Phone:</strong> ${student.parentPhone || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-users" style="margin-right: 10px; color: #e83e8c;"></i>
+                <div><strong>Family Members:</strong> ${student.familyMembers || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-project-diagram" style="margin-right: 10px; color: #6f42c1;"></i>
+                <div><strong>Supported Project:</strong> ${student.supportedProject || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-handshake" style="margin-right: 10px; color: #fd7e14;"></i>
+                <div><strong>Referral Source:</strong> ${student.referralSource || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user-tie" style="margin-right: 10px; color: #20c997;"></i>
+                <div><strong>Staff Name:</strong> ${student.staffName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-user-friends" style="margin-right: 10px; color: #007bff;"></i>
+                <div><strong>Field Mobiliser:</strong> ${student.fieldMobiliserName || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-toggle-on" style="margin-right: 10px; color: #28a745;"></i>
+                <div><strong>Status:</strong> ${student.status || '-'}</div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+                <i class="fas fa-clock" style="margin-right: 10px; color: #dc3545;"></i>
+                <div><strong>Creation Date:</strong> ${student.creationDate || '-'}</div>
+              </div>
+            </div>
+          </div>
+        `;
 
-        if (student.otherTribal) {
-            otherDetailsFields.splice(3, 0, ['Other Tribal', student.otherTribal]);
-        }
-        if (student.otherPwd) {
-            otherDetailsFields.splice(5, 0, ['Other PWD', student.otherPwd]);
-        }
+        document.body.appendChild(modal);
 
-        const groups = [
-            { title: 'Basic Details', fields: [
-                ['User ID', student.userId],
-                ['Name', student.candidateName],
-                ['Status', student.status],
-                ['Date of Birth', student.dob],
-                ['Age', student.age],
-                ['Gender', student.gender]
-            ]},
-            { title: 'Address Details', fields: [
-                ['District', student.districtName],
-                ['Taluk', student.talukName],
-                ['Village', student.villageName]
-            ]},
-            { title: 'Contact Details', fields: [
-                ['Email', student.email],
-                ['Mobile', student.mobile],
-                ['Aadhaar Number', student.aadharNumber],
-                ['Field Mobiliser', student.fieldMobiliserName]
-            ]},
-            { title: 'Other Details', fields: otherDetailsFields }
-        ];
-
-        groups.forEach(group => {
-            const trTitle = document.createElement('tr');
-            const tdTitle = document.createElement('td');
-            tdTitle.colSpan = 4;
-            tdTitle.className = 'group-title';
-            tdTitle.textContent = group.title;
-            trTitle.appendChild(tdTitle);
-            table.appendChild(trTitle);
-
-            for (let i = 0; i < group.fields.length; i += 2) {
-                const tr = document.createElement('tr');
-
-                const [label1, value1] = group.fields[i];
-                const td1 = document.createElement('td');
-                td1.innerHTML = `<strong>${label1}</strong>`;
-                const td2 = document.createElement('td');
-                td2.textContent = value1 || 'N/A';
-                tr.appendChild(td1);
-                tr.appendChild(td2);
-
-                if (i + 1 < group.fields.length) {
-                    const [label2, value2] = group.fields[i+1];
-                    const td3 = document.createElement('td');
-                    td3.innerHTML = `<strong>${label2}</strong>`;
-                    const td4 = document.createElement('td');
-                    td4.textContent = value2 || 'N/A';
-                    tr.appendChild(td3);
-                    tr.appendChild(td4);
-                } else {
-                    const td3 = document.createElement('td'); td3.colSpan = 2; td3.textContent = '';
-                    tr.appendChild(td3);
-                }
-
-                table.appendChild(tr);
-            }
-        });
-
-        viewModal.style.display = 'flex';
+        modal.querySelector(".close-btn").addEventListener("click", () => modal.remove());
+        window.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
     }
 
     // ------------------------------

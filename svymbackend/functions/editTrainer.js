@@ -43,9 +43,19 @@ exports.handler = async function(event, context) {
 
     // Allowed fields to update
     const updates = {};
-    const allowed = ['name', 'email', 'mobile', 'expertise', 'status'];
+    const allowed = ['name', 'email', 'mobile', 'expertise', 'status', 'dateOfBirth', 'age', 'qualification', 'address', 'aadhaarNumber', 'bankDetails', 'joiningDate', 'activeDate', 'deactivateDate'];
     for (const key of allowed) {
       if (Object.prototype.hasOwnProperty.call(body, key) && body[key] !== undefined) updates[key] = body[key];
+    }
+
+    // Handle status change dates
+    if (body.status && body.status !== trainer.status) {
+      if (body.status === 'Active') {
+        updates.activeDate = new Date();
+        updates.deactivateDate = undefined; // clear deactivate date
+      } else if (body.status === 'Inactive') {
+        updates.deactivateDate = new Date();
+      }
     }
 
     if (Object.keys(updates).length === 0) {
