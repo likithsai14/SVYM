@@ -31,6 +31,12 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: "All fields are required" }) };
     }
 
+    // Check if student is already enrolled in any course
+    const existingEnrollments = await StudentEnrollment.find({ studentId });
+    if (existingEnrollments.length > 0) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Student is already enrolled in a course." }) };
+    }
+
     const session = await mongoose.startSession();
     session.startTransaction();
 

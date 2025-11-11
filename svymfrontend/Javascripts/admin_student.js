@@ -434,6 +434,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 tribal: st.tribal,
                 pwd: st.pwd,
                 status: st.approvalStatus || "Active",
+                enrollments: st.enrollments || [],
                 creationDate: formatDate(st.createdAt)
             }));
             renderStudentsTable();
@@ -488,12 +489,15 @@ document.addEventListener('DOMContentLoaded', async function () {
         const paginatedStudents = filtered.slice(start, end);
 
         if (paginatedStudents.length === 0) {
-            studentTableBody.innerHTML = '<tr><td colspan="7">No students found.</td></tr>';
+            studentTableBody.innerHTML = '<tr><td colspan="8">No students found.</td></tr>';
             updatePaginationInfo();
             return;
         }
 
         paginatedStudents.forEach(student => {
+            const hasEnrollments = student.enrollments && student.enrollments.length > 0;
+            const assignBtnDisabled = hasEnrollments ? 'disabled' : '';
+            const assignBtnClass = hasEnrollments ? 'action-btn assign-btn disabled' : 'action-btn assign-btn';
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${student.userId}</td>
@@ -503,6 +507,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <td>
                     <button class="action-btn view-btn" data-id="${student.userId}"><i class="fas fa-eye"></i> View</button>
                     <button class="action-btn edit-btn" data-id="${student.userId}"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="${assignBtnClass}" data-id="${student.userId}" ${assignBtnDisabled}><i class="fas fa-plus"></i> Assign Course</button>
                 </td>
             `;
             studentTableBody.appendChild(tr);
@@ -513,6 +518,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         );
         document.querySelectorAll('.edit-btn').forEach(btn =>
             btn.addEventListener('click', () => openAddEditStudentModal(btn.dataset.id))
+        );
+        document.querySelectorAll('.assign-btn').forEach(btn =>
+            btn.addEventListener('click', () => openAssignCourseModal(btn.dataset.id))
         );
 
         updatePaginationInfo();
@@ -892,6 +900,132 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+
+    // ------------------------------
+    // Assign Course Modal
+    // ------------------------------
+    let currentStudentId = null;
+    let coursesData = [];
+    let assignedStudents = new Set();
+
+    async function openAssignCourseModal(studentId) {
+        currentStudentId = studentId;
+        const modal = document.getElementById('assignCourseModal');
+        const courseSelect = document.getElementById('courseSelect');
+        const courseDetails = document.getElementById('courseDetails');
+        const assignMessage = document.getElementById('assignMessage');
+
+        // Reset modal
+        courseSelect.innerHTML = '<option value="">Loading courses...</option>';
+        courseDetails.style.display = 'none';
+        assignMessage.style.display = 'none';
+
+        // Fetch courses
+        try {
+            const res = await fetch('/.netlify/functions/allCourses');
+            const data = await res.json();
+            coursesData = data.courses || [];
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
+            coursesData.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.courseId;
+                option.textContent = `${course.courseId} - ${course.courseName}`;
+                courseSelect.appendChild(option);
+            });
+        } catch (err) {
+            console.error('Error fetching courses:', err);
+            courseSelect.innerHTML = '<option value="">Error loading courses</option>';
+        }
+
+        modal.classList.add('show');
+    }
+
+    // Course select change to show details
+    document.getElementById('courseSelect').addEventListener('change', function() {
+        const selectedCourseId = this.value;
+        const courseDetails = document.getElementById('courseDetails');
+        const selectedCourseName = document.getElementById('selectedCourseName');
+        const selectedCoursePrice = document.getElementById('selectedCoursePrice');
+        const selectedCourseDuration = document.getElementById('selectedCourseDuration');
+        const selectedCourseLocation = document.getElementById('selectedCourseLocation');
+
+        if (selectedCourseId) {
+            const course = coursesData.find(c => c.courseId === selectedCourseId);
+            if (course) {
+                selectedCourseName.textContent = course.courseName;
+                selectedCoursePrice.textContent = course.price.toLocaleString('en-IN');
+                selectedCourseDuration.textContent = course.durationMonths;
+                selectedCourseLocation.textContent = course.location;
+                courseDetails.style.display = 'block';
+            }
+        } else {
+            courseDetails.style.display = 'none';
+        }
+    });
+
+    // Assign Course Form Submit
+    document.getElementById('assignCourseForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const courseSelect = document.getElementById('courseSelect');
+        const assignMessage = document.getElementById('assignMessage');
+        const selectedCourseId = courseSelect.value;
+
+        if (!selectedCourseId) {
+            assignMessage.textContent = 'Please select a course.';
+            assignMessage.className = 'message error';
+            assignMessage.style.display = 'block';
+            return;
+        }
+
+        const course = coursesData.find(c => c.courseId === selectedCourseId);
+        if (!course) {
+            assignMessage.textContent = 'Selected course not found.';
+            assignMessage.className = 'message error';
+            assignMessage.style.display = 'block';
+            return;
+        }
+
+        const payload = {
+            courseId: course.courseId,
+            courseName: course.courseName,
+            studentId: currentStudentId,
+            totalPrice: course.price,
+            fundedAmount: course.donorFundAmount || 0
+        };
+
+        try {
+            const res = await fetch('/.netlify/functions/assignCourse', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                assignedStudents.add(currentStudentId); // Mark student as assigned
+                assignMessage.textContent = 'Course assigned successfully!';
+                assignMessage.className = 'message success';
+                assignMessage.style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('assignCourseModal').classList.remove('show');
+                    fetchStudents(); // Refresh student list
+                }, 2000);
+            } else {
+                assignMessage.textContent = data.message || 'Failed to assign course.';
+                assignMessage.className = 'message error';
+                assignMessage.style.display = 'block';
+            }
+        } catch (err) {
+            console.error('Error assigning course:', err);
+            assignMessage.textContent = 'Error assigning course.';
+            assignMessage.className = 'message error';
+            assignMessage.style.display = 'block';
+        }
+    });
+
+    // Cancel Assign Course
+    document.getElementById('cancelAssignBtn').addEventListener('click', function() {
+        document.getElementById('assignCourseModal').classList.remove('show');
+    });
 
     // ------------------------------
     // Initialize
