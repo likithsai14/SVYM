@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="Javascripts/auth.js"></script>
   <script src="./Javascripts/nav.js" defer></script>
+  <script src="./Javascripts/admin_announcements.js" defer></script>
   </head>
 <body>
   <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
@@ -18,7 +19,13 @@
 
   <div class="container">
     <h1>Announcements</h1>
-    <h2>This section is being built — check back later</h2>
+    <button id="addAnnouncementBtn" class="btn-primary">Add Announcement</button>
+    <div id="addAnnouncementForm" style="display: none; margin-top: 20px;">
+      <textarea id="announcementText" placeholder="Enter announcement text..." rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+      <button id="saveAnnouncementBtn" class="btn-primary" style="margin-top: 10px;">Save</button>
+      <button id="cancelAnnouncementBtn" class="btn-secondary" style="margin-top: 10px; margin-left: 10px;">Cancel</button>
     </div>
+    <div id="announcementsList" style="margin-top: 20px;"></div>
+  </div>
 </body>
 </html>
