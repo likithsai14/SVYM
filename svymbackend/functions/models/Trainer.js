@@ -5,6 +5,7 @@ const TrainerSchema = new mongoose.Schema({
   password: { type: String, required: true},
   isFirstLogin: { type: Boolean, default: true },
   loginCount: { type: Number, default: 0 },
+  lastLoginAt: { type: Date },
   email: { type: String, required: true },
   mobile: { type: String, required: true },
   name: { type: String, required: true },

@@ -46,9 +46,7 @@ exports.handler = async (event) => {
         };
       }
 
-      trainerDoc.loginCount = (trainerDoc.loginCount || 0) + 1;
-      trainerDoc.lastLoginAt = new Date();
-      await trainerDoc.save();
+      await Trainer.updateOne({ trainerId: userId }, { $inc: { loginCount: 1 }, lastLoginAt: new Date() });
 
       if (trainerDoc.isFirstLogin) {
         return {
@@ -100,9 +98,7 @@ exports.handler = async (event) => {
         };
       }
 
-      fmDoc.loginCount = (fmDoc.loginCount || 0) + 1;
-      fmDoc.lastLoginAt = new Date();
-      await fmDoc.save();
+      await FieldMobiliser.updateOne({ userId }, { $inc: { loginCount: 1 }, lastLoginAt: new Date() });
 
       if (fmDoc.isFirstLogin) {
         return {
@@ -191,9 +187,7 @@ exports.handler = async (event) => {
       };
     }
 
-    userDoc.loginCount = (userDoc.loginCount || 0) + 1;
-    userDoc.lastLoginAt = new Date();
-    await userDoc.save();
+    await User.updateOne({ userId }, { $inc: { loginCount: 1 }, lastLoginAt: new Date() });
 
     if (userDoc.isFirstLogin) {
       return {

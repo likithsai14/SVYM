@@ -82,13 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="card-body">
           <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span>Funded : <span style="font-size: 1.05em; font-weight: bold;">INR ${course.donorFundAmount.toLocaleString('en-IN')}</span></span>
+            <span>To be Paid : <span style="font-size: 1.05em; font-weight: bold;">INR ${(course.price - course.donorFundAmount).toLocaleString('en-IN')}</span></span>
+          </div>
           <p>${course.description}</p>
           <div class="course-details-grid">
-            <p><strong>Start Date:</strong> ${formatDate(course.startDate)}</p>
-            <p><strong>End Date:</strong> ${formatDate(course.endDate)}</p>
-            <p><strong>Duration:</strong> ${course.durationMonths} days</p>
-            <p class="full-width"><strong>Center:</strong> ${course.location}</p>
-            <p class="full-width"><strong>Trainer:</strong> ${course.trainerName || "N/A"}</p>
+            <p><strong>Start Date : </strong> ${formatDate(course.startDate)}</p>
+            <p><strong>End Date : </strong> ${formatDate(course.endDate)}</p>
+            <p><strong>Duration : </strong> ${course.durationMonths} days</p>
+            <p class="full-width"><strong>Center : </strong> ${course.location}</p>
+          </div>
+          <div style="margin-top: 10px; padding: 8px; background-color: #f0f8ff; border-radius: 4px; display: flex; align-items: center;">
+            <i class="fas fa-user" style="margin-right: 8px;"></i>
+            <strong>Trainer : </strong> ${course.trainerName || "N/A"}
           </div>
         </div>
         <div class="card-footer">
@@ -125,9 +132,32 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("trainingName").disabled = false;
     document.getElementById("price").disabled = false;
     document.getElementById("location").disabled = false;
+    document.getElementById("donorFundAmount").readOnly = false;
 
     const form = document.getElementById("courseForm");
     form.reset();
+
+    // Clear modules wrapper and add one empty module input
+    const modulesWrapper = document.getElementById("modulesWrapper");
+    if (modulesWrapper) {
+      modulesWrapper.innerHTML = "";
+      const moduleRow = document.createElement("div");
+      moduleRow.className = "module-row";
+      moduleRow.style.display = "flex";
+      moduleRow.style.flexWrap = "wrap";
+      const addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "icon-btn";
+      addBtn.textContent = "+";
+      addBtn.style.marginLeft = "5px";
+      addBtn.addEventListener("click", () => moduleRow.insertBefore(createModuleInput(), addBtn));
+      moduleRow.appendChild(addBtn);
+      modulesWrapper.appendChild(moduleRow);
+    }
+
+    // Hide new trainer fields initially
+    const newTrainerFields = document.getElementById("newTrainerFields");
+    if (newTrainerFields) newTrainerFields.style.display = "none";
 
     const trainerSelect = document.getElementById("trainerSelect");
     trainerSelect.innerHTML = `<option value="">Loading...</option>`;
@@ -136,20 +166,44 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       currentTrainers = data.trainers.filter(t => t.status === "Active");
       trainerSelect.innerHTML = `<option value="">Select Trainer</option>
-        <option value="addNewTrainer">+ Add New Trainer</option>
         ${currentTrainers.map(t => `<option value="${t.trainerId}">${t.name}</option>`).join("")}`;
     } catch (err) {
       console.error(err);
       trainerSelect.innerHTML = `<option value="">Error loading trainers</option>`;
     }
+
+    // Enable/disable add trainer button based on selection
+    updateAddTrainerButton();
   });
+
+  // Function to update add trainer button state
+  function updateAddTrainerButton() {
+    const trainerSelect = document.getElementById("trainerSelect");
+    const addTrainerBtn = document.getElementById("addTrainerBtn");
+    if (addTrainerBtn) {
+      addTrainerBtn.disabled = trainerSelect.value !== "";
+    }
+  }
 
   // Show/hide new trainer fields
   const trainerSelect = document.getElementById("trainerSelect");
   const newTrainerFields = document.getElementById("newTrainerFields");
   trainerSelect.addEventListener("change", () => {
-    newTrainerFields.style.display = trainerSelect.value === "addNewTrainer" ? "block" : "none";
+    if (newTrainerFields) {
+      newTrainerFields.style.display = "none"; // Always hide for dropdown change
+    }
+    updateAddTrainerButton();
   });
+
+  // Add New Trainer button click
+  const addTrainerBtn = document.getElementById("addTrainerBtn");
+  if (addTrainerBtn) {
+    addTrainerBtn.addEventListener("click", () => {
+      if (newTrainerFields) {
+        newTrainerFields.style.display = "block";
+      }
+    });
+  }
 
   // Validation for new trainer name: only alphabets and spaces
   const formTrainerName = document.getElementById("formTrainerName");
@@ -198,6 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("trainingName").value = course.courseName;
     document.getElementById("price").value = course.price;
+    document.getElementById("donorFundAmount").value = course.donorFundAmount;
     document.getElementById("startDate").value = course.startDate.split("T")[0];
     document.getElementById("endDate").value = course.endDate.split("T")[0];
     document.getElementById("duration").value = course.durationMonths;
@@ -206,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Disable non-editable fields
     document.getElementById("location").disabled = true;
+    document.getElementById("donorFundAmount").readOnly = true;
 
     // Trainer
     const trainerSelect = document.getElementById("trainerSelect");
@@ -214,7 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       currentTrainers = data.trainers.filter(t => t.status === "Active");
       trainerSelect.innerHTML = `<option value="">Select Trainer</option>
-        <option value="addNewTrainer">+ Add New Trainer</option>
         ${currentTrainers.map(t => `<option value="${t.trainerId}">${t.name}</option>`).join("")}`;
       const trainer = currentTrainers.find(t => t.name === course.trainerName);
       if (trainer) trainerSelect.value = trainer.trainerId;
@@ -352,7 +407,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const trainerName = trainerSelect.options[trainerSelect.selectedIndex]?.textContent || "";
 
     let trainerPayload = {};
-    if (trainerId === "addNewTrainer") {
+    // Check if new trainer fields are visible (button was clicked)
+    const newTrainerFields = document.getElementById("newTrainerFields");
+    if (newTrainerFields && newTrainerFields.style.display === "block") {
       // Collect new trainer details from form inputs
       const name = document.getElementById("formTrainerName").value.trim();
       const email = document.getElementById("formTrainerEmail").value.trim();

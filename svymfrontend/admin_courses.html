@@ -16,9 +16,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
     :root { --primary-color: #2e4f8f; --primary-hover: #0056b3; --secondary-color: #6c757d; --success-color: #28a745; --success-hover: #218838; --danger-color: #dc3545; --danger-hover: #c82333; --warning-color: #ffc107; --warning-hover: #e0a800; --white-bg: #ffffff; --text-color: #333333; --subtle-text: #666666; --border-color: #e9ecef; --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.4); justify-content: center; align-items: center; padding: 20px; }
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background-color: rgba(0, 0, 0, 0.4); justify-content: center; align-items: center; padding: 20px; }
     .modal.show { display: flex; }
-    .modal-content { background-color: white; margin: auto; padding: 30px; border-radius: 12px; width: 100%; max-width: 900px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); position: relative; animation-name: animatetop; animation-duration: 0.4s; }
+    .modal-content { background-color: white; margin: auto; padding: 30px; border-radius: 12px; width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); position: relative; animation-name: animatetop; animation-duration: 0.4s; }
     .close-btn { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.2s; }
     .close-btn:hover { color: var(--text-color); }
     @keyframes animatetop { from { top: -300px; opacity: 0; } to { top: 0; opacity: 1; } }
@@ -31,6 +31,7 @@
     .save-btn, .cancel-btn, .add-button { padding: 8px 16px; margin-top: 10px; cursor: pointer; border-radius: 4px; border: none; color: white; }
     .removeBtn { background: #dc3545; }
     .save-btn { background: var(--primary-color); } .save-btn:hover { background: var(--primary-hover); }
+    .add-button { background: var(--primary-color); } .add-button:hover { background: var(--primary-hover); }
     .cancel-btn { background: #6c757d; margin-left: 10px; } .cancel-btn:hover { background: #5a6268; }
     table.module-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     table.module-table th, table.module-table td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
@@ -190,6 +191,14 @@
 
           <div class="form-row">
             <div class="form-group">
+              <label for="donorFundAmount">Donor Fund Amount (₹):</label>
+              <input type="number" id="donorFundAmount" min="0" required />
+              <span id="donorFundError" class="error-message" style="color:red;font-size:12px;"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
               <label for="startDate">Start Date:</label>
               <input type="date" id="startDate" required />
             </div>
@@ -229,39 +238,165 @@
               <select id="trainerSelect" required>
                 <option value="">Loading...</option>
               </select>
+              <span id="formTrainerNameError" class="error-message"></span>
             </div>
-          </div>
-
-          <div id="newTrainerFields" style="display:none;">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="trainerName">Name:</label>
-                <input type="text" id="formTrainerName" />
-                <span id="formTrainerNameError" class="error-message" style="color:red;font-size:12px;"></span>
-              </div>
-              <div class="form-group">
-                <label for="trainerExpertise">Expertise:</label>
-                <input type="text" id="formTrainerExpertise" />
-                <span id="formTrainerExpertiseError" class="error-message" style="color:red;font-size:12px;"></span>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="trainerMobile">Phone:</label>
-                <input type="text" id="formTrainerMobile" />
-                <span id="formTrainerMobileError" class="error-message" style="color:red;font-size:12px;"></span>
-              </div>
-              <div class="form-group">
-                <label for="trainerEmail">Email:</label>
-                <input type="text" id="formTrainerEmail" />
-                <span id="formTrainerEmailError" class="error-message" style="color:red;font-size:12px;"></span>
-              </div>
+            <div class="form-group">
+              <button type="button" id="openAddTrainerModalFromCourse" class="add-button" style="margin-top: 24px;">Add Trainer</button>
             </div>
           </div>
 
           <button type="submit" class="save-btn">Save Course</button>
           <button type="button" class="cancel-btn" id="cancelModal">Cancel</button>
           <div class="error" id="errorMsg" style="color:red;margin-top:10px;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Trainer Modal (copied from admin_trainers.html) -->
+  <div class="modal hide" id="addTrainerModalFromCourse">
+    <div class="modal-content">
+      <button class="close-btn" id="closeAddTrainerModalFromCourse">&times;</button>
+
+      <div class="modal-header">
+        <h2 class="form-subheading-main" id="trainerModalTitleFromCourse" style="text-align: center">
+          Add Trainer Data
+        </h2>
+      </div>
+
+      <div class="modal-body">
+        <form id="addTrainerFormFromCourse" novalidate>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <!-- Trainer ID (readonly for edit) -->
+            <div class="form-group">
+              <label for="formTrainerIdFromCourse">Trainer ID:</label>
+              <input type="text" id="formTrainerIdFromCourse" name="formTrainerIdFromCourse" readonly />
+              <span id="formTrainerIdErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Name -->
+            <div class="form-group">
+              <label for="formTrainerNameFromCourse">Name:</label>
+              <input type="text" id="formTrainerNameFromCourse" name="formTrainerNameFromCourse" required />
+              <span id="formTrainerNameErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="form-group">
+              <label for="formDateOfBirthFromCourse">Date of Birth:</label>
+              <input type="date" id="formDateOfBirthFromCourse" name="formDateOfBirthFromCourse" required />
+              <span id="formDateOfBirthErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Age -->
+            <div class="form-group">
+              <label for="formAgeFromCourse">Age:</label>
+              <input type="number" id="formAgeFromCourse" name="formAgeFromCourse" required min="18" max="100" />
+              <span id="formAgeErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Qualification -->
+            <div class="form-group">
+              <label for="formQualificationFromCourse">Qualification:</label>
+              <input type="text" id="formQualificationFromCourse" name="formQualificationFromCourse" required />
+              <span id="formQualificationErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Expertise -->
+            <div class="form-group">
+              <label for="formTrainerExpertiseFromCourse">Expertise:</label>
+              <input type="text" id="formTrainerExpertiseFromCourse" name="formTrainerExpertiseFromCourse" required />
+              <span id="formTrainerExpertiseErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Mobile -->
+            <div class="form-group">
+              <label for="formTrainerMobileFromCourse">Phone:</label>
+              <input type="text" id="formTrainerMobileFromCourse" name="formTrainerMobileFromCourse" required pattern="\d{10}" title="Phone number must be exactly 10 digits" />
+              <span id="formTrainerMobileErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="formTrainerEmailFromCourse">Email:</label>
+              <input type="email" id="formTrainerEmailFromCourse" name="formTrainerEmailFromCourse" required />
+              <span id="formTrainerEmailErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Aadhaar Number -->
+            <div class="form-group">
+              <label for="formAadhaarNumberFromCourse">Aadhaar Number:</label>
+              <input type="text" id="formAadhaarNumberFromCourse" name="formAadhaarNumberFromCourse" required pattern="\d{12}" title="Aadhaar number must be exactly 12 digits" />
+              <span id="formAadhaarNumberErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Joining Date -->
+            <div class="form-group">
+              <label for="formJoiningDateFromCourse">Joining Date:</label>
+              <input type="date" id="formJoiningDateFromCourse" name="formJoiningDateFromCourse" required />
+              <span id="formJoiningDateErrorFromCourse" class="error-message"></span>
+            </div>
+
+            <!-- Address (full width) -->
+            <div class="form-group" style="grid-column: span 2;">
+              <label for="formAddressFromCourse">Address:</label>
+              <textarea id="formAddressFromCourse" name="formAddressFromCourse" required rows="3"></textarea>
+              <span id="formAddressErrorFromCourse" class="error-message"></span>
+            </div>
+          </div>
+
+          <!-- Bank Details Section -->
+          <fieldset style="margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+            <legend style="font-weight: bold; color: #004080;">Bank Details</legend>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <!-- Account Number -->
+              <div class="form-group">
+                <label for="formAccNumberFromCourse">Account Number:</label>
+                <input type="text" id="formAccNumberFromCourse" name="formAccNumberFromCourse" required />
+                <span id="formAccNumberErrorFromCourse" class="error-message"></span>
+              </div>
+
+              <!-- IFSC Code -->
+              <div class="form-group">
+                <label for="formIfscCodeFromCourse">IFSC Code:</label>
+                <input type="text" id="formIfscCodeFromCourse" name="formIfscCodeFromCourse" required pattern="[A-Z]{4}0[A-Z0-9]{6}" title="IFSC code must be 11 characters, starting with 4 letters, 0, then 6 alphanumeric" />
+                <span id="formIfscCodeErrorFromCourse" class="error-message"></span>
+              </div>
+
+              <!-- Bank Name -->
+              <div class="form-group">
+                <label for="formBankNameFromCourse">Bank Name:</label>
+                <input type="text" id="formBankNameFromCourse" name="formBankNameFromCourse" required />
+                <span id="formBankNameErrorFromCourse" class="error-message"></span>
+              </div>
+
+              <!-- Full Name on Account -->
+              <div class="form-group">
+                <label for="formBankFullNameFromCourse">Account Holder Name(As on Bank Passbook):</label>
+                <input type="text" id="formBankFullNameFromCourse" name="formBankFullNameFromCourse" required />
+                <span id="formBankFullNameErrorFromCourse" class="error-message"></span>
+              </div>
+
+              <!-- Branch -->
+              <div class="form-group">
+                <label for="formBankBranchFromCourse">Branch:</label>
+                <input type="text" id="formBankBranchFromCourse" name="formBankBranchFromCourse" required />
+                <span id="formBankBranchErrorFromCourse" class="error-message"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Form message -->
+          <div id="trainerFormMessageFromCourse" class="form-message"></div>
+
+          <!-- Buttons -->
+          <div class="form-actions" style="display: flex; justify-content: space-between; gap: 5px; margin-top: 20px;">
+            <button type="reset" class="view-button" style="width: 120px;">Clear</button>
+            <button type="submit" class="add-button" style="width: 120px;"><i class="fas fa-check"></i> Submit</button>
+          </div>
+
+          <!-- Generated User ID (hidden until created) -->
+          <div id="generatedUserIdFromCourse" style="display: none"></div>
         </form>
       </div>
     </div>

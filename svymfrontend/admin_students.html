@@ -678,6 +678,36 @@
         </div>
     </div>
 
+    <!-- =================== Assign Course Modal =================== -->
+    <div class="modal hide" id="assignCourseModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header"><h2>Assign Course to Student</h2></div>
+            <div class="modal-body">
+                <form id="assignCourseForm">
+                    <div class="form-group">
+                        <label for="courseSelect">Select Course:</label>
+                        <select id="courseSelect" name="courseSelect" required>
+                            <option value="">Loading courses...</option>
+                        </select>
+                        <span id="courseSelectError" class="error-message"></span>
+                    </div>
+                    <div id="courseDetails" style="display: none;">
+                        <p><strong>Course Name:</strong> <span id="selectedCourseName"></span></p>
+                        <p><strong>Price:</strong> INR <span id="selectedCoursePrice"></span></p>
+                        <p><strong>Duration:</strong> <span id="selectedCourseDuration"></span> months</p>
+                        <p><strong>Location:</strong> <span id="selectedCourseLocation"></span></p>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="submit" class="add-button">Assign Course</button>
+                        <button type="button" id="cancelAssignBtn" class="view-button">Cancel</button>
+                    </div>
+                </form>
+                <div id="assignMessage" class="message" style="display: none"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="Javascripts/nav.js"></script>
     <script src="Javascripts/auth.js"></script>
     <script src="Javascripts/modal.js"></script>

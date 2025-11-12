@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     filtered.forEach(course => {
-      const isEnrolled = enrollments.some(e => e.courseId === course.courseId);
+      const isEnrolled = enrollments.length > 0; // Check if enrolled in any course
 
       const card = document.createElement("div");
       card.className = "course-card";
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-header">
           <h3>${course.courseId} - ${course.courseName}</h3>
           <div class="course-price">INR ${course.price.toLocaleString('en-IN')}</div>
-          
+
         </div>
         <div class="card-body">
         <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
@@ -74,10 +74,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="footer-actions">
             ${
               isEnrolled
-                ? `<span class="enrolled-label">Already Enrolled</span>`
+                ? `<span class="enrolled-label">Already Enrolled in a Course</span>`
                 : course.courseStatus === 'Completed'
                   ? `<span class="enrolled-label">Course Completed</span>`
-                  : course.courseStatus === 'Ongoing' 
+                  : course.courseStatus === 'Ongoing'
                     ? `<span class="enrolled-label">Ongoing Course</span>`
                     :`<button class="apply-btn" data-id="${course.courseId}">
                         <i class="fas fa-paper-plane"></i> Apply Course

@@ -17,6 +17,7 @@ const fieldMobiliserSchema = new mongoose.Schema({
     default: "active",
   },
   loginCount: { type: Number, default: 0 },
+  lastLoginAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   isFirstLogin: { type: Boolean, default: true },
   loginCount: { type: Number, default: 0 },
+  lastLoginAt: { type: Date },
   approvalStatus: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
