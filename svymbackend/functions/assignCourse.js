@@ -27,8 +27,15 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: "Student is already enrolled in a course." }) };
     }
 
+    // Validate inputs
+    const coursePrice = Number(totalPrice);
+    const funded = Number(fundedAmount);
+    if (coursePrice < 0 || funded < 0 || funded > coursePrice) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Invalid course price or funded amount" }) };
+    }
+
     // Calculate the amount to be paid by student: course price minus funded amount
-    const amountToPay = totalPrice - fundedAmount;
+    const amountToPay = coursePrice - funded;
 
     // Create enrollment
     const enrollmentId = generateEnrollmentId(studentId, courseId);
@@ -37,6 +44,8 @@ exports.handler = async (event) => {
       studentId,
       courseId,
       courseName,
+      coursePrice,
+      fundedAmount: funded,
       totalPrice: amountToPay, // amount to be paid by student
       amountPaid: 0,
       dueAmount: amountToPay,

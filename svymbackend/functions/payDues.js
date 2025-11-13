@@ -37,8 +37,50 @@ exports.handler = async (event) => {
         return { statusCode: 404, body: JSON.stringify({ message: 'Enrollment not found for this student and course' }) };
       }
 
-      // Update enrollment amounts
+      // Determine installment constraints and validate amount
       const amt = Number(amount);
+      const maxInstallments = enrollment.maxInstallments || 4;
+
+      // Count existing transactions (installments) for this enrollment
+      const existingTxCount = await Transaction.countDocuments({ enrollmentId: enrollment.enrollmentId }).session(session);
+
+      const dueBefore = Math.max(0, (enrollment.totalPrice || 0) - (enrollment.amountPaid || 0));
+
+      if (dueBefore <= 0) {
+        await session.abortTransaction();
+        session.endSession();
+        return { statusCode: 400, body: JSON.stringify({ message: 'Payment not allowed. This enrollment is already fully paid.' }) };
+      }
+
+      if (!Number.isFinite(amt) || amt <= 0) {
+        await session.abortTransaction();
+        session.endSession();
+        return { statusCode: 400, body: JSON.stringify({ message: 'Invalid payment amount' }) };
+      }
+
+      if (existingTxCount >= maxInstallments) {
+        await session.abortTransaction();
+        session.endSession();
+        return { statusCode: 400, body: JSON.stringify({ message: `Maximum of ${maxInstallments} installments already reached` }) };
+      }
+
+      // If this will be the final allowed installment, it must exactly equal the remaining due
+      if (existingTxCount === maxInstallments - 1) {
+        if (amt !== dueBefore) {
+          await session.abortTransaction();
+          session.endSession();
+          return { statusCode: 400, body: JSON.stringify({ message: `Final installment must be exactly ${dueBefore}` }) };
+        }
+      } else {
+        // For installments before the final one: do not allow paying more than due
+        if (amt > dueBefore) {
+          await session.abortTransaction();
+          session.endSession();
+          return { statusCode: 400, body: JSON.stringify({ message: 'Payment exceeds remaining due amount' }) };
+        }
+      }
+
+      // Update enrollment amounts
       enrollment.amountPaid = (enrollment.amountPaid || 0) + amt;
       enrollment.dueAmount = Math.max(0, (enrollment.totalPrice || 0) - enrollment.amountPaid);
       await enrollment.save({ session });

@@ -25,7 +25,7 @@ exports.handler = async (event) => {
 
     await connectDB();
 
-    const { courseId, courseName, studentId, totalPrice, amountPaid, paymentMethod } = JSON.parse(event.body);
+    const { courseId, courseName, studentId, totalPrice, amountPaid, paymentMethod, fundedAmount = 0 } = JSON.parse(event.body);
 
     if (!courseId || !courseName || !studentId || !amountPaid || !paymentMethod) {
       return { statusCode: 400, body: JSON.stringify({ message: "All fields are required" }) };
@@ -37,20 +37,31 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: "Student is already enrolled in a course." }) };
     }
 
+    // Validate inputs
+    const coursePrice = Number(totalPrice);
+    const funded = Number(fundedAmount);
+    const initialPayment = Number(amountPaid);
+    if (coursePrice < 0 || funded < 0 || funded > coursePrice || initialPayment <= 0 || initialPayment > (coursePrice - funded)) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Invalid course price, funded amount, or initial payment" }) };
+    }
+
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
       // 1️⃣ Create enrollment
       const enrollmentId = generateEnrollmentId(studentId, courseId);
+      const studentAmount = coursePrice - funded;
       const enrollment = await StudentEnrollment.create([{
         enrollmentId,
         studentId,
         courseId,
         courseName,
-        totalPrice,
-        amountPaid,
-        dueAmount: totalPrice - amountPaid,
+        coursePrice,
+        fundedAmount: funded,
+        totalPrice: studentAmount,
+        amountPaid: initialPayment,
+        dueAmount: studentAmount - initialPayment,
         enrolledBy: studentId,
         enrollmentDate: new Date(),
       }], { session });
@@ -60,7 +71,7 @@ exports.handler = async (event) => {
       await Transaction.create([{
         transactionId,
         enrollmentId,
-        amountPaid,
+        amountPaid: initialPayment,
         paidTo: "SVYM12345",
         paymentMethod,
       }], { session });

@@ -498,6 +498,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             const hasEnrollments = student.enrollments && student.enrollments.length > 0;
             const assignBtnDisabled = hasEnrollments ? 'disabled' : '';
             const assignBtnClass = hasEnrollments ? 'action-btn assign-btn disabled' : 'action-btn assign-btn';
+            const payBtnDisabled = hasEnrollments ? '' : 'disabled';
+            const payBtnClass = hasEnrollments ? 'action-btn paydues-btn' : 'action-btn paydues-btn disabled';
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${student.userId}</td>
@@ -507,6 +509,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <td>
                     <button class="action-btn view-btn" data-id="${student.userId}"><i class="fas fa-eye"></i> View</button>
                     <button class="action-btn edit-btn" data-id="${student.userId}"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="${payBtnClass}" data-id="${student.userId}" ${payBtnDisabled}><i class="fas fa-credit-card"></i> Pay Dues</button>
                     <button class="${assignBtnClass}" data-id="${student.userId}" ${assignBtnDisabled}><i class="fas fa-plus"></i> Assign Course</button>
                 </td>
             `;
@@ -521,6 +524,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         );
         document.querySelectorAll('.assign-btn').forEach(btn =>
             btn.addEventListener('click', () => openAssignCourseModal(btn.dataset.id))
+        );
+        document.querySelectorAll('.paydues-btn').forEach(btn =>
+            btn.addEventListener('click', () => openAdminPayModal(btn.dataset.id))
         );
 
         updatePaginationInfo();
@@ -905,8 +911,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Assign Course Modal
     // ------------------------------
     let currentStudentId = null;
+    let currentPayStudentId = null;
     let coursesData = [];
     let assignedStudents = new Set();
+    let feeRecordsForPay = [];
 
     async function openAssignCourseModal(studentId) {
         currentStudentId = studentId;
@@ -946,14 +954,22 @@ document.addEventListener('DOMContentLoaded', async function () {
         const courseDetails = document.getElementById('courseDetails');
         const selectedCourseName = document.getElementById('selectedCourseName');
         const selectedCoursePrice = document.getElementById('selectedCoursePrice');
+        const selectedCourseFunded = document.getElementById('selectedCourseFunded');
+        const selectedCourseStudentAmt = document.getElementById('selectedCourseStudentAmt');
         const selectedCourseDuration = document.getElementById('selectedCourseDuration');
         const selectedCourseLocation = document.getElementById('selectedCourseLocation');
 
         if (selectedCourseId) {
             const course = coursesData.find(c => c.courseId === selectedCourseId);
             if (course) {
+                const price = Number(course.price || 0);
+                const funded = Number(course.donorFundAmount || 0);
+                const studentAmt = Math.max(0, price - funded);
+
                 selectedCourseName.textContent = course.courseName;
-                selectedCoursePrice.textContent = course.price.toLocaleString('en-IN');
+                selectedCoursePrice.textContent = price.toLocaleString('en-IN');
+                if (selectedCourseFunded) selectedCourseFunded.textContent = funded.toLocaleString('en-IN');
+                if (selectedCourseStudentAmt) selectedCourseStudentAmt.textContent = studentAmt.toLocaleString('en-IN');
                 selectedCourseDuration.textContent = course.durationMonths;
                 selectedCourseLocation.textContent = course.location;
                 courseDetails.style.display = 'block';
@@ -1026,6 +1042,239 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('cancelAssignBtn').addEventListener('click', function() {
         document.getElementById('assignCourseModal').classList.remove('show');
     });
+
+    // ------------------------------
+    // Admin Pay Dues modal and handlers
+    // ------------------------------
+    function createAdminPayModal() {
+        if (document.getElementById('adminPayModal')) return;
+
+        const style = document.createElement('style');
+        style.textContent = `
+        .pay-modal-backdrop {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .pay-modal-backdrop.show { display: flex; }
+        .pay-modal {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+        }
+        .pay-modal h3 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            color: #2e4f8f;
+            border-bottom: 2px solid rgba(233,236,239,0.8);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .pay-modal .row { margin-bottom: 12px; }
+        .pay-modal label { font-family: 'Poppins', sans-serif; display: block; margin-bottom: 6px; font-size: 16px; color: #333; }
+        .pay-modal select,
+        .pay-modal input { font-family: 'Poppins', sans-serif;font-size: 14px; width: 100%; padding: 10px; border: 1px solid #e9ecef; border-radius: 8px; box-sizing: border-box; }
+        .pay-modal .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
+        .pay-modal .btn { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; }
+        .pay-modal .btn.primary { background: var(--primary-color, #2e4f8f); color: #fff; }
+        .pay-modal .btn.secondary { background: #f1f1f1; color: #333; }
+        @keyframes animatetop {
+            from { top: -300px; opacity: 0; }
+            to { top: 0; opacity: 1; }
+        }`;
+        document.head.appendChild(style);
+
+        const backdrop = document.createElement('div');
+        backdrop.id = 'adminPayModal';
+        backdrop.className = 'pay-modal-backdrop';
+
+        backdrop.innerHTML = `
+            <div class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="adminPayModalTitle">
+                <span class="close-btn" id="adminPayModalCloseBtn" aria-label="Close" style="position: absolute; top: 10px; right: 20px; font-size: 28px; cursor: pointer; color: #888;">&times;</span>
+                <h3 id="adminPayModalTitle">Pay Due</h3>
+                <div class="row">
+                    <label for="adminPayCourseSelect">Select Course</label>
+                    <select id="adminPayCourseSelect"><option value="">Loading...</option></select>
+                </div>
+                <div class="row">
+                    <label for="adminPayAmountInput">Amount (INR)</label>
+                    <input id="adminPayAmountInput" type="number" step="0.01" min="0" />
+                </div>
+                <div class="row">
+                    <label for="adminPayMethodSelect">Payment Mode</label>
+                    <select id="adminPayMethodSelect">
+                        <option value="UPI">UPI</option>
+                        <option value="Card">Card</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Net Banking">Net Banking</option>
+                    </select>
+                </div>
+                <div class="actions">
+                    <button class="btn secondary" id="adminCancelPayBtn">Cancel</button>
+                    <button class="btn primary" id="adminSubmitPayBtn">Submit Payment</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(backdrop);
+
+        document.getElementById('adminCancelPayBtn').addEventListener('click', closeAdminPayModal);
+        document.getElementById('adminPayCourseSelect').addEventListener('change', onAdminPayCourseSelectChange);
+        document.getElementById('adminSubmitPayBtn').addEventListener('click', onAdminSubmitPayment);
+        const closeBtn = document.getElementById('adminPayModalCloseBtn');
+        if (closeBtn) closeBtn.addEventListener('click', closeAdminPayModal);
+    }
+
+    async function openAdminPayModal(studentId) {
+        currentPayStudentId = studentId;
+        createAdminPayModal();
+        const modal = document.getElementById('adminPayModal');
+        if (modal) modal.classList.add('show');
+
+        await fetchStudentFeeDataForPay(studentId);
+        populateAdminPayCourseDropdown();
+    }
+
+    function closeAdminPayModal() {
+        const modal = document.getElementById('adminPayModal');
+        if (modal) modal.remove();
+    }
+
+    function populateAdminPayCourseDropdown() {
+        const select = document.getElementById('adminPayCourseSelect');
+        const amountInput = document.getElementById('adminPayAmountInput');
+        if (!select) return;
+
+        select.innerHTML = '';
+
+        if (!feeRecordsForPay || !feeRecordsForPay.length) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'No enrolled courses found';
+            select.appendChild(opt);
+            amountInput.value = '';
+            return;
+        }
+
+        feeRecordsForPay.forEach((f, idx) => {
+            const due = (f.dueAmount != null) ? f.dueAmount : ((f.totalAmount || 0) - (f.amountPaid || 0));
+            const opt = document.createElement('option');
+            opt.value = f.courseId || f.id || '';
+            opt.textContent = `${f.courseName || 'Course'} (Due: INR ${Number(due).toFixed(2)})`;
+            opt.dataset.idx = String(idx);
+            select.appendChild(opt);
+        });
+
+        select.selectedIndex = 0;
+        onAdminPayCourseSelectChange();
+    }
+
+    function onAdminPayCourseSelectChange() {
+        const select = document.getElementById('adminPayCourseSelect');
+        const amountInput = document.getElementById('adminPayAmountInput');
+        const courseId = select.value;
+        if (!courseId) {
+            amountInput.value = '';
+            return;
+        }
+        const f = feeRecordsForPay.find(r => (r.courseId === courseId) || (r.id === courseId));
+        if (f) {
+            const due = (f.dueAmount != null) ? f.dueAmount : ((f.totalAmount || 0) - (f.amountPaid || 0));
+            amountInput.value = Number(due).toFixed(2);
+        } else {
+            const opt = select.selectedOptions[0];
+            const due = opt && opt.dataset && opt.dataset.due ? Number(opt.dataset.due) : '';
+            amountInput.value = due !== '' ? Number(due).toFixed(2) : '';
+        }
+    }
+
+    async function onAdminSubmitPayment(ev) {
+        ev.preventDefault();
+        const select = document.getElementById('adminPayCourseSelect');
+        const amountInput = document.getElementById('adminPayAmountInput');
+        const methodSelect = document.getElementById('adminPayMethodSelect');
+
+        const courseId = select.value;
+        if (!courseId) {
+            alert('Please select a valid course to pay for.');
+            return;
+        }
+
+        const amount = parseFloat(amountInput.value);
+        if (!amount || amount <= 0) {
+            alert('Please enter a valid amount greater than 0.');
+            return;
+        }
+
+        const payload = {
+            studentId: currentPayStudentId,
+            courseId: courseId,
+            amount: amount,
+            paymentMethod: methodSelect.value || 'UPI'
+        };
+
+        const submitBtn = document.getElementById('adminSubmitPayBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+        }
+
+        try {
+            const res = await fetch('/.netlify/functions/payDues', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const body = await res.json();
+            if (!res.ok) {
+                console.error('Payment failed', body);
+                alert(body.message || 'Payment failed.');
+                return;
+            }
+            alert(body.message || 'Payment successful');
+            closeAdminPayModal();
+        } catch (err) {
+            console.error('Error submitting payment:', err);
+            alert('An error occurred while processing the payment.');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Payment';
+            }
+        }
+    }
+
+    async function fetchStudentFeeDataForPay(studentId) {
+        try {
+            const res = await fetch('/.netlify/functions/getStudentFees', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentId })
+            });
+            if (!res.ok) throw new Error('Failed to fetch fee data for student');
+            const data = await res.json();
+            feeRecordsForPay = data || [];
+        } catch (e) {
+            console.error('Error fetching fee data for admin pay:', e);
+            feeRecordsForPay = [];
+        }
+    }
 
     // ------------------------------
     // Initialize
