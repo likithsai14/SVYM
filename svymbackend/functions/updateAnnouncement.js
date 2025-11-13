@@ -11,11 +11,11 @@ exports.handler = async (event) => {
     await connectDB();
 
     const body = JSON.parse(event.body);
-    const { id, text } = body;
+    const { id, title, eventDate, description } = body;
 
     // Validation
-    if (!id || !text) {
-      return { statusCode: 400, body: JSON.stringify({ message: "ID and text are required" }) };
+    if (!id || !title || !eventDate || !description) {
+      return { statusCode: 400, body: JSON.stringify({ message: "ID, title, eventDate, and description are required" }) };
     }
 
     const announcement = await Announcement.findById(id);
@@ -23,7 +23,9 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: JSON.stringify({ message: "Announcement not found" }) };
     }
 
-    announcement.text = text;
+    announcement.title = title;
+    announcement.eventDate = eventDate;
+    announcement.description = description;
     await announcement.save();
 
     return {

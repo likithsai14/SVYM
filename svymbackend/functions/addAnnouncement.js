@@ -11,15 +11,17 @@ exports.handler = async (event) => {
     await connectDB();
 
     const body = JSON.parse(event.body);
-    const { text, addedBy } = body;
+    const { title, eventDate, description, addedBy } = body;
 
     // Validation
-    if (!text || !addedBy) {
-      return { statusCode: 400, body: JSON.stringify({ message: "Text and addedBy are required" }) };
+    if (!title || !eventDate || !description || !addedBy) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Title, eventDate, description, and addedBy are required" }) };
     }
 
     const newAnnouncement = new Announcement({
-      text,
+      title,
+      eventDate,
+      description,
       addedBy,
     });
 

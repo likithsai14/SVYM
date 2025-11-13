@@ -49,6 +49,8 @@ body {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  margin-right: auto;
+  margin-left: 20px;
 }
 
 /* Course Grid */
