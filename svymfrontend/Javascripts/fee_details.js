@@ -57,18 +57,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate total, paid, and pending amounts
     function calculateFeeSummary() {
         let totalCourseFees = 0;
+        let totalFunded = 0;
         let totalPaid = 0;
 
         feeRecords.forEach(record => {
-            totalCourseFees += record.totalAmount || 0; // total price of course
+            totalCourseFees += record.totalAmount || 0; // student amount
+            totalFunded += record.fundedAmount || 0;
             totalPaid += record.amountPaid || 0; // payment amount
         });
 
         const totalPending = totalCourseFees - totalPaid;
 
         totalFeesElement.textContent = `INR ${totalCourseFees.toFixed(2)}`;
+        document.getElementById('fundedFees').textContent = `INR ${totalFunded.toFixed(2)}`;
         pendingFeesElement.textContent = `INR ${totalPending.toFixed(2)}`;
         completedFeesElement.textContent = `INR ${totalPaid.toFixed(2)}`;
+
+        // Update pending card if all cleared
+        const pendingCard = document.getElementById('pendingCard');
+        const pendingTitle = document.getElementById('pendingTitle');
+        const pendingDesc = document.getElementById('pendingDesc');
+        if (totalPending === 0) {
+            pendingCard.classList.remove('pending');
+            pendingCard.classList.add('cleared');
+            pendingTitle.textContent = 'All Cleared!';
+            pendingDesc.textContent = 'All fees have been paid.';
+            pendingFeesElement.style.color = '#28a745'; // green
+        } else {
+            pendingCard.classList.add('pending');
+            pendingCard.classList.remove('cleared');
+            pendingTitle.textContent = 'Pending Fees';
+            pendingDesc.textContent = 'Amount still due for your courses.';
+            pendingFeesElement.style.color = '#dc3545'; // red
+        }
     }
 
     // Display payment history table

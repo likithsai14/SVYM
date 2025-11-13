@@ -39,6 +39,7 @@ exports.handler = async (event) => {
           courseId: enrollment.courseId,
           courseName: enrollment.courseName, // assuming this field exists in StudentEnrollment
           totalAmount: enrollment.totalPrice,
+          fundedAmount: enrollment.fundedAmount || 0,
           payments,
           amountPaid: payments.reduce((sum, p) => sum + p.amount, 0),
           dueAmount: enrollment.totalPrice - payments.reduce((sum, p) => sum + p.amount, 0)

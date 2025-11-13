@@ -63,6 +63,22 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "Easy Paper Craft Ideas for Everyone", embedUrl: "https://www.youtube.com/embed/StUvWxYz4aB" }  // Example video ID
     ];
 
+    // --- Fetch student's enrollment for My Course card ---
+    const studentId = sessionStorage.getItem("userId");
+    let enrollment = null;
+
+    async function fetchEnrollment() {
+        try {
+            const res = await fetch(`/.netlify/functions/studentEnrollments?studentId=${studentId}`);
+            if (res.ok) {
+                const enrollments = await res.json();
+                enrollment = enrollments.length > 0 ? enrollments[0] : null;
+            }
+        } catch (err) {
+            console.error("Error fetching enrollment:", err);
+        }
+    }
+
 
     // --- Functions to Populate Dashboard Sections ---
 
@@ -156,11 +172,98 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Populate My Course card ---
+    async function populateMyCourse() {
+        const myCourseList = document.getElementById('myCourseList');
+        await fetchEnrollment();
+        if (enrollment) {
+            // Fetch full course details
+            let courseDetails = null;
+            try {
+                const res = await fetch(`/.netlify/functions/allCourses?courseId=${enrollment.courseId}`);
+                if (res.ok) {
+                    const { courses } = await res.json();
+                    courseDetails = courses.find(c => c.courseId === enrollment.courseId);
+                }
+            } catch (err) {
+                console.error("Error fetching course details:", err);
+            }
+
+            if (courseDetails) {
+                myCourseList.innerHTML = `
+                    <li class="course-info-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span><strong>Name:</strong> ${courseDetails.courseName}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-book"></i>
+                        <span><strong>Description:</strong> ${courseDetails.description}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-user"></i>
+                        <span><strong>Trainer:</strong> ${courseDetails.trainerName || 'Not Assigned'}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-clock"></i>
+                        <span><strong>Duration:</strong> ${courseDetails.durationMonths} months</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-rupee-sign"></i>
+                        <span><strong>Course Price:</strong> INR ${courseDetails.price.toLocaleString('en-IN')}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span><strong>Funded Amount:</strong> INR ${enrollment.fundedAmount ? enrollment.fundedAmount.toLocaleString('en-IN') : 0}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span><strong>Amount to Pay:</strong> INR ${enrollment.totalPrice ? enrollment.totalPrice.toLocaleString('en-IN') : 0}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span><strong>Due Amount:</strong> INR ${enrollment.dueAmount ? enrollment.dueAmount.toLocaleString('en-IN') : 0}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span><strong>Status:</strong> ${enrollment.dueAmount === 0 ? 'Completed' : 'Ongoing'}</span>
+                    </li>
+                `;
+            } else {
+                // Fallback to enrollment data if course details not found
+                myCourseList.innerHTML = `
+                    <li class="course-info-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span><strong>Course:</strong> ${enrollment.courseName}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span><strong>Funded Amount:</strong> INR ${enrollment.fundedAmount ? enrollment.fundedAmount.toLocaleString('en-IN') : 0}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span><strong>Amount to Pay:</strong> INR ${enrollment.totalPrice ? enrollment.totalPrice.toLocaleString('en-IN') : 0}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span><strong>Due Amount:</strong> INR ${enrollment.dueAmount ? enrollment.dueAmount.toLocaleString('en-IN') : 0}</span>
+                    </li>
+                    <li class="course-info-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span><strong>Status:</strong> ${enrollment.dueAmount === 0 ? 'Completed' : 'Ongoing'}</span>
+                    </li>
+                `;
+            }
+        } else {
+            myCourseList.innerHTML = '<li class="no-data">No course assigned yet.</li>';
+        }
+    }
+
     // --- Initial Load and Dynamic Updates ---
     populateAnnouncements();
     populatePlacements();
     populateMonthlyActivityPlan();
     populateTech4HopeVideos();
+    populateMyCourse();
 
     // Set active link in sidebar (keep existing)
     const currentPath = window.location.pathname.split('/').pop();

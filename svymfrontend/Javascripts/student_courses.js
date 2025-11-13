@@ -39,70 +39,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderCourses(filter = "") {
     coursesContainer.innerHTML = "";
-    const filtered = courses.filter(c =>
-      c.courseName.toLowerCase().includes(filter.toLowerCase()) ||
-      c.courseId.toLowerCase().includes(filter.toLowerCase())
-    );
 
-    if (filtered.length === 0) {
-      coursesContainer.innerHTML = "<p>No courses found.</p>";
-      return;
-    }
-
-    filtered.forEach(course => {
-      const isEnrolled = enrollments.length > 0; // Check if enrolled in any course
-
-      const card = document.createElement("div");
-      card.className = "course-card";
-      card.innerHTML = `
-        <div class="card-header">
-          <h3>${course.courseId} - ${course.courseName}</h3>
-          <div class="course-price">INR ${course.price.toLocaleString('en-IN')}</div>
-
-        </div>
-        <div class="card-body">
-        <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
-          <p>${course.description}</p>
-          <div class="course-details-grid">
-            <p><strong>Start Date:</strong> ${formatDate(course.startDate)}</p>
-            <p><strong>End Date:</strong> ${formatDate(course.endDate)}</p>
-            <p><strong>Duration:</strong> ${course.durationMonths} days</p>
-            <p class="full-width"><strong>Center:</strong> ${course.location}</p>
+    if (enrollments.length > 0) {
+      // Show enrolled course card
+      const enrollment = enrollments[0]; // Only one enrollment per student
+      const course = courses.find(c => c.courseId === enrollment.courseId);
+      if (course) {
+        const card = document.createElement("div");
+        card.className = "course-card enrolled-course-card";
+        card.innerHTML = `
+          <div class="card-header">
+            <h3>${course.courseId} - ${course.courseName}</h3>
+            <div class="course-price">INR ${course.price.toLocaleString('en-IN')}</div>
           </div>
-        </div>
-        <div class="card-footer">
-          <div class="footer-actions">
-            ${
-              isEnrolled
-                ? `<span class="enrolled-label">Already Enrolled in a Course</span>`
-                : course.courseStatus === 'Completed'
-                  ? `<span class="enrolled-label">Course Completed</span>`
-                  : course.courseStatus === 'Ongoing'
-                    ? `<span class="enrolled-label">Ongoing Course</span>`
-                    :`<button class="apply-btn" data-id="${course.courseId}">
-                        <i class="fas fa-paper-plane"></i> Apply Course
-                      </button>`
-            }
+          <div class="card-body">
+            <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
+            <p>${course.description}</p>
+            <div class="course-details-grid">
+              <p><strong>Start Date:</strong> ${formatDate(course.startDate)}</p>
+              <p><strong>End Date:</strong> ${formatDate(course.endDate)}</p>
+              <p><strong>Duration:</strong> ${course.durationMonths} months</p>
+              <p class="full-width"><strong>Center:</strong> ${course.location}</p>
+              <p><strong>Funded Amount:</strong> INR ${enrollment.fundedAmount ? enrollment.fundedAmount.toLocaleString('en-IN') : 0}</p>
+              <p><strong>Amount to be Paid by Student:</strong> INR ${enrollment.totalPrice ? enrollment.totalPrice.toLocaleString('en-IN') : 0}</p>
+            </div>
           </div>
+          <div class="card-footer">
+            <div class="footer-actions">
+              <span class="enrolled-label">Enrolled in this Course</span>
+            </div>
+          </div>
+        `;
+        coursesContainer.appendChild(card);
+      }
+    } else {
+      // No enrollment, show message
+      coursesContainer.innerHTML = `
+        <div class="no-enrollment-message">
+          <p>No course assigned yet. Please contact your field mobiliser or admin.</p>
         </div>
       `;
-      coursesContainer.appendChild(card);
-    });
-
-    // Apply Course button click
-    document.querySelectorAll(".apply-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const courseId = e.currentTarget.dataset.id;
-        selectedCourse = courses.find(c => c.courseId === courseId);
-        if (!selectedCourse) return;
-
-        // Show modal with total cost
-        totalCostEl.textContent = `INR ${selectedCourse.price.toLocaleString("en-IN")}`;
-        amountPaidInput.value = selectedCourse.price; // prefill full price, can edit for partial
-        paymentMethodSelect.value = "";
-        applyModal.classList.add("show");
-      });
-    });
+    }
   }
 
   // Close modal
