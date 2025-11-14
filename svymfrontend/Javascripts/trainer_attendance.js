@@ -126,7 +126,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
       } else {
         // Editable with dropdown
-        const statusValue = isPresent ? "Present" : "Absent";
+        // If there's no existing record, default to Present (per new requirement)
+        const statusValue = (existingRec === undefined) ? "Present" : (isPresent ? "Present" : "Absent");
         row.innerHTML = `
           <td>${student.userId}</td>
           <td>${student.candidateName}</td>
@@ -136,7 +137,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <option value="Absent" ${statusValue === "Absent" ? "selected" : ""}>Absent</option>
             </select>
           </td>
-          <td><input type="text" class="remarksInput" value="${remarksVal}" placeholder="Enter remarks"></td>
+            <td><input type="text" class="remarksInput" value="${remarksVal}" placeholder="Enter remarks" ${statusValue === "Present" ? "disabled" : ""}></td>
         `;
       }
       tableBody.appendChild(row);
