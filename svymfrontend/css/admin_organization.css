@@ -1,0 +1,246 @@
+
+.header-container{
+    margin: 0;
+    text-align: center;
+}
+
+.header-container h1{
+    font-size: 1.5rem;
+    color: #2e4f8f;
+    font-weight: bold;
+}
+
+.org-data-container{
+    padding: 1rem;
+    border-radius: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    gap: 1rem;
+    grid-template-areas:
+        "about-org about-org team-org"
+        "help-org help-org contact-org"
+        "help-org help-org social-org";
+}
+
+.about-container, .team-container, .help-container, .contact-container{
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    min-height: 250px;
+}
+
+.section-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    padding: 0.8rem;
+}
+
+.section-header h2{
+    font-size: 1.2rem;
+    color: #2e4f8f;
+    font-weight: bold;
+    margin: 0;
+}
+
+.about-container{
+    grid-area: about-org;
+}
+
+.team-container{
+    grid-area: team-org;
+}
+
+.help-container{
+    grid-area: help-org;
+}
+
+
+
+.contact-container{
+    grid-area: contact-org;
+}
+
+.about-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f9fbff;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #dce6f5;
+  overflow: hidden; /* ensures everything stays in one row */
+}
+
+.about-item h4 {
+  width: 100px;          /* fixed label width */
+  margin: 0;
+  font-size: 1rem;
+  flex-shrink: 0;        /* prevents shrinking */
+}
+
+.about-item p {
+  flex: 1;               /* expands to take all remaining space */
+  margin: 0;
+  white-space: nowrap;   /* keep on one line */
+  overflow: hidden;      /* hide extra text */
+  text-overflow: ellipsis; /* show ... for overflow */
+  color: #444;
+}
+
+.org-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;        /* never shrink */
+}
+
+.org-actions button {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.add-btn {
+  background: #2e4f8f;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 6px;
+}
+
+.add-btn i {
+  margin-right: 6px;
+}
+
+.add-btn:hover {
+  background: #1c3a6e;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f9fbff;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #dce6f5;
+  overflow: hidden; /* ensures everything stays in one row */
+}
+
+.member-item p {
+  flex: 1;               /* expands to take all remaining space */
+  margin: 0;
+  max-width: 250px;
+  width: auto;          /* fixed label width */
+  white-space: nowrap;   /* keep on one line */
+  overflow: hidden;      /* hide extra text */
+  text-overflow: ellipsis; /* show ... for overflow */
+  color: #444;
+}
+
+.help-container .section-content{
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.faq-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-right: 10px; /* spacing for action buttons */
+}
+
+.faq-item:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+}
+
+/* left content area */
+.faq-content {
+  flex: 1;
+}
+
+/* question row */
+.faq-question {
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #eaf6ff, #f4fbff);
+  font-weight: 600;
+  color: #333;
+  font-size: 1.05em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-question i {
+  color: #333;
+  transition: transform 0.3s ease;
+}
+
+/* answer box */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  color: #555;
+  font-size: 0.95em;
+  line-height: 1.7;
+  background-color: #fefefe;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.faq-item.active .faq-answer {
+  padding: 15px 20px;
+}
+
+.faq-item.active .faq-question i {
+  transform: rotate(180deg);
+}
+
+.faq-item .org-actions{
+    align-self: center;
+}
+
+/* Colors */
+.view-btn {
+  background: #1e90ff;
+  color: white;
+}
+.view-btn:hover {
+  background: #0074e8;
+}
+
+.edit-btn {
+  background: #ffc107;
+  color: #333;
+}
+.edit-btn:hover {
+  background: #e0a800;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+.delete-btn:hover {
+  background: #c82333;
+}

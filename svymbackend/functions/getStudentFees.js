@@ -38,6 +38,7 @@ exports.handler = async (event) => {
           id: enrollment.enrollmentId,
           courseId: enrollment.courseId,
           courseName: enrollment.courseName, // assuming this field exists in StudentEnrollment
+          coursePrice: enrollment.coursePrice,
           totalAmount: enrollment.totalPrice,
           fundedAmount: enrollment.fundedAmount || 0,
           payments,

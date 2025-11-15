@@ -57,19 +57,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate total, paid, and pending amounts
     function calculateFeeSummary() {
         let totalCourseFees = 0;
+        let totalStudentFees = 0;
         let totalFunded = 0;
         let totalPaid = 0;
 
         feeRecords.forEach(record => {
-            totalCourseFees += record.totalAmount || 0; // student amount
+            totalCourseFees += record.coursePrice || 0; // course price
+            totalStudentFees += record.totalAmount || 0; // student amount
             totalFunded += record.fundedAmount || 0;
             totalPaid += record.amountPaid || 0; // payment amount
         });
 
-        const totalPending = totalCourseFees - totalPaid;
+        const totalPending = totalStudentFees - totalPaid;
 
         totalFeesElement.textContent = `INR ${totalCourseFees.toFixed(2)}`;
         document.getElementById('fundedFees').textContent = `INR ${totalFunded.toFixed(2)}`;
+        document.getElementById('studentFees').textContent = `INR ${totalStudentFees.toFixed(2)}`;
         pendingFeesElement.textContent = `INR ${totalPending.toFixed(2)}`;
         completedFeesElement.textContent = `INR ${totalPaid.toFixed(2)}`;
 

@@ -109,42 +109,62 @@
             margin-bottom: 30px;
         }
 
-        .fee-card {
-            background-color: #eaf6ff;
-            border-radius: 10px;
-            padding: 20px;
-            flex: 1;
-            min-width: 250px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease;
-        }
+        .fee-summary {
+    display: flex;
+    gap: 1rem;
+}
 
-        .fee-card:hover {
-            transform: translateY(-5px);
-        }
+.fee-card {
+    background-color: #eaf6ff;
+    border-radius: 10px;
+    padding: 1rem;
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
 
-        .fee-card h3 {
-            color: #2e4f8f;
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.3em;
-        }
+    display: flex;              /* MAKE CARD A FLEX CONTAINER */
+    flex-direction: column;     /* VERTICAL ALIGN ITEMS */
+}
 
-        .fee-card .amount {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #28a744; /* Green for paid/total */
-        }
-        .fee-card.pending .amount {
-            color: #dc3545; /* Red for pending */
-        }
+    .fee-card h3,
+    .fee-card .amount,
+    .fee-card p {
+    flex: 1;                    /* EACH SECTION TAKES EQUAL HEIGHT */
+    display: flex;
+    align-items: center;
+    justify-content: center;    /* CENTER CONTENT */
+    text-align: center;
+}
 
-        .fee-card p {
-            font-size: 0.9em;
-            color: #666;
-            margin: 5px 0 0;
-        }
+/* Existing styles */
+.fee-card:hover {
+    transform: translateY(-5px);
+}
+
+.fee-card h3 {
+    color: #2e4f8f;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.fee-card .amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a744;
+}
+
+.fee-card.pending .amount {
+    color: #dc3545;
+}
+
+.fee-card p {
+    font-size: 0.75rem;
+    color: #666;
+    margin: 0;
+}
+
 
 
         .download-button {
@@ -212,12 +232,17 @@
                 <div class="fee-card">
                     <h3>Total Course Fees</h3>
                     <div class="amount" id="totalFees">INR 0.00</div>
-                    <p>Sum of all your enrolled course fees.</p>
+                    <p>Total price of all enrolled courses.</p>
                 </div>
                 <div class="fee-card">
                     <h3>Funded Amount</h3>
                     <div class="amount" id="fundedFees">INR 0.00</div>
-                    <p>Amount funded/donated for your course.</p>
+                    <p>Amount funded for your course.</p>
+                </div>
+                <div class="fee-card">
+                    <h3>Student Contribution</h3>
+                    <div class="amount" id="studentFees">INR 0.00</div>
+                    <p>Your share of the course fees.</p>
                 </div>
                 <div class="fee-card" id="pendingCard">
                     <h3 id="pendingTitle">Pending Fees</h3>
