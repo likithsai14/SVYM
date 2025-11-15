@@ -1,0 +1,240 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #e0f2f7, #c1e7f0);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.main-content {
+  background-color: #ffffff;
+  padding: 30px;
+  max-width: 1200px;
+  width: 90%;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-row h1 {
+  color: #004080;
+  margin: 0;
+  font-size: 2rem;
+}
+
+.add-course-btn {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-course-btn:hover {
+  background-color: #218838;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-right: auto;
+  margin-left: 20px;
+}
+
+/* Table Styles */
+.table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.data-table thead {
+  background: linear-gradient(135deg, #2e4f8f, #0056b3);
+  color: white;
+}
+
+.data-table th {
+  padding: 15px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.data-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+}
+
+.data-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status Badge in Table */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-badge.placed {
+  background: #28a745;
+  color: white;
+}
+
+.status-badge.not-placed {
+  background: #ffc107;
+  color: #333;
+}
+
+/* Action Buttons in Table */
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn,
+.delete-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.edit-btn {
+  background-color: #2e4f8f;
+  color: #fff;
+}
+.edit-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+.delete-button:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.edit-btn i,
+.delete-button i {
+  font-size: 12px;
+}
+
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .card-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .footer-actions {
+    justify-content: center;
+  }
+  .assign-trainer {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+
+.apply-button {
+  padding: 12px 25px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.apply-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .courses-container {
+    grid-template-columns: 1fr;
+  }
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  .course-price {
+    margin-left: 0;
+  }
+  .placement-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading Spinner */
+#loadingSpinner {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #2e4f8f;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

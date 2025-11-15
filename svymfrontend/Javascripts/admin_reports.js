@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   let transactionsDataGlobal = [];
   let attendanceDataGlobal = [];
   let enrollmentsDataGlobal = [];
+  let placementsDataGlobal = [];
 
   // ------------------- Utility Functions -------------------
   const formatDate = (date) => {
@@ -113,6 +114,21 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (presentElem) presentElem.textContent = presentCount;
       }
 
+      // Placements
+      const placementsRes = await fetch('/.netlify/functions/getPlacements');
+      if (placementsRes.ok) {
+        const data = await placementsRes.json();
+        placementsDataGlobal = data.placements || [];
+
+        const totalPlacements = placementsDataGlobal.length;
+        const placedCount = placementsDataGlobal.filter(p => p.isPlaced).length;
+
+        const placementsTotalElem = document.getElementById('noOfPlacements');
+        const placedElem = document.getElementById('noOfPlaced');
+        if (placementsTotalElem) placementsTotalElem.textContent = totalPlacements;
+        if (placedElem) placedElem.textContent = placedCount;
+      }
+
     } catch (err) {
       console.error("Error fetching counts:", err);
     }
@@ -165,6 +181,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   if (attendanceReport) {
     attendanceReport.addEventListener('click', function () {
       showAttendanceModal();
+    });
+  }
+
+  // ------------------- Generate Placement Report -------------------
+  const placementReport = document.getElementById('placementReportButton');
+  if (placementReport) {
+    placementReport.addEventListener('click', function () {
+      generatePlacementExcelReport(placementsDataGlobal);
     });
   }
 
@@ -675,6 +699,42 @@ document.addEventListener('DOMContentLoaded', async function () {
     downloadBtn.onclick = () => {
       XLSX.writeFile(workbook, filename);
     };
+  };
+
+  // ------------------- Placement Report (Excel) -------------------
+  const generatePlacementExcelReport = (placements) => {
+    if (!placements || placements.length === 0) {
+      alert("No placement data available to generate report.");
+      return;
+    }
+
+    const today = formatDate(new Date());
+    const reportTitle = `Placement_Report_${today.replace(/\//g, '-')}.xlsx`;
+
+    // Prepare Data
+    const data = placements.map(p => ({
+      "User ID": p.userId,
+      "Alumni Name": p.alumniName,
+      "Parent/Spouse Name": p.parentSpouseName,
+      "Training Name": p.trainingName,
+      "Completion Date": p.completionDate ? formatDate(p.completionDate) : 'N/A',
+      "Is Placed": p.isPlaced ? 'Yes' : 'No',
+      "Job Place": p.jobPlace,
+      "Earning Per Month": p.earningPerMonth,
+      "Follow Up By": p.followUpBy,
+      "Added By": p.addedBy,
+      "Created Date": p.createdAt ? formatDate(p.createdAt) : 'N/A'
+    }));
+
+    // Convert to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Placements");
+
+    // Preview in modal
+    showPreviewModal("Placement Report Preview", worksheet, workbook, reportTitle);
   };
 
   // ------------------- Preview Modal Function -------------------

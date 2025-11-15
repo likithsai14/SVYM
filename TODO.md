@@ -1,6 +1,11 @@
-# TODO: Fix Errors in Student Dashboard
+# TODO: Add Filter Function for Placed/Not Placed in Admin Placements
 
-## Steps to Complete
-- [x] Fix CSS href in student_dashboard.html (change absolute to relative path)
-- [x] Fix JS fetch response destructuring in student_dashboard.js (destructure {courses} from response)
-- [x] Update TODO.md to mark steps as completed
+## Tasks
+- [x] Add filter dropdown UI to admin_placements.html
+- [x] Modify renderPlacements function in admin_placements.js to accept status filter parameter
+- [x] Add event listener for status filter dropdown in admin_placements.js
+- [x] Update search input event listener to combine text search with status filter
+- [ ] Test filter functionality with different combinations
+
+## Status
+Completed
