@@ -111,35 +111,55 @@ body {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
-.card-body p {
-  margin-bottom: 15px;
-  color: #555;
-  font-size: 0.95em;
-  line-height: 1.5;
+.funding-info {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.funding-info span {
+  font-weight: 600;
+  color: #495057;
+}
+
+.funding-info span span {
+  color: #28a745;
 }
 
 .course-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px 15px;
-  margin-top: auto;
+  gap: 10px 15px;
   font-size: 0.85em;
   color: #666;
+  margin-top: auto;
 }
 
 .course-details-grid p {
   margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .course-details-grid .full-width {
   grid-column: 1 / -1;
-  margin-top: 5px;
+  border-bottom: none;
+  padding-top: 10px;
+  font-weight: 500;
+  color: #495057;
 }
 
 .course-details-grid strong {
   color: #333;
+  font-weight: 600;
 }
 
 .card-footer {

@@ -81,12 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
           
         </div>
         <div class="card-body">
-          <div class="course-status status-${course.courseStatus.toLowerCase()}">${course.courseStatus}</div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span>Funded : <span style="font-size: 1.05em; font-weight: bold;">INR ${course.donorFundAmount.toLocaleString('en-IN')}</span></span>
-            <span>To be Paid : <span style="font-size: 1.05em; font-weight: bold;">INR ${(course.price - course.donorFundAmount).toLocaleString('en-IN')}</span></span>
+          <div class="funding-info">
+            <span>Funded: <span>INR ${course.donorFundAmount.toLocaleString('en-IN')}</span></span>
+            <span>To be Paid: <span>INR ${(course.price - course.donorFundAmount).toLocaleString('en-IN')}</span></span>
           </div>
-          <p>${course.description}</p>
           <div class="course-details-grid">
             <p><strong>Start Date : </strong> ${formatDate(course.startDate)}</p>
             <p><strong>End Date : </strong> ${formatDate(course.endDate)}</p>
@@ -261,7 +259,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Disable non-editable fields
     document.getElementById("location").disabled = true;
-    document.getElementById("donorFundAmount").readOnly = true;
 
     // Trainer
     const trainerSelect = document.getElementById("trainerSelect");
