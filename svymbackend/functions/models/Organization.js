@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const organizationSchema = new mongoose.Schema({
+  _id: { type: String, default: 'ORGANIZATION_SINGLETON' },
   aboutus: {
     mission: { type: String, required: true, trim: true },
     vision: { type: String, required: true, trim: true },
@@ -25,6 +26,11 @@ const organizationSchema = new mongoose.Schema({
     qtn: { type: String, required: true, trim: true },
     answer: { type: String, required: true, trim: true },
     category: { type: String, trim: true, default: "general" }
+  }],
+
+  team: [{
+    name: { type: String, required: true, trim: true },
+    role: { type: String, required: true, trim: true }
   }]
 }, {
   timestamps: true

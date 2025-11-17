@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const valuesArray = org.aboutus.values.split(', ');
+    const valuesArray = org.aboutus.values;
     const index = valuesArray.indexOf(oldValue.trim());
     if (index === -1) {
       return {
@@ -37,7 +37,7 @@ exports.handler = async (event, context) => {
     }
 
     valuesArray[index] = newValue.trim();
-    org.aboutus.values = valuesArray.join(', ');
+    org.aboutus.values = valuesArray;
     await org.save();
 
     return {
