@@ -238,7 +238,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Pagination Controls */
+/* Pagination Styles */
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -248,19 +248,17 @@ body {
 }
 
 .page-button {
-  background-color: #2e4f8f;
-  color: #ffffff;
-  font-weight: 700;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  cursor: pointer;
   border: none;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .page-button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: rgb(0, 115, 156);
 }
 
 .page-button:disabled {
@@ -269,7 +267,7 @@ body {
 }
 
 .page-info {
-  color: #374151;
-  font-size: 1.125rem;
   font-weight: 500;
+  font-size: 1.125rem;
+  color: #374151;
 }
