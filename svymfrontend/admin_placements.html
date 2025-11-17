@@ -291,79 +291,7 @@
       box-shadow: 0 0 0 2px rgba(46, 79, 143, 0.1);
     }
 
-    /* Pagination Styles */
-    .pagination-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 20px;
-      padding: 15px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border: 1px solid #e9ecef;
-    }
 
-    .pagination-info {
-      font-size: 14px;
-      color: #666;
-    }
-
-    .pagination-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .pagination-btn {
-      padding: 8px 16px;
-      border: 1px solid #ddd;
-      background: white;
-      color: #333;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .pagination-btn:hover:not(:disabled) {
-      background: #2e4f8f;
-      color: white;
-      border-color: #2e4f8f;
-    }
-
-    .pagination-btn:disabled {
-      background: #f8f9fa;
-      color: #ccc;
-      cursor: not-allowed;
-    }
-
-    .page-numbers {
-      display: flex;
-      gap: 5px;
-    }
-
-    .page-number {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      background: white;
-      color: #333;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
-      min-width: 40px;
-      text-align: center;
-    }
-
-    .page-number:hover:not(.active) {
-      background: #e9ecef;
-    }
-
-    .page-number.active {
-      background: #2e4f8f;
-      color: white;
-      border-color: #2e4f8f;
-    }
 
     /* Student Dropdown Styles */
     .student-dropdown {
@@ -446,12 +374,10 @@
       </table>
     </div>
 
-    <div class="pagination-container">
-      <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
-      <div class="pagination-controls">
-        <button id="prevPage" class="pagination-btn">Previous</button>
-        <button id="nextPage" class="pagination-btn">Next</button>
-      </div>
+    <div id="pagination-controls" class="pagination-controls">
+      <button id="prevPage" class="page-button">Previous</button>
+      <span id="paginationInfo" class="page-info">Page 1 of 1</span>
+      <button id="nextPage" class="page-button">Next</button>
     </div>
 
     <div id="footer"></div>

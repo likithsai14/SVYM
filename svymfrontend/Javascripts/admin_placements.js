@@ -138,11 +138,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     studentDropdown.style.display = 'none';
     clearErrorMessages();
+    const alumniNameError = document.getElementById("alumniNameError");
+    alumniNameError.textContent = "";
   }
 
   // Clear error messages
   function clearErrorMessages() {
     document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+  }
+
+  // Validate student name against database
+  function validateStudentName(query) {
+    const alumniNameError = document.getElementById("alumniNameError");
+    if (!query.trim()) {
+      alumniNameError.textContent = "";
+      return;
+    }
+
+    const matchingStudents = students.filter(student =>
+      student.candidateName.toLowerCase().includes(query.toLowerCase()) ||
+      student.userId.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (matchingStudents.length === 0) {
+      alumniNameError.textContent = "Student not present in the database.";
+    } else {
+      alumniNameError.textContent = "";
+    }
   }
 
   // Create and insert spinner element
@@ -332,6 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
   alumniName.addEventListener('input', (e) => {
     const query = e.target.value;
     showStudentDropdown(query);
+    validateStudentName(query);
   });
 
   alumniName.addEventListener('focus', (e) => {
@@ -341,7 +364,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  alumniName.addEventListener('blur', hideStudentDropdown);
+  alumniName.addEventListener('blur', () => {
+    hideStudentDropdown();
+    validateStudentName(alumniName.value);
+  });
 
   // Click outside to close dropdown
   document.addEventListener('click', (e) => {
@@ -445,6 +471,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!selectedStudent && !editingPlacementId) {
       errorMsg.textContent = "Please select a student from the dropdown.";
       return;
+    }
+
+    // Additional validation: Check if student exists in database
+    if (!editingPlacementId) {
+      const matchingStudents = students.filter(student =>
+        student.candidateName.toLowerCase() === alumniName.value.toLowerCase().trim() ||
+        student.userId.toLowerCase() === userId.value.toLowerCase().trim()
+      );
+      if (matchingStudents.length === 0) {
+        const alumniNameError = document.getElementById("alumniNameError");
+        alumniNameError.textContent = "Student not present in the database.";
+        return;
+      }
     }
 
     if (!formData.userId) {
