@@ -86,9 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>To be Paid: <span>INR ${(course.price - course.donorFundAmount).toLocaleString('en-IN')}</span></span>
           </div>
           <div class="course-details-grid">
-            <p><strong>Start Date : </strong> ${formatDate(course.startDate)}</p>
-            <p><strong>End Date : </strong> ${formatDate(course.endDate)}</p>
-            <p><strong>Duration : </strong> ${course.durationMonths} days</p>
+            <p class="full-width"><strong>Start Date : </strong> ${formatDate(course.startDate)}</p>
+            <p class="full-width"><strong>End Date : </strong> ${formatDate(course.endDate)}</p>
+            <p class="full-width"><strong>Duration : </strong> ${course.durationMonths} days</p>
             <p class="full-width"><strong>Center : </strong> ${course.location}</p>
           </div>
           <div style="margin-top: 10px; padding: 8px; background-color: #f0f8ff; border-radius: 4px; display: flex; align-items: center;">
@@ -393,6 +393,9 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     e.stopImmediatePropagation();
 
+    const courseName = document.getElementById("trainingName").value.trim();
+    const price = parseFloat(document.getElementById("price").value);
+    const donorFundAmount = parseFloat(document.getElementById("donorFundAmount").value) || 0;
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
     const duration = document.getElementById("duration").value;
@@ -402,6 +405,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const trainerSelect = document.getElementById("trainerSelect");
     const trainerId = trainerSelect.value;
     const trainerName = trainerSelect.options[trainerSelect.selectedIndex]?.textContent || "";
+
+    // Validation for courseName, price, donorFundAmount
+    if (!courseName) {
+      alert("Course name is required.");
+      return;
+    }
+    if (isNaN(price) || price < 0) {
+      alert("Please enter a valid price (must be a positive number).");
+      return;
+    }
+    if (isNaN(donorFundAmount) || donorFundAmount < 0) {
+      alert("Please enter a valid donor fund amount (must be a non-negative number).");
+      return;
+    }
+    if (donorFundAmount > price) {
+      alert("Donor fund amount cannot exceed the course price.");
+      return;
+    }
 
     let trainerPayload = {};
     // Check if new trainer fields are visible (button was clicked)
@@ -445,6 +466,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const payload = {
       courseId: editingCourseId,
+      courseName,
+      price,
+      donorFundAmount,
       startDate,
       endDate,
       durationMonths: duration,

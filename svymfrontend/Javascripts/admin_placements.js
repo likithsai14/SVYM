@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let placements = [];
   let editingPlacementId = null;
+  let currentPage = 1;
+  let totalPages = 1;
+  const rowsPerPage = 7;
 
   // Input validation functions
   function capitalizeFirstLetter(str) {
@@ -91,12 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.head.appendChild(style);
 
-  // Fetch all placements
+  // Fetch all placements (client-side pagination)
   async function fetchPlacements() {
     spinner.style.display = "block";
     placementsTableBody.innerHTML = "";
     try {
-      const response = await fetch("/.netlify/functions/getPlacements");
+      const response = await fetch('/.netlify/functions/getPlacements');
       if (!response.ok) throw new Error("Failed to fetch placements");
       const data = await response.json();
       placements = data.placements || [];
@@ -141,34 +144,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }).format(amount);
   }
 
-  // Render placements
-  function renderPlacements(searchFilter = "", statusFilterValue = "") {
-    placementsTableBody.innerHTML = "";
-    const filtered = placements.filter(p => {
-      // Text search filter
-      const matchesSearch = searchFilter === "" ||
-        p.alumniName.toLowerCase().includes(searchFilter.toLowerCase()) ||
-        p.trainingName.toLowerCase().includes(searchFilter.toLowerCase()) ||
-        p.jobPlace.toLowerCase().includes(searchFilter.toLowerCase()) ||
-        p.followUpBy.toLowerCase().includes(searchFilter.toLowerCase());
-
-      // Status filter
-      let matchesStatus = true;
-      if (statusFilterValue === "placed") {
-        matchesStatus = p.isPlaced === true;
-      } else if (statusFilterValue === "not-placed") {
-        matchesStatus = p.isPlaced === false;
-      }
-
+  // Get filtered placements
+  function getFilteredPlacements() {
+    const searchValue = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value.toLowerCase();
+    return placements.filter(placement => {
+      const matchesSearch = placement.alumniName.toLowerCase().includes(searchValue) ||
+                            placement.userId.toLowerCase().includes(searchValue) ||
+                            placement.followUpBy.toLowerCase().includes(searchValue);
+      const matchesStatus = statusValue === '' || (placement.isPlaced ? 'placed' : 'not-placed') === statusValue;
       return matchesSearch && matchesStatus;
     });
+  }
 
-    if (filtered.length === 0) {
+  // Render placements with client-side pagination
+  function renderPlacements() {
+    placementsTableBody.innerHTML = "";
+    const filtered = getFilteredPlacements();
+
+    totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedPlacements = filtered.slice(start, end);
+
+    if (paginatedPlacements.length === 0) {
       placementsTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: #666;">No placements found.</td></tr>`;
+      updatePaginationInfo();
       return;
     }
 
-    filtered.forEach(placement => {
+    paginatedPlacements.forEach(placement => {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${placement.userId}</td>
@@ -196,17 +203,48 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".delete-button").forEach(btn =>
       btn.addEventListener("click", () => openDeleteModal(btn.dataset.id))
     );
+
+    updatePaginationInfo();
   }
 
-  // Search functionality
+  // Update pagination info
+  function updatePaginationInfo() {
+    const paginationInfo = document.getElementById("paginationInfo");
+    const prevPage = document.getElementById("prevPage");
+    const nextPage = document.getElementById("nextPage");
+
+    paginationInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    // Disable/Enable Previous button
+    prevPage.disabled = currentPage === 1;
+
+    // Disable/Enable Next button
+    nextPage.disabled = currentPage === totalPages;
+  }
+
+  // Search functionality (client-side filtering with pagination reset)
   function applyFilters() {
-    const searchValue = searchInput.value;
-    const statusValue = statusFilter.value;
-    renderPlacements(searchValue, statusValue);
+    currentPage = 1; // Reset to first page when filters change
+    renderPlacements();
   }
 
   searchInput.addEventListener("input", applyFilters);
   statusFilter.addEventListener("change", applyFilters);
+
+  // Pagination event listeners
+  document.getElementById("prevPage").addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPlacements();
+    }
+  });
+
+  document.getElementById("nextPage").addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderPlacements();
+    }
+  });
 
   // Open Add Placement Modal
   addPlacementBtn.addEventListener("click", () => {
@@ -436,4 +474,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial load
   setupInputValidation();
   fetchPlacements();
+  updatePaginationInfo();
 });

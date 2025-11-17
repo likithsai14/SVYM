@@ -27,12 +27,12 @@ body {
 }
 
 .add-course-btn {
-  padding: 10px 20px;
+  padding: 8px 16px;
   background-color: #28a745;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -123,6 +123,7 @@ body {
   justify-content: space-between;
   align-items: center;
   font-size: 0.9em;
+  gap: 10px;
 }
 
 .funding-info span {

@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/nav.css" />
 
 
+  <!-- Inline CSS for Table & Pagination -->
   <style>
     :root {
       --primary-color: #2e4f8f;
@@ -41,195 +42,107 @@
       --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: aliceblue;
-      margin: 0;
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      overflow: auto !important;
-    }
-
-    .data-list-container {
-      width: 100%;
-      max-width: 1200px;
-      height: 100vh;
-      overflow-y: auto;
-      background-color: var(--white-bg);
-      border-radius: 12px;
-      box-shadow: var(--box-shadow);
-      padding: 30px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 25px;
-      gap: 15px;
-    }
-
-    .header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0;
-      color: #004080;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .header h1 .icon {
-      font-size: 1.5rem;
-    }
-
+    body { font-family: 'Inter', sans-serif; background: aliceblue; margin: 0; color: #333; }
+    .data-list-container { max-width: 1200px; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden; background: #fff; padding: 30px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+    .header h1 { font-size:2rem; color:#004080; display:flex; align-items:center; gap:10px; margin: 0; }
+    .search-container { display:flex; width:100%; max-width:300px; background:#f1f3f5; border-radius:8px; overflow:hidden; border:1px solid #e0e0e0; }
+    #searchInput { flex:1; border:none; padding:10px; outline:none; }
+    #searchBtn { background:#6c757d; color:#fff; border:none; padding:10px 15px; cursor:pointer; }
+    #searchBtn:hover { background:#555; }
+    .filter-container { display:flex; background:#f1f3f5; border-radius:8px; overflow:hidden; border:1px solid #e0e0e0; }
+    .status-filter { padding:10px 15px; font-size:1rem; border:none; outline:none; background:transparent; color:#333; }
+    .table-responsive { width:100%; overflow-x:auto; }
+    .data-table { width:100%; border-collapse:collapse; min-width:700px; }
+    .data-table th, .data-table td { padding:12px; text-align:left; border-bottom:1px solid #e0e0e0; }
+    .data-table thead { background:#e9f5ff; }
+    .data-table tbody tr:nth-child(odd) { background:#fafafa; }
+    .data-table tbody tr:nth-child(even) { background:#f8f9fa; }
+    .data-table tbody tr:hover { background:#e9ecef; }
+    .status { padding:5px 12px; border-radius:20px; font-size:0.9em; font-weight:500; display:inline-block; color:#fff; }
+    .active { background:#40c45f; }
+    .status.pending { background:#ffc107; color:#333; }
+    .inactive { background:#dc3545; }
+    .pagination-controls { display:flex; justify-content:center; align-items:center; margin-top:20px; gap:10px; }
+    .page-button { background:#2e4f8f; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+    .page-button:hover:not(:disabled) { background:#0056b3; }
+    .page-button:disabled { background:#9ca3af; cursor:not-allowed; }
+    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999; }
+    .modal.show { display:flex; }
+    .modal-content { background:#fff; border-radius:10px; width:600px; max-width:90%; padding:20px; position:relative; }
+    .close-btn { position:absolute; top:10px; right:10px; border:none; background:none; font-size:1.5rem; cursor:pointer; }
+    .form-group { margin-bottom:15px; }
+    .form-group input { width:95%; padding:8px; border:1px solid #ccc; border-radius:5px; }
+    .error-message { color:red; font-size:0.85rem; }
     .add-button {
       width: 200px;
-      background: #28a745;
+      background: #28a745;        /* Green */
       color: #fff;
       border: none;
       padding: 8px 15px;
       border-radius: 6px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 1rem;
-      font-weight: 600;
+      transition: background 0.2s ease;
     }
 
     .add-button:hover {
-      background: #1f7a35;
+      background: #218838;        /* Slightly darker green */
     }
 
-    .search-container {
-      display: flex;
-      background-color: #f1f3f5;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #e0e0e0;
-    }
 
-    .filter-container {
-      display: flex;
-      background-color: #f1f3f5;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #e0e0e0;
-    }
+    /* Field Mobiliser Modal Styles */
+#viewFieldModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    overflow-y: auto;
+}
 
-    .status-filter {
-      padding: 12px 15px;
-      font-size: 1rem;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: var(--text-color);
-    }
+#viewFieldModal .modal-content {
+    background-color: #fff;
+    width: 90%;
+    max-width: 1000px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
 
-    #searchInput {
-      flex-grow: 1;
-      border: none;
-      padding: 12px 15px;
-      font-size: 1rem;
-      background: transparent;
-      outline: none;
-      color: var(--text-color);
-    }
+#viewFieldModal .close-btn {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #333;
+}
 
-    #searchInput::placeholder {
-      color: var(--subtle-text);
-    }
+#fieldMobiliserDetailsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-    #searchBtn {
-      background-color: var(--secondary-color);
-      color: white;
-      border: none;
-      padding: 12px 18px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+#fieldMobiliserDetailsTable td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
 
-    #searchBtn:hover {
-      background-color: var(--subtle-text);
-    }
+#fieldMobiliserDetailsTable .group-title {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #1f2937;
+    padding: 12px 15px;
+}
 
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-
-    .data-table thead {
-      background-color: #e9f5ff;
-    }
-
-    .data-table th {
-      padding: 15px;
-      text-align: left;
-      font-weight: 600;
-      color: var(--subtle-text);
-      border-bottom: 2px solid var(--border-color);
-      white-space: nowrap;
-    }
-
-    .data-table td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-      vertical-align: middle;
-    }
-
-    .data-table tbody tr:nth-child(odd) {
-      background-color: #fafafa;
-    }
-
-    .data-table tbody tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-
-    .data-table tbody tr:hover {
-      background-color: #e9ecef;
-      transition: background-color 0.2s ease;
-    }
-
-    .status {
-      padding: 6px;
-      border-radius: 20px;
-      font-weight: 500;
-      font-size: 0.9em;
-      color: white;
-      white-space: nowrap;
-      display: inline-block;
-    }
-
-    .status.active { background-color: var(--success-color); }
-    .status.pending { background-color: var(--warning-color); color: var(--text-color); }
-    .status.inactive { background-color: var(--danger-color); }
-
-    button:disabled {
-      pointer-events: none;
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .action-btn {
+.action-btn {
       background-color: transparent;
       border: 1px solid;
       padding: 8px 12px;
@@ -287,138 +200,7 @@
       color: white;
     }
 
-    .approve-btn {
-      color: var(--success-color);
-      border-color: var(--success-color);
-    }
 
-    .approve-btn:hover {
-      background-color: var(--success-color);
-      color: white;
-    }
-
-    .reject-btn {
-      color: var(--danger-color);
-      border-color: var(--danger-color);
-    }
-
-    .reject-btn:hover {
-      background-color: var(--danger-color);
-      color: white;
-    }
-
-    .pagination-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 1.5rem;
-      gap: 1rem;
-    }
-
-    .page-button {
-      background-color: var(--primary-color);
-      color: #ffffff;
-      font-weight: 700;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                  0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: none;
-    }
-
-    .page-button:hover:not(:disabled) {
-      background-color: rgb(0, 115, 156);
-    }
-
-    .page-button:disabled {
-      background-color: #9ca3af;
-      cursor: not-allowed;
-    }
-
-    .error-message{
-      color: #dc3545;
-      font-size: 0.875rem;
-      margin-top: 4px;
-    }
-
-    .page-info {
-      color: #374151;
-      font-size: 1.125rem;
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .data-list-container {
-        padding: 20px;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .search-container {
-        max-width: 100%;
-      }
-    }
-    /* Tabular view modal styles (page-scoped) */
-    #viewFieldModal {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        overflow-y: auto;
-    }
-
-    #viewFieldModal .modal-content {
-        background-color: #fff;
-        width: 90%;
-        max-width: 1000px;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    #viewFieldModal .close-btn {
-        position: absolute;
-        top: 15px; right: 20px;
-        font-size: 1.5rem;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        color: #333;
-    }
-
-    #fieldMobiliserDetailsTable {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    #fieldMobiliserDetailsTable td {
-        padding: 10px 15px;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    #fieldMobiliserDetailsTable .group-title {
-        background-color: #f1f5f9;
-        font-weight: 600;
-        text-transform: uppercase;
-        color: #1f2937;
-        padding: 12px 15px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 
@@ -433,9 +215,9 @@
     <div class="header">
       <h1><i class="fas fa-chalkboard-teacher"></i>Trainer Management</h1>
       <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search by Name...">
-      <button id="searchBtn"><i class="fas fa-search"></i></button>
-    </div>
+        <input type="text" id="searchInput" placeholder="Search by Name...">
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
+      </div>
       <!-- Status Filter -->
       <div class="filter-container">
         <select id="statusFilter" class="status-filter">

@@ -290,6 +290,80 @@
       border-color: #2e4f8f;
       box-shadow: 0 0 0 2px rgba(46, 79, 143, 0.1);
     }
+
+    /* Pagination Styles */
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+
+    .pagination-info {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pagination-btn {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background: white;
+      color: #333;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      background: #2e4f8f;
+      color: white;
+      border-color: #2e4f8f;
+    }
+
+    .pagination-btn:disabled {
+      background: #f8f9fa;
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .page-numbers {
+      display: flex;
+      gap: 5px;
+    }
+
+    .page-number {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background: white;
+      color: #333;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .page-number:hover:not(.active) {
+      background: #e9ecef;
+    }
+
+    .page-number.active {
+      background: #2e4f8f;
+      color: white;
+      border-color: #2e4f8f;
+    }
   </style>
 </head>
 <body>
@@ -317,8 +391,8 @@
           <tr>
             <th>User ID</th>
             <th>Name of Alumni</th>
-            <th>Is Placed</th>
-            <th>Follow Up done by</th>
+            <th>Placement Status</th>
+            <th>Follow Up Done By</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -327,6 +401,13 @@
         </tbody>
       </table>
     </div>
+
+    <div id="pagination-controls" class="pagination-controls">
+        <button id="prevPage" class="page-button">Previous</button>
+        <span id="paginationInfo" class="page-info">Page 1 of 1</span>
+        <button id="nextPage" class="page-button">Next</button>
+    </div>
+
     <div id="footer"></div>
   </main>
 
@@ -345,7 +426,7 @@
           </div>
 
           <div class="form-group">
-            <label for="alumniName">Name of Alumni:<span style="color:red;">*</span></label>
+            <label for="alumniName">Name Of Alumni:<span style="color:red;">*</span></label>
             <input type="text" id="alumniName" required placeholder="Enter alumni name..." />
             <span id="alumniNameError" class="error-message"></span>
           </div>
@@ -357,19 +438,19 @@
           </div>
 
           <div class="form-group">
-            <label for="trainingName">Name of the Training:<span style="color:red;">*</span></label>
+            <label for="trainingName">Name Of The Training:<span style="color:red;">*</span></label>
             <input type="text" id="trainingName" required placeholder="Enter training name..." />
             <span id="trainingNameError" class="error-message"></span>
           </div>
 
           <div class="form-group">
-            <label for="completionDate">Date of Completion:<span style="color:red;">*</span></label>
+            <label for="completionDate">Date Of Completion:<span style="color:red;">*</span></label>
             <input type="date" id="completionDate" required />
             <span id="completionDateError" class="error-message"></span>
           </div>
 
           <div class="form-group">
-            <label for="isPlaced">Is the student placed?<span style="color:red;">*</span></label>
+            <label for="isPlaced">Placement Status:<span style="color:red;">*</span></label>
             <select id="isPlaced" required>
               <option value="">Select...</option>
               <option value="true">Yes</option>
@@ -379,19 +460,19 @@
           </div>
 
           <div class="form-group">
-            <label for="jobPlace">Place of Job:<span style="color:red;">*</span></label>
+            <label for="jobPlace">Place Of Job:<span style="color:red;">*</span></label>
             <input type="text" id="jobPlace" required placeholder="Enter job place..." />
             <span id="jobPlaceError" class="error-message"></span>
           </div>
 
           <div class="form-group">
-            <label for="earningPerMonth">Earning (per month):<span style="color:red;">*</span></label>
+            <label for="earningPerMonth">Earning (Per Month):<span style="color:red;">*</span></label>
             <input type="number" id="earningPerMonth" required placeholder="Enter earning amount..." min="0" />
             <span id="earningPerMonthError" class="error-message"></span>
           </div>
 
           <div class="form-group">
-            <label for="followUpBy">Follow Up done by:<span style="color:red;">*</span></label>
+            <label for="followUpBy">Follow Up Done By:<span style="color:red;">*</span></label>
             <input type="text" id="followUpBy" required placeholder="Enter follow up person..." />
             <span id="followUpByError" class="error-message"></span>
           </div>

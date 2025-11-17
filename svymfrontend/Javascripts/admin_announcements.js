@@ -160,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modalTitle.innerHTML = '<i class="fas fa-plus"></i> Add Announcement';
     announcementForm.reset();
     errorMsg.textContent = "";
+    eventDate.min = new Date().toISOString().split('T')[0]; // Prevent past dates
     modal.classList.add("show");
     announcementTitle.focus();
   });
@@ -223,6 +224,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!date) {
       errorMsg.textContent = "Please select event date.";
+      return;
+    }
+
+    // Validate event date is not in the past
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of today
+
+    if (selectedDate < today) {
+      errorMsg.textContent = "Event date cannot be in the past.";
       return;
     }
 

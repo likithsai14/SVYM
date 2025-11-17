@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
           <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
             <i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i>
-            <div><strong>Email:</strong> ${data.email || '-'}</div>
+            <div><strong>Email Id:</strong> ${data.email || '-'}</div>
           </div>
           <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
             <i class="fas fa-mobile-alt" style="margin-right: 10px; color: #17a2b8;"></i>
