@@ -16,6 +16,9 @@ exports.handler = async (event) => {
 
     const {
       courseId,
+      courseName,
+      price,
+      donorFundAmount,
       startDate,
       endDate,
       durationMonths,
@@ -28,6 +31,26 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "Missing courseId" }),
+      };
+    }
+
+    // Validation for price and donorFundAmount
+    if (price !== undefined && price < 0) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Price cannot be negative" }),
+      };
+    }
+    if (donorFundAmount !== undefined && donorFundAmount < 0) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Donor fund amount cannot be negative" }),
+      };
+    }
+    if (price !== undefined && donorFundAmount !== undefined && donorFundAmount > price) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Donor fund amount cannot exceed the course price" }),
       };
     }
 
@@ -90,6 +113,9 @@ exports.handler = async (event) => {
     }
 
     // ✅ Update course
+    if (courseName) course.courseName = courseName;
+    if (price !== undefined) course.price = price;
+    if (donorFundAmount !== undefined) course.donorFundAmount = donorFundAmount;
     if (startDate) course.startDate = startDate;
     if (endDate) course.endDate = endDate;
     if (durationMonths) course.durationMonths = durationMonths;
