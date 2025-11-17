@@ -364,6 +364,50 @@
       color: white;
       border-color: #2e4f8f;
     }
+
+    /* Student Dropdown Styles */
+    .student-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-dropdown-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s;
+    }
+
+    .student-dropdown-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .student-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .student-id {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    .form-group {
+      position: relative;
+    }
   </style>
 </head>
 <body>
@@ -402,10 +446,12 @@
       </table>
     </div>
 
-    <div id="pagination-controls" class="pagination-controls">
-        <button id="prevPage" class="page-button">Previous</button>
-        <span id="paginationInfo" class="page-info">Page 1 of 1</span>
-        <button id="nextPage" class="page-button">Next</button>
+    <div class="pagination-container">
+      <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
+      <div class="pagination-controls">
+        <button id="prevPage" class="pagination-btn">Previous</button>
+        <button id="nextPage" class="pagination-btn">Next</button>
+      </div>
     </div>
 
     <div id="footer"></div>
@@ -421,25 +467,26 @@
         <form id="placementForm">
           <div class="form-group">
             <label for="userId">User ID:<span style="color:red;">*</span></label>
-            <input type="text" id="userId" required placeholder="Enter user ID..." />
+            <input type="text" id="userId" required readonly placeholder="Auto-populated on student selection..." />
             <span id="userIdError" class="error-message"></span>
           </div>
 
           <div class="form-group">
             <label for="alumniName">Name Of Alumni:<span style="color:red;">*</span></label>
-            <input type="text" id="alumniName" required placeholder="Enter alumni name..." />
+            <input type="text" id="alumniName" required placeholder="Start typing student name..." autocomplete="off" />
+            <div id="studentDropdown" class="student-dropdown"></div>
             <span id="alumniNameError" class="error-message"></span>
           </div>
 
           <div class="form-group">
             <label for="parentSpouseName">Parent / Spouse Name:<span style="color:red;">*</span></label>
-            <input type="text" id="parentSpouseName" required placeholder="Enter parent/spouse name..." />
+            <input type="text" id="parentSpouseName" required placeholder="Auto-populated on student selection..." readonly />
             <span id="parentSpouseNameError" class="error-message"></span>
           </div>
 
           <div class="form-group">
             <label for="trainingName">Name Of The Training:<span style="color:red;">*</span></label>
-            <input type="text" id="trainingName" required placeholder="Enter training name..." />
+            <input type="text" id="trainingName" required placeholder="Auto-populated on student selection..." readonly />
             <span id="trainingNameError" class="error-message"></span>
           </div>
 

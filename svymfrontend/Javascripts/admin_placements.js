@@ -18,12 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const earningPerMonth = document.getElementById("earningPerMonth");
   const followUpBy = document.getElementById("followUpBy");
   const errorMsg = document.getElementById("errorMsg");
+  const studentDropdown = document.getElementById("studentDropdown");
 
   let placements = [];
   let editingPlacementId = null;
   let currentPage = 1;
   let totalPages = 1;
   const rowsPerPage = 7;
+
+  let students = []; // Store all students for autocomplete
+  let selectedStudent = null; // Store selected student data
 
   // Input validation functions
   function capitalizeFirstLetter(str) {
@@ -61,6 +65,84 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
+  }
+
+  // Fetch all students for autocomplete
+  async function fetchStudents() {
+    try {
+      const response = await fetch('/.netlify/functions/allstudents');
+      if (!response.ok) throw new Error("Failed to fetch students");
+      const data = await response.json();
+      students = data.students || [];
+    } catch (err) {
+      console.error("Error fetching students:", err);
+      students = [];
+    }
+  }
+
+  // Show student dropdown with filtered results
+  function showStudentDropdown(query) {
+    if (!query.trim()) {
+      studentDropdown.style.display = 'none';
+      return;
+    }
+
+    const filteredStudents = students.filter(student =>
+      student.candidateName.toLowerCase().includes(query.toLowerCase()) ||
+      student.userId.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 10); // Limit to 10 results
+
+    if (filteredStudents.length === 0) {
+      studentDropdown.style.display = 'none';
+      return;
+    }
+
+    studentDropdown.innerHTML = '';
+    filteredStudents.forEach(student => {
+      const item = document.createElement('div');
+      item.className = 'student-dropdown-item';
+      item.innerHTML = `
+        <div class="student-name">${student.candidateName}</div>
+        <div class="student-id">${student.userId}</div>
+      `;
+      item.addEventListener('click', () => selectStudent(student));
+      studentDropdown.appendChild(item);
+    });
+
+    studentDropdown.style.display = 'block';
+  }
+
+  // Hide student dropdown
+  function hideStudentDropdown() {
+    setTimeout(() => {
+      studentDropdown.style.display = 'none';
+    }, 150); // Delay to allow click events
+  }
+
+  // Select student from dropdown
+  async function selectStudent(student) {
+    selectedStudent = student;
+    alumniName.value = student.candidateName;
+    userId.value = student.userId;
+    parentSpouseName.value = student.fatherHusbandName || '';
+
+    // Find the most recent enrollment for course name
+    if (student.enrollments && student.enrollments.length > 0) {
+      const latestEnrollment = student.enrollments.sort((a, b) =>
+        new Date(b.enrollmentDate) - new Date(a.enrollmentDate)
+      )[0];
+      trainingName.value = latestEnrollment.courseName || '';
+    } else {
+      trainingName.value = '';
+    }
+
+    studentDropdown.style.display = 'none';
+    clearErrorMessages();
+  }
+
+  // Clear error messages
+  function clearErrorMessages() {
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
   }
 
   // Create and insert spinner element
@@ -246,31 +328,61 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Student name input event listeners
+  alumniName.addEventListener('input', (e) => {
+    const query = e.target.value;
+    showStudentDropdown(query);
+  });
+
+  alumniName.addEventListener('focus', (e) => {
+    const query = e.target.value;
+    if (query.trim()) {
+      showStudentDropdown(query);
+    }
+  });
+
+  alumniName.addEventListener('blur', hideStudentDropdown);
+
+  // Click outside to close dropdown
+  document.addEventListener('click', (e) => {
+    if (!alumniName.contains(e.target) && !studentDropdown.contains(e.target)) {
+      studentDropdown.style.display = 'none';
+    }
+  });
+
   // Open Add Placement Modal
   addPlacementBtn.addEventListener("click", () => {
     editingPlacementId = null;
+    selectedStudent = null;
     modalTitle.innerHTML = '<i class="fas fa-plus"></i> Add Placement';
     placementForm.reset();
     errorMsg.textContent = "";
+    studentDropdown.style.display = 'none';
     modal.classList.add("show");
-    userId.focus();
+    alumniName.focus();
   });
 
   // Close Modal
   closeModal.addEventListener("click", () => {
     modal.classList.remove("show");
     editingPlacementId = null;
+    selectedStudent = null;
+    studentDropdown.style.display = 'none';
   });
 
   cancelModal.addEventListener("click", () => {
     modal.classList.remove("show");
     editingPlacementId = null;
+    selectedStudent = null;
+    studentDropdown.style.display = 'none';
   });
 
   window.addEventListener("click", e => {
     if (e.target === modal) {
       modal.classList.remove("show");
       editingPlacementId = null;
+      selectedStudent = null;
+      studentDropdown.style.display = 'none';
     }
   });
 
@@ -281,10 +393,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     editingPlacementId = placementId;
     modalTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Placement';
-    userId.value = placement.userId;
-    alumniName.value = placement.alumniName;
-    parentSpouseName.value = placement.parentSpouseName;
-    trainingName.value = placement.trainingName;
+
+    // Find the student data for this placement
+    const student = students.find(s => s.userId === placement.userId);
+    if (student) {
+      selectedStudent = student;
+      alumniName.value = placement.alumniName;
+      userId.value = placement.userId;
+      parentSpouseName.value = placement.parentSpouseName;
+      trainingName.value = placement.trainingName;
+    } else {
+      // Fallback if student not found
+      alumniName.value = placement.alumniName;
+      userId.value = placement.userId;
+      parentSpouseName.value = placement.parentSpouseName;
+      trainingName.value = placement.trainingName;
+    }
 
     // Format date for input field (YYYY-MM-DD)
     const date = new Date(placement.completionDate);
@@ -295,8 +419,9 @@ document.addEventListener("DOMContentLoaded", () => {
     earningPerMonth.value = placement.earningPerMonth;
     followUpBy.value = placement.followUpBy;
     errorMsg.textContent = "";
+    studentDropdown.style.display = 'none';
     modal.classList.add("show");
-    userId.focus();
+    alumniName.focus();
   }
 
   // Form Submit Handler
@@ -317,8 +442,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Validation
+    if (!selectedStudent && !editingPlacementId) {
+      errorMsg.textContent = "Please select a student from the dropdown.";
+      return;
+    }
+
     if (!formData.userId) {
-      errorMsg.textContent = "Please enter user ID.";
+      errorMsg.textContent = "Please select a student to auto-populate User ID.";
       return;
     }
 
@@ -328,12 +458,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!formData.parentSpouseName) {
-      errorMsg.textContent = "Please enter parent/spouse name.";
+      errorMsg.textContent = "Please select a student to auto-populate Parent/Spouse Name.";
       return;
     }
 
     if (!formData.trainingName) {
-      errorMsg.textContent = "Please enter training name.";
+      errorMsg.textContent = "Please select a student to auto-populate Training Name.";
       return;
     }
 
@@ -373,15 +503,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       } else {
         // Add new placement
-        const userId = sessionStorage.getItem("userId");
-        if (!userId) {
+        const userIdSession = sessionStorage.getItem("userId");
+        if (!userIdSession) {
           errorMsg.textContent = "User session not found. Please login again.";
           return;
         }
         response = await fetch("/.netlify/functions/addPlacement", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...formData, addedBy: userId })
+          body: JSON.stringify({ ...formData, addedBy: userIdSession })
         });
       }
 
@@ -390,6 +520,8 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(editingPlacementId ? "✅ Placement updated successfully!" : "✅ Placement added successfully!");
       modal.classList.remove("show");
       editingPlacementId = null;
+      selectedStudent = null;
+      studentDropdown.style.display = 'none';
       fetchPlacements();
     } catch (err) {
       console.error(err);
@@ -473,6 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial load
   setupInputValidation();
+  fetchStudents(); // Load students for autocomplete
   fetchPlacements();
   updatePaginationInfo();
 });
