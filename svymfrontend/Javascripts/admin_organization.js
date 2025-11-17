@@ -69,13 +69,10 @@ function populateHelpSection(data) {
 }
 
 function populateContactSection(data) {
-    const contactContent = document.getElementById('contactContent');
-    contactContent.innerHTML = '';
-
-    // Emails
+    // Populate Emails
+    const emailList = document.getElementById('emailList');
+    emailList.innerHTML = '';
     if (data.emails && data.emails.length > 0) {
-        const emailDiv = document.createElement('div');
-        emailDiv.innerHTML = `<h4>Emails</h4>`;
         data.emails.forEach((email, index) => {
             const emailItem = document.createElement('div');
             emailItem.className = 'contact-item';
@@ -86,15 +83,14 @@ function populateContactSection(data) {
                     <button class="delete-btn" data-type="email" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
-            emailDiv.appendChild(emailItem);
+            emailList.appendChild(emailItem);
         });
-        contactContent.appendChild(emailDiv);
     }
 
-    // Phones
+    // Populate Phones
+    const phoneList = document.getElementById('phoneList');
+    phoneList.innerHTML = '';
     if (data.phones && data.phones.length > 0) {
-        const phoneDiv = document.createElement('div');
-        phoneDiv.innerHTML = `<h4>Phones</h4>`;
         data.phones.forEach((phone, index) => {
             const phoneItem = document.createElement('div');
             phoneItem.className = 'contact-item';
@@ -105,15 +101,14 @@ function populateContactSection(data) {
                     <button class="delete-btn" data-type="phone" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
-            phoneDiv.appendChild(phoneItem);
+            phoneList.appendChild(phoneItem);
         });
-        contactContent.appendChild(phoneDiv);
     }
 
-    // Addresses
+    // Populate Addresses
+    const addressList = document.getElementById('addressList');
+    addressList.innerHTML = '';
     if (data.addresses && data.addresses.length > 0) {
-        const addressDiv = document.createElement('div');
-        addressDiv.innerHTML = `<h4>Addresses</h4>`;
         data.addresses.forEach((address, index) => {
             const addressItem = document.createElement('div');
             addressItem.className = 'contact-item';
@@ -124,9 +119,8 @@ function populateContactSection(data) {
                     <button class="delete-btn" data-type="address" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
-            addressDiv.appendChild(addressItem);
+            addressList.appendChild(addressItem);
         });
-        contactContent.appendChild(addressDiv);
     }
 }
 
@@ -134,7 +128,7 @@ function populateSocialSection(data) {
     const socialContent = document.getElementById('socialContent');
     socialContent.innerHTML = '';
 
-    // Social Media
+    // Social Media items
     if (data.socialMedia && Object.keys(data.socialMedia).length > 0) {
         Object.entries(data.socialMedia).forEach(([platform, url]) => {
             const socialItem = document.createElement('div');
@@ -142,9 +136,9 @@ function populateSocialSection(data) {
             socialItem.innerHTML = `
                 <div class="social-info">
                     <p class="social-platform">${platform}</p>
-                    <p class="social-url"><a href="${url}" target="_blank">${url}</a></p>
                 </div>
                 <div class="org-actions">
+                    <button class="view-btn" data-type="social" data-platform="${platform}"><i class="fas fa-eye"></i></button>
                     <button class="edit-btn" data-type="social" data-platform="${platform}"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn" data-type="social" data-platform="${platform}"><i class="fas fa-trash-alt"></i></button>
                 </div>
@@ -208,33 +202,7 @@ function setupEventListeners() {
     document.getElementById('viewValuesBtn').addEventListener('click', () => openViewValuesModal());
     document.getElementById('editValuesBtn').addEventListener('click', () => openValuesModal());
 
-    // Contact section add buttons
-    const contactSection = document.querySelector('.contact-container .section-header');
-    const addEmailBtn = document.createElement('button');
-    addEmailBtn.className = 'add-btn';
-    addEmailBtn.innerHTML = '<i class="fas fa-plus"></i> Add Email';
-    addEmailBtn.addEventListener('click', () => openContactItemModal('email'));
-    contactSection.appendChild(addEmailBtn);
 
-    const addPhoneBtn = document.createElement('button');
-    addPhoneBtn.className = 'add-btn';
-    addPhoneBtn.innerHTML = '<i class="fas fa-plus"></i> Add Phone';
-    addPhoneBtn.addEventListener('click', () => openContactItemModal('phone'));
-    contactSection.appendChild(addPhoneBtn);
-
-    const addAddressBtn = document.createElement('button');
-    addAddressBtn.className = 'add-btn';
-    addAddressBtn.innerHTML = '<i class="fas fa-plus"></i> Add Address';
-    addAddressBtn.addEventListener('click', () => openContactItemModal('address'));
-    contactSection.appendChild(addAddressBtn);
-
-    // Social section add button
-    const socialSection = document.querySelector('.social-container .section-header');
-    const addSocialBtn = document.createElement('button');
-    addSocialBtn.className = 'add-btn';
-    addSocialBtn.innerHTML = '<i class="fas fa-plus"></i> Add Social Media';
-    addSocialBtn.addEventListener('click', () => openSocialModal());
-    socialSection.appendChild(addSocialBtn);
 
     // Help section buttons
     document.getElementById('addFaqBtn').addEventListener('click', () => openFaqModal());
@@ -427,7 +395,9 @@ function openContactModal() {
 function populateContactLists(data) {
     // Emails
     const emailsList = document.getElementById('emailsList');
-    emailsList.innerHTML = '<h4>Emails</h4>';
+    const headDiv = document.createElement('div');
+    headDiv.className = 'header-container';
+    headDiv.innerHTML = '<h4>Emails</h4>';
     if (data.emails) {
         data.emails.forEach((email, index) => {
             const item = document.createElement('div');
@@ -900,5 +870,13 @@ document.addEventListener('click', (e) => {
         }
 
         document.getElementById('deleteModal').classList.add('show');
+    } else if (e.target.closest('.add-btn[data-type]')) {
+        const btn = e.target.closest('.add-btn');
+        const type = btn.dataset.type;
+        if (type === 'email' || type === 'phone' || type === 'address') {
+            openContactItemModal(type);
+        } else if (type === 'social') {
+            openSocialModal();
+        }
     }
 });
