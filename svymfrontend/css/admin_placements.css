@@ -238,3 +238,39 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.page-button {
+  background-color: #2e4f8f;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.page-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.page-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: #374151;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
