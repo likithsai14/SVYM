@@ -14,7 +14,7 @@
     padding: 1rem;
     border-radius: 1rem;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr 1fr;
     gap: 1rem;
     grid-template-areas:
@@ -23,7 +23,11 @@
         "help-org help-org social-org";
 }
 
-.about-container, .team-container, .help-container, .contact-container{
+.social-container{
+    grid-area: social-org;
+}
+
+.about-container, .team-container, .help-container, .contact-container, .social-container{
     background-color: white;
     border-radius: 1rem;
     padding: 1rem;
@@ -63,6 +67,16 @@
 
 .contact-container{
     grid-area: contact-org;
+}
+
+.contact-container .section-content{
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.social-container .section-content{
+    max-height: 500px;
+    overflow-y: scroll;
 }
 
 .about-item {
@@ -138,15 +152,23 @@
   overflow: hidden; /* ensures everything stays in one row */
 }
 
-.member-item p {
-  flex: 1;               /* expands to take all remaining space */
+.member-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.member-item .member-name {
   margin: 0;
-  max-width: 250px;
-  width: auto;          /* fixed label width */
-  white-space: nowrap;   /* keep on one line */
-  overflow: hidden;      /* hide extra text */
-  text-overflow: ellipsis; /* show ... for overflow */
-  color: #444;
+  font-weight: bold;
+  color: #2e4f8f;
+}
+
+.member-item .member-role {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 .help-container .section-content{
@@ -243,4 +265,73 @@
 }
 .delete-btn:hover {
   background: #c82333;
+}
+
+/* Modal styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.value-item, .contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.value-item span, .contact-item span {
+  flex: 1;
 }

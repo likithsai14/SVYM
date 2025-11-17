@@ -10,20 +10,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { platform, url } = JSON.parse(event.body);
-    if (!platform || typeof platform !== 'string' || platform.trim() === '') {
+    const { index, name, role } = JSON.parse(event.body);
+    if (index === undefined || !name || !role || typeof name !== 'string' || typeof role !== 'string' || name.trim() === '' || role.trim() === '') {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Platform is required and must be a non-empty string' })
-      };
-    }
-
-    // Allow any platform name, no restriction
-
-    if (url !== undefined && typeof url !== 'string') {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'URL must be a string or omitted' })
+        body: JSON.stringify({ message: 'Index, name, and role are required and must be valid' })
       };
     }
 
@@ -36,12 +27,20 @@ exports.handler = async (event, context) => {
       };
     }
 
-    org.contactus.socialMedia[platform.trim().toLowerCase()] = url ? url.trim() : '';
+    if (index < 0 || index >= org.team.length) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Invalid team member index' })
+      };
+    }
+
+    org.team[index].name = name.trim();
+    org.team[index].role = role.trim();
     await org.save();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `${platform} updated successfully` })
+      body: JSON.stringify({ message: 'Team member updated successfully' })
     };
   } catch (error) {
     console.error(error);

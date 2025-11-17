@@ -10,20 +10,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { platform, url } = JSON.parse(event.body);
-    if (!platform || typeof platform !== 'string' || platform.trim() === '') {
+    const { name, role } = JSON.parse(event.body);
+    if (!name || !role || typeof name !== 'string' || typeof role !== 'string' || name.trim() === '' || role.trim() === '') {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Platform is required and must be a non-empty string' })
-      };
-    }
-
-    // Allow any platform name, no restriction
-
-    if (url !== undefined && typeof url !== 'string') {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'URL must be a string or omitted' })
+        body: JSON.stringify({ message: 'Both name and role are required and must be non-empty strings' })
       };
     }
 
@@ -36,12 +27,17 @@ exports.handler = async (event, context) => {
       };
     }
 
-    org.contactus.socialMedia[platform.trim().toLowerCase()] = url ? url.trim() : '';
+    const newMember = {
+      name: name.trim(),
+      role: role.trim()
+    };
+
+    org.team.push(newMember);
     await org.save();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `${platform} updated successfully` })
+      body: JSON.stringify({ message: 'Team member added successfully' })
     };
   } catch (error) {
     console.error(error);

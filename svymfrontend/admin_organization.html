@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/nav.css" />
     <script src="Javascripts/auth.js"></script>
     <link rel="stylesheet" href="css/admin_organization.css" />
+    <link rel="stylesheet" href="css/modal.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
@@ -38,11 +39,10 @@
                     <div class = "about-item">
                         <h4>Mission</h4>
                         <p id="orgMission">To empower individuals through education, digital learning, and life skills that promote self-reliance and community growth.</p>
-                        <div class="org-actions">
-                            <button id="viewMissionBtn" class="view-btn"><i class="fas fa-eye"></i></button>
-                            <button id="editMissionBtn" class="edit-btn"><i class="fas fa-edit"></i></button>
-                            <button id="deleteMissionBtn" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-                        </div>
+                <div class="org-actions">
+                    <button id="viewMissionBtn" class="view-btn"><i class="fas fa-eye"></i></button>
+                    <button id="editMissionBtn" class="edit-btn"><i class="fas fa-edit"></i></button>
+                </div>
                     </div>
                     <div class = "about-item">
                         <h4>Vision</h4>
@@ -50,7 +50,6 @@
                         <div class="org-actions">
                             <button id="viewVisionBtn" class="view-btn"><i class="fas fa-eye"></i></button>
                             <button id="editVisionBtn" class="edit-btn"><i class="fas fa-edit"></i></button>
-                            <button id="deleteVisionBtn" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                     <div class = "about-item">
@@ -59,7 +58,6 @@
                         <div class="org-actions">
                             <button id="viewValuesBtn" class="view-btn"><i class="fas fa-eye"></i></button>
                             <button id="editValuesBtn" class="edit-btn"><i class="fas fa-edit"></i></button>
-                            <button id="deleteValuesBtn" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 </div>
@@ -67,7 +65,7 @@
             <div class = "team-container">
                 <div class="section-header">
                     <h2>Team Members</h2>
-                    <button id="addFaqBtn" class="add-btn"><i class="fas fa-plus"></i> Add Member</button>
+                    <button id="addTeamMemberBtn" class="add-btn"><i class="fas fa-plus"></i> Add Member</button>
                 </div>
                 <div class="section-content" id="teamContent">
                     <div class = "member-item">
@@ -150,11 +148,296 @@
                     <h2>Contact</h2>
                 </div>
                 <div class="section-content" id="contactContent">
-                    
+
+                </div>
+            </div>
+            <div class = "social-container">
+                <div class="section-header">
+                    <h2>Social Media</h2>
+                </div>
+                <div class="section-content" id="socialContent">
+
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modals for Team Members -->
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Manage Team Members</h2>
+            </div>
+            <div class="modal-body">
+                <div id="teamList"></div>
+                <button id="addTeamMemberBtnModal" class="btn btn-secondary">Add Team Member</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="teamMemberModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit Team Member</h2>
+            </div>
+            <div class="modal-body">
+                <form id="teamMemberForm">
+                    <div class="form-group">
+                        <label for="memberName">Name:</label>
+                        <input type="text" id="memberName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberRole">Role:</label>
+                        <input type="text" id="memberRole" name="role" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modals -->
+    <div id="viewMissionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View Mission</h2>
+            </div>
+            <div class="modal-body">
+                <p id="viewMissionText"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewVisionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View Vision</h2>
+            </div>
+            <div class="modal-body">
+                <p id="viewVisionText"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewValuesModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View Values</h2>
+            </div>
+            <div class="modal-body">
+                <ul id="viewValuesList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewFaqModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View FAQ</h2>
+            </div>
+            <div class="modal-body">
+                <h3 id="viewFaqQuestion"></h3>
+                <p id="viewFaqAnswer"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewContactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View Contact Details</h2>
+            </div>
+            <div class="modal-body">
+                <div id="viewContactContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewTeamMemberModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View Team Member</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="viewMemberName"></span></p>
+                <p><strong>Role:</strong> <span id="viewMemberRole"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for About Us -->
+    <div id="missionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit Mission</h2>
+            </div>
+            <div class="modal-body">
+                <form id="missionForm">
+                    <div class="form-group">
+                        <label for="missionText">Mission:</label>
+                        <textarea id="missionText" name="mission" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="visionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit Vision</h2>
+            </div>
+            <div class="modal-body">
+                <form id="visionForm">
+                    <div class="form-group">
+                        <label for="visionText">Vision:</label>
+                        <textarea id="visionText" name="vision" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="valuesModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Manage Values</h2>
+            </div>
+            <div class="modal-body">
+                <div id="valuesList"></div>
+                <button id="addValueBtn" class="btn btn-secondary">Add Value</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="valueEditModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit Value</h2>
+            </div>
+            <div class="modal-body">
+                <form id="valueForm">
+                    <div class="form-group">
+                        <label for="valueText">Value:</label>
+                        <input type="text" id="valueText" name="value" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for FAQs -->
+    <div id="faqModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit FAQ</h2>
+            </div>
+            <div class="modal-body">
+                <form id="faqForm">
+                    <div class="form-group">
+                        <label for="faqQuestion">Question:</label>
+                        <input type="text" id="faqQuestion" name="question" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="faqAnswer">Answer:</label>
+                        <textarea id="faqAnswer" name="answer" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for Contact -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Manage Contact Details</h2>
+            </div>
+            <div class="modal-body">
+                <div id="emailsList"></div>
+                <button id="addEmailBtn" class="btn btn-secondary">Add Email</button>
+                <div id="phonesList"></div>
+                <button id="addPhoneBtn" class="btn btn-secondary">Add Phone</button>
+                <div id="addressesList"></div>
+                <button id="addAddressBtn" class="btn btn-secondary">Add Address</button>
+                <div id="socialList"></div>
+                <button id="addSocialBtn" class="btn btn-secondary">Add Social Media</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="contactItemModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit Contact Item</h2>
+            </div>
+            <div class="modal-body">
+                <form id="contactItemForm">
+                    <div class="form-group">
+                        <label for="contactItemValue">Value:</label>
+                        <input type="text" id="contactItemValue" name="value" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="socialModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Edit Social Media</h2>
+            </div>
+            <div class="modal-body">
+                <form id="socialForm">
+                    <div class="form-group">
+                        <label for="socialPlatform">Platform:</label>
+                        <input type="text" id="socialPlatform" name="platform" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="socialUrl">URL:</label>
+                        <input type="url" id="socialUrl" name="url" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this item?</p>
+                <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script src="Javascripts/admin_organization.js"></script>
     </body>
 </html>

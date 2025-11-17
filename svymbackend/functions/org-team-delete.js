@@ -10,20 +10,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { platform, url } = JSON.parse(event.body);
-    if (!platform || typeof platform !== 'string' || platform.trim() === '') {
+    const { index } = JSON.parse(event.body);
+    if (index === undefined || typeof index !== 'number' || index < 0) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Platform is required and must be a non-empty string' })
-      };
-    }
-
-    // Allow any platform name, no restriction
-
-    if (url !== undefined && typeof url !== 'string') {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'URL must be a string or omitted' })
+        body: JSON.stringify({ message: 'Valid index is required' })
       };
     }
 
@@ -36,12 +27,19 @@ exports.handler = async (event, context) => {
       };
     }
 
-    org.contactus.socialMedia[platform.trim().toLowerCase()] = url ? url.trim() : '';
+    if (index >= org.team.length) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Invalid team member index' })
+      };
+    }
+
+    org.team.splice(index, 1);
     await org.save();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `${platform} updated successfully` })
+      body: JSON.stringify({ message: 'Team member deleted successfully' })
     };
   } catch (error) {
     console.error(error);
