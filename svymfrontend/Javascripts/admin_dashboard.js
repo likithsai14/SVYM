@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Helper function to calculate time ago
+    function getTimeAgo(timestamp) {
+        const now = new Date();
+        const activityTime = new Date(timestamp);
+        const diffInMs = now - activityTime;
+        const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+        if (diffInMinutes < 1) return 'Just now';
+        if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+        if (diffInHours < 24) return `${diffInHours} hr ago`;
+        return `${diffInDays} days ago`;
+    }
+
     const sideMenu = document.getElementById('sideMenu');
     const hamburger = document.getElementById('hamburger');
     const overlay = document.getElementById('overlay');
@@ -95,23 +110,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Recent Activity (placeholder, as no dynamic data available)
+            // Recent Activity (fetch from backend)
             const recentActivityList = document.getElementById('recentActivityList');
-            const activities = [
-                '<strong>John Doe</strong> enrolled in a new course: <strong>Mobile Repair</strong>.',
-                '<strong>Jane Smith</strong> updated the <strong>Python for Beginners</strong> course details.',
-                'A new placement opportunity from <strong>TechCorp Solutions</strong> was added.',
-                '<strong>Mary Johnson</strong> marked fee payment for student ID <strong>S101</strong> as complete.',
-            ];
-            recentActivityList.innerHTML = activities.map(activity => `<li><span class="activity-text">${activity}</span><span class="activity-time">${new Date().toLocaleTimeString()}</span></li>`).join('');
+            try {
+                const activitiesRes = await fetch('/.netlify/functions/getRecentActivities');
+                if (activitiesRes.ok) {
+                    const { activities } = await activitiesRes.json();
+                    if (activities.length > 0) {
+                        recentActivityList.innerHTML = activities.map(activity => {
+                            const timeAgo = getTimeAgo(activity.timestamp);
+                            return `<li><span class="activity-text">${activity.description}</span><span class="activity-time">${timeAgo}</span></li>`;
+                        }).join('');
+                    } else {
+                        recentActivityList.innerHTML = '<li class="no-data">No recent activity.</li>';
+                    }
+                } else {
+                    recentActivityList.innerHTML = '<li class="no-data">No recent activity.</li>';
+                }
+            } catch (error) {
+                console.error('Error fetching recent activities:', error);
+                recentActivityList.innerHTML = '<li class="no-data">Error loading activities.</li>';
+            }
 
-            // Latest Announcements (placeholder)
+            // Latest Announcements (fetch from backend)
             const latestAnnouncements = document.getElementById('latestAnnouncements');
-            const announcements = [
-                'New server maintenance scheduled for tonight at 11 PM.',
-                'Reminder: All trainers must submit their monthly reports by EOD.',
-            ];
-            latestAnnouncements.innerHTML = announcements.map(announcement => `<li>${announcement}</li>`).join('');
+            try {
+                const announcementsRes = await fetch('/.netlify/functions/getAnnouncements');
+                if (announcementsRes.ok) {
+                    const { announcements } = await announcementsRes.json();
+                    if (announcements.length > 0) {
+                        const latest = announcements.slice(0, 3); // Show latest 3 announcements
+                        latestAnnouncements.innerHTML = latest.map(announcement => {
+                            const eventDate = new Date(announcement.eventDate).toLocaleDateString('en-IN');
+                            return `<li><strong>${announcement.title}</strong> - ${eventDate}</li>`;
+                        }).join('');
+                    } else {
+                        latestAnnouncements.innerHTML = '<li>No announcements available.</li>';
+                    }
+                } else {
+                    latestAnnouncements.innerHTML = '<li>No announcements available.</li>';
+                }
+            } catch (error) {
+                console.error('Error fetching announcements:', error);
+                latestAnnouncements.innerHTML = '<li>Error loading announcements.</li>';
+            }
 
             // Top Performing Courses (use enrollment stats)
             const topCourses = document.getElementById('topCourses');

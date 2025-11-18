@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const uri = process.env.MONGODB_URI;
 
 async function connectDB() {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
   console.log('🔌 Connecting to MongoDB...');
   return mongoose.connect(uri, {
     bufferCommands: true, // enable buffering to avoid errors in serverless

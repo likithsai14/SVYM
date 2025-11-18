@@ -73,6 +73,21 @@ exports.handler = async (event) => {
 
     await newUser.save();
 
+    // Log activity
+    try {
+      await fetch(process.env.NETLIFY_URL + '/.netlify/functions/addActivity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'student_signup',
+          description: `New student <strong>${data.candidateName}</strong> signed up.`,
+          userId: userId
+        })
+      });
+    } catch (activityError) {
+      console.error('Error logging activity:', activityError);
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify({
