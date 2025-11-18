@@ -1,11 +1,9 @@
-# TODO: Fix Admin Placements Pagination CSS
+# Fix Button Alignment on Zoom
 
-## Steps to Complete
-- [x] Remove inline pagination styles from svymfrontend/admin_placements.html (the <style> block containing pagination-related CSS).
-- [x] Update svymfrontend/css/admin_placements.css to include unified pagination styles:
-  - Add .pagination-container styles.
-  - Update .pagination-controls to match HTML usage.
-  - Change .page-button to .pagination-btn and update properties.
-  - Change .page-info to .pagination-info and update properties.
-  - Add .page-numbers and .page-number styles if needed.
-- [x] Test the pagination display to ensure it looks correct. (Server started, but browser tool disabled; manual testing recommended.)
+## Tasks
+- [x] Convert px to rem in svymfrontend/css/admin_placements.css for button styles
+- [x] Convert px to rem in svymfrontend/css/style.css for button styles
+- [x] Convert px to rem in svymfrontend/css/tableList.css for button styles
+- [x] Convert px to rem in svymfrontend/css/admin_dashboard.css for button styles
+- [x] Check and update other CSS files from search results if needed (admin_courses.css, trainer_editstudents.css, etc.)
+- [x] Test changes by zooming in browser (server started at http://localhost:8000)

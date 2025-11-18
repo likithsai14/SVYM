@@ -148,15 +148,15 @@ select:focus {
 
 button {
     width: 100%;
-    padding: 10px; /* Larger button */
+    padding: 0.625rem; /* Larger button */
     background-color: #2e4f8f;
     color: white;
     border: none;
-    border-radius: 4px; /* More rounded button */
+    border-radius: 0.25rem; /* More rounded button */
     cursor: pointer;
     font-size: 0.9em; /* Adjusted to 0.9em */
     font-weight: lighter;
-    margin-top: 15px; /* More space above button */
+    margin-top: 0.9375rem; /* More space above button */
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
 }
 
@@ -244,7 +244,8 @@ p a:hover {
     }
 
     button {
-        padding: 10px; /* Adjusted padding */
+        padding: 0.625rem; /* Adjusted padding */
+
         font-size: 0.9em; /* Adjusted font size */
     }
 }
@@ -312,9 +313,9 @@ p a:hover {
     background-color: #f0f8ff;
     color: #2e4f8f;
     margin: 0px;
-    border-radius: 8px;
-    margin-top: 3px;
-    padding: 10px 7.5px;
+    border-radius: 0.5rem;
+    margin-top: 0.1875rem;
+    padding: 0.625rem 0.46875rem;
     font-size: small;
 }
 
