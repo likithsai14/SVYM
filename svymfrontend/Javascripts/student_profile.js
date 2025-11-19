@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sessionUserId = sessionStorage.getItem('userId');
   if (!sessionUserId) {
     console.warn('No session userId found in sessionStorage');
+    window.location.href = 'login.html';
+    return;
   }
 
   // Helper to set text into spans
@@ -10,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Fetch profile from backend and populate UI
   async function loadProfile() {
-    const userId = sessionUserId || 'SVYM99999'; // fallback for dev
+    const userId = sessionUserId;
     try {
       const res = await fetch(`/.netlify/functions/getStudentProfile?userId=${encodeURIComponent(userId)}`);
       if (!res.ok) {
@@ -504,7 +506,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    const userId = sessionUserId || (window.__currentUserProfile && window.__currentUserProfile.userId);
+    const userId = sessionUserId;
     if (!userId) return alert('User ID missing');
     const payload = {
       userId,
