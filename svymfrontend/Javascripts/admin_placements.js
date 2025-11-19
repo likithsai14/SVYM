@@ -45,10 +45,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add validation to input fields
   function setupInputValidation() {
+    const userIdField = document.getElementById("userId");
     const alumniNameField = document.getElementById("alumniName");
     const parentSpouseNameField = document.getElementById("parentSpouseName");
     const trainingNameField = document.getElementById("trainingName");
     const followUpByField = document.getElementById("followUpBy");
+
+    // Auto-uppercase for User ID
+    if (userIdField) {
+      userIdField.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+      });
+      userIdField.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+        this.value = pastedText.toUpperCase();
+      });
+    }
 
     // Prevent digits and auto-capitalize
     [alumniNameField, parentSpouseNameField, trainingNameField, followUpByField].forEach(field => {
@@ -65,6 +78,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
+
+    // Toggle placement-related fields based on placement status
+    const isPlacedField = document.getElementById("isPlaced");
+    if (isPlacedField) {
+      isPlacedField.addEventListener('change', togglePlacementFields);
+    }
+  }
+
+  // Function to toggle placement-related fields
+  function togglePlacementFields() {
+    const isPlaced = document.getElementById("isPlaced").value === "true";
+    const jobPlace = document.getElementById("jobPlace");
+    const earningPerMonth = document.getElementById("earningPerMonth");
+    const employmentType = document.getElementById("employmentType");
+
+    if (isPlaced) {
+      jobPlace.disabled = false;
+      earningPerMonth.disabled = false;
+      employmentType.disabled = false;
+    } else {
+      jobPlace.disabled = true;
+      earningPerMonth.disabled = true;
+      employmentType.disabled = true;
+      jobPlace.value = "";
+      earningPerMonth.value = "";
+      employmentType.value = "";
+    }
   }
 
   // Fetch all students for autocomplete
@@ -88,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const filteredStudents = students.filter(student =>
-      student.candidateName.toLowerCase().includes(query.toLowerCase()) ||
       student.userId.toLowerCase().includes(query.toLowerCase())
     ).slice(0, 10); // Limit to 10 results
 
@@ -122,8 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Select student from dropdown
   async function selectStudent(student) {
     selectedStudent = student;
-    alumniName.value = student.candidateName;
     userId.value = student.userId;
+    alumniName.value = student.candidateName;
     parentSpouseName.value = student.fatherHusbandName || '';
 
     // Find the most recent enrollment for course name
@@ -138,8 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     studentDropdown.style.display = 'none';
     clearErrorMessages();
-    const alumniNameError = document.getElementById("alumniNameError");
-    alumniNameError.textContent = "";
+    const userIdError = document.getElementById("userIdError");
+    userIdError.textContent = "";
   }
 
   // Clear error messages
@@ -147,23 +186,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
   }
 
-  // Validate student name against database
-  function validateStudentName(query) {
-    const alumniNameError = document.getElementById("alumniNameError");
+  // Validate user ID against database
+  function validateUserId(query) {
+    const userIdError = document.getElementById("userIdError");
     if (!query.trim()) {
-      alumniNameError.textContent = "";
+      userIdError.textContent = "";
       return;
     }
 
     const matchingStudents = students.filter(student =>
-      student.candidateName.toLowerCase().includes(query.toLowerCase()) ||
       student.userId.toLowerCase().includes(query.toLowerCase())
     );
 
     if (matchingStudents.length === 0) {
-      alumniNameError.textContent = "Student not present in the database.";
+      userIdError.textContent = "User ID not present in the database.";
     } else {
-      alumniNameError.textContent = "";
+      userIdError.textContent = "";
     }
   }
 
@@ -203,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     spinner.style.display = "block";
     placementsTableBody.innerHTML = "";
     try {
-      const response = await fetch('/.netlify/functions/getPlacements');
+      const response = await fetch('/.netlify/functions/getPlacements?limit=10000');
       if (!response.ok) throw new Error("Failed to fetch placements");
       const data = await response.json();
       placements = data.placements || [];
@@ -350,28 +388,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Student name input event listeners
-  alumniName.addEventListener('input', (e) => {
+  // User ID input event listeners
+  userId.addEventListener('input', (e) => {
     const query = e.target.value;
     showStudentDropdown(query);
-    validateStudentName(query);
+    validateUserId(query);
   });
 
-  alumniName.addEventListener('focus', (e) => {
+  userId.addEventListener('focus', (e) => {
     const query = e.target.value;
     if (query.trim()) {
       showStudentDropdown(query);
     }
   });
 
-  alumniName.addEventListener('blur', () => {
+  userId.addEventListener('blur', () => {
     hideStudentDropdown();
-    validateStudentName(alumniName.value);
+    validateUserId(userId.value);
   });
 
   // Click outside to close dropdown
   document.addEventListener('click', (e) => {
-    if (!alumniName.contains(e.target) && !studentDropdown.contains(e.target)) {
+    if (!userId.contains(e.target) && !studentDropdown.contains(e.target)) {
       studentDropdown.style.display = 'none';
     }
   });
@@ -385,7 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
     errorMsg.textContent = "";
     studentDropdown.style.display = 'none';
     modal.classList.add("show");
-    alumniName.focus();
+    userId.focus();
   });
 
   // Close Modal
@@ -440,14 +478,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const date = new Date(placement.completionDate);
     completionDate.value = date.toISOString().split('T')[0];
 
-    isPlaced.value = placement.isPlaced.toString();
+    isPlaced.value = placement.isPlaced ? "Yes" : "No";
     jobPlace.value = placement.jobPlace;
-    earningPerMonth.value = placement.earningPerMonth;
+    earningPerMonth.value = placement.earningPerMonth === "nil" ? "" : placement.earningPerMonth;
+    employmentType.value = placement.employmentType === "nil" ? "" : placement.employmentType || '';
     followUpBy.value = placement.followUpBy;
     errorMsg.textContent = "";
     studentDropdown.style.display = 'none';
     modal.classList.add("show");
-    alumniName.focus();
+    userId.focus();
   }
 
   // Form Submit Handler
@@ -455,15 +494,17 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     errorMsg.textContent = "";
 
+    const isPlacedValue = isPlaced.value === "Yes";
     const formData = {
       userId: userId.value.trim(),
       alumniName: alumniName.value.trim(),
       parentSpouseName: parentSpouseName.value.trim(),
       trainingName: trainingName.value.trim(),
       completionDate: completionDate.value,
-      isPlaced: isPlaced.value === "true",
-      jobPlace: jobPlace.value.trim(),
-      earningPerMonth: parseFloat(earningPerMonth.value),
+      isPlaced: isPlacedValue,
+      jobPlace: isPlacedValue ? jobPlace.value.trim() : "nil",
+      earningPerMonth: isPlacedValue ? earningPerMonth.value : null,
+      employmentType: isPlacedValue ? employmentType.value : "nil",
       followUpBy: followUpBy.value.trim(),
     };
 
@@ -476,12 +517,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Additional validation: Check if student exists in database
     if (!editingPlacementId) {
       const matchingStudents = students.filter(student =>
-        student.candidateName.toLowerCase() === alumniName.value.toLowerCase().trim() ||
         student.userId.toLowerCase() === userId.value.toLowerCase().trim()
       );
       if (matchingStudents.length === 0) {
-        const alumniNameError = document.getElementById("alumniNameError");
-        alumniNameError.textContent = "Student not present in the database.";
+        const userIdError = document.getElementById("userIdError");
+        userIdError.textContent = "User ID not present in the database.";
         return;
       }
     }
@@ -521,8 +561,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (isNaN(formData.earningPerMonth) || formData.earningPerMonth < 0) {
-      errorMsg.textContent = "Please enter a valid earning amount.";
+    if (isPlacedValue && !formData.earningPerMonth) {
+      errorMsg.textContent = "Please select an earning range.";
+      return;
+    }
+
+    if (isPlacedValue && !formData.employmentType) {
+      errorMsg.textContent = "Please select employment type.";
       return;
     }
 

@@ -20,13 +20,18 @@ exports.handler = async (event) => {
       isPlaced,
       jobPlace,
       earningPerMonth,
+      employmentType,
       followUpBy,
       addedBy
     } = body;
 
     // Validation
-    if (!userId || !alumniName || !parentSpouseName || !trainingName || !completionDate || isPlaced === undefined || !jobPlace || earningPerMonth === undefined || !followUpBy || !addedBy) {
-      return { statusCode: 400, body: JSON.stringify({ message: "All fields are required" }) };
+    if (!userId || !alumniName || !parentSpouseName || !trainingName || !completionDate || isPlaced === undefined || !jobPlace || !followUpBy || !addedBy) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Required fields are missing" }) };
+    }
+
+    if (isPlaced && (earningPerMonth === undefined || !employmentType)) {
+      return { statusCode: 400, body: JSON.stringify({ message: "Earning per month and employment type are required for placed students" }) };
     }
 
     const newPlacement = new Placement({
@@ -37,7 +42,8 @@ exports.handler = async (event) => {
       completionDate,
       isPlaced,
       jobPlace,
-      earningPerMonth,
+      earningPerMonth: isPlaced ? earningPerMonth : null,
+      employmentType: isPlaced ? body.employmentType : null,
       followUpBy,
       addedBy,
     });

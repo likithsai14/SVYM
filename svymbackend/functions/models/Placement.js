@@ -31,13 +31,16 @@ const placementSchema = new mongoose.Schema({
   },
   jobPlace: {
     type: String,
-    required: true,
+    required: function() { return this.isPlaced; },
     trim: true,
   },
   earningPerMonth: {
-    type: Number,
-    required: true,
-    min: 0,
+    type: String, // Changed to String to allow "nil" or ranges
+    required: function() { return this.isPlaced; },
+  },
+  employmentType: {
+    type: String,
+    required: function() { return this.isPlaced; },
   },
   followUpBy: {
     type: String,
