@@ -352,38 +352,204 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    // --- ADDED HELPER FUNCTION to convert numbers to words (Indian system) ---
+    function numberToWordsINR(num) {
+        const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        const inWords = (n) => {
+            let str = '';
+            if (n > 99) {
+                str += a[Math.floor(n / 100)] + ' Hundred ';
+                n %= 100;
+            }
+            if (n > 19) {
+                str += b[Math.floor(n / 10)] + ' ' + a[n % 10];
+            } else {
+                str += a[n];
+            }
+            return str;
+        };
+
+        let numStr = num.toString();
+        let [integerPart, decimalPart] = numStr.split('.');
+
+        let words = '';
+        let numInt = parseInt(integerPart);
+
+        if (numInt === 0) {
+            words = 'Zero';
+        } else {
+            let crores = Math.floor(numInt / 10000000);
+            numInt %= 10000000;
+            let lakhs = Math.floor(numInt / 100000);
+            numInt %= 100000;
+            let thousands = Math.floor(numInt / 1000);
+            numInt %= 1000;
+            let hundreds = Math.floor(numInt / 100);
+            numInt %= 100;
+
+            if (crores > 0) words += inWords(crores) + ' Crore ';
+            if (lakhs > 0) words += inWords(lakhs) + ' Lakh ';
+            if (thousands > 0) words += inWords(thousands) + ' Thousand ';
+            if (hundreds > 0) words += inWords(hundreds) + ' Hundred ';
+            if (numInt > 0) words += inWords(numInt);
+        }
+
+        words = words.replace(/ +/g, ' ').trim(); // Clean up extra spaces
+
+        if (decimalPart && parseInt(decimalPart) > 0) {
+            words += ' and ' + inWords(parseInt(decimalPart.slice(0, 2))) + ' Paisa';
+        }
+
+        // Capitalize first letter
+        return words.charAt(0).toUpperCase() + words.slice(1);
+    }
+
     function generateSingleReceiptPdf(data) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const studentName = data.studentName || "Student";
 
-        doc.setFontSize(22);
-        doc.setTextColor(30, 144, 255);
-        doc.text("Tech4Hope", 105, 20, null, null, "center");
-        doc.setFontSize(16);
-        doc.setTextColor(0,0,0);
-        doc.text("Payment Receipt",105,30,null,null,"center");
-        doc.setLineWidth(0.5);
-        doc.setDrawColor(30,144,255);
-        doc.line(20,35,190,35);
+        // Get data from the button's dataset
+        const studentName = data.studentName || "Student Name";
+        const courseName = data.courseName || "N/A";
+        const transactionId = data.transactionId || "N/A";
+        const amount = parseFloat(data.amount).toFixed(2);
+        const date = data.date || "N/A";
+        const method = data.method || "N/A";
+        const amountInWords = numberToWordsINR(amount) + " Only";
 
-        let y = 50;
-        doc.setFontSize(12);
-        doc.text(`Student Name: ${studentName}`,20,y);
-        y+=10; doc.text(`Transaction ID: ${data.transactionId}`,20,y);
-        y+=10; doc.text(`Date: ${data.date}`,20,y);
-        y+=10; doc.text(`Course: ${data.courseName}`,20,y);
-        y+=10; doc.text(`Payment Method: ${data.method}`,20,y);
-        y+=20;
+        // --- Document Coordinates ---
+        const leftMargin = 20;
+        const rightMargin = 190;
+        const center = 105;
+        let y = 20; // Current Y position
 
-        doc.setFontSize(18);
-        doc.setTextColor(40,167,69);
-        doc.text(`Amount Paid: INR ${data.amount}`,20,y);
+        // --- Helper: Draw dotted line ---
+        const drawDottedLine = (x1, x2, yPos) => {
+            doc.setLineDashPattern([0.5, 0.5], 0);
+            doc.line(x1, yPos, x2, yPos);
+            doc.setLineDashPattern([], 0); // Reset to solid
+        };
+
+        // --- 1. Header ---
+
+        // Note: To add the logo, you must first convert 'image_9dafc5.jpg'
+        // to a Base64 string and paste it here.
+        // Example: const logoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZ...";
+        // doc.addImage(logoBase64, 'JPEG', leftMargin, 15, 20, 20);
+
         doc.setFontSize(10);
-        doc.setTextColor(150,150,150);
-        doc.text("Thank you for your payment!",105,doc.internal.pageSize.height-20,null,null,"center");
-        doc.text("Tech4Hope, Empowering Lives Through Skills",105,doc.internal.pageSize.height-15,null,null,"center");
-        doc.save(`Tech4Hope_Receipt_${data.transactionId}.pdf`);
+        doc.setFont("helvetica", "normal");
+        doc.text("Reg No. 122/84-5", rightMargin, y, { align: 'right' });
+        y += 10;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("SWAMI VIVEKANANDA YOUTH MOVEMENT", center, y, { align: 'center' });
+        y += 7;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.text("CA2, KIADB Industrial Area, Hebbal, Mysore, Karnataka - 570016", center, y, { align: 'center' });
+        y += 10;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("Acknowledgement of Receipts", center, y, { align: 'center' });
+        y += 5;
+
+        doc.setLineWidth(0.5);
+        doc.line(leftMargin + 10, y, rightMargin - 10, y); // Underline title
+        y += 15;
+
+        // --- 2. Body (Fill-in-the-blanks) ---
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+
+        // Line 1: Receipt No and Date
+        doc.text("No.R", leftMargin, y);
+        doc.setFont("helvetica", "bold");
+        // Using part of transaction ID as Receipt No for space
+        const receiptNo = transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId;
+        doc.text(receiptNo, leftMargin + 10, y);
+        doc.setFont("helvetica", "normal");
+        drawDottedLine(leftMargin + 9, 130, y + 1);
+
+        doc.text("Date:", 140, y);
+        doc.setFont("helvetica", "bold");
+        doc.text(date, 152, y);
+        drawDottedLine(151, rightMargin, y + 1);
+        y += 12;
+
+        // Line 2: Received From
+        const receivedLabel = "Received from Mr/Ms/M/s.";
+        doc.text(receivedLabel, leftMargin, y);
+        doc.setFont("helvetica", "bold");
+        doc.text(studentName, leftMargin + 48, y);
+        drawDottedLine(leftMargin + 47, rightMargin, y + 1);
+        y += 12;
+
+        // Line 3: Sum of Rupees
+        const sumLabel = "a Sum of Rupees...";
+        doc.setFont("helvetica", "normal");
+        doc.text(sumLabel, leftMargin, y);
+        doc.setFont("helvetica", "bold");
+        const amountStr = `INR ${amount}`;
+        doc.text(amountStr, leftMargin + 38, y);
+        drawDottedLine(leftMargin + 37, 100, y + 1);
+
+        // Line 3 (continued): Amount in Words
+        doc.setFont("helvetica", "normal");
+        doc.text("Amount in Words...", 105, y);
+        drawDottedLine(140, rightMargin, y + 1);
+        y += 12;
+
+        // Line 4: Amount in Words (continued)
+        doc.setFont("helvetica", "bold");
+        // Using maxWidth to auto-wrap the text if it's too long
+        doc.text(amountInWords, leftMargin, y, { maxWidth: rightMargin - leftMargin - 10 });
+
+        // Calculate Y position for the line after text wrapping
+        const textLines = doc.splitTextToSize(amountInWords, rightMargin - leftMargin - 10);
+        const textHeight = textLines.length * (doc.getFontSize() * 0.35); // Approx line height
+        drawDottedLine(leftMargin, rightMargin, y + textHeight);
+        y += textHeight + 10;
+
+        // Line 5: Towards
+        const towardsLabel = "towards...";
+        doc.setFont("helvetica", "normal");
+        doc.text(towardsLabel, leftMargin, y);
+        doc.setFont("helvetica", "bold");
+        doc.text(courseName, leftMargin + 20, y);
+        drawDottedLine(leftMargin + 19, rightMargin, y + 1);
+        y += 12;
+
+        // Line 6: Payment Method and Date
+        const methodLabel = "by Cash/Cheque/Online...";
+        doc.setFont("helvetica", "normal");
+        doc.text(methodLabel, leftMargin, y);
+        doc.setFont("helvetica", "bold");
+        // Using a cleaner value for the method
+        const methodValue = `${method} (ID: ${receiptNo})`;
+        doc.text(methodValue, leftMargin + 45, y, { maxWidth: 90 }); // Constrain width
+        drawDottedLine(leftMargin + 44, 130, y + 1);
+
+        doc.setFont("helvetica", "normal");
+        doc.text("dated:", 140, y);
+        doc.setFont("helvetica", "bold");
+        doc.text(date, 152, y);
+        drawDottedLine(151, rightMargin, y + 1);
+        y += 30; // More space for signature
+
+        // --- 3. Footer ---
+        doc.setFont("helvetica", "bold");
+        doc.text("Authorized Sign", rightMargin, y, { align: 'right' });
+        doc.setLineWidth(0.3);
+        doc.line(rightMargin - 30, y - 2, rightMargin, y - 2); // Line above signature
+
+        // --- 4. Save ---
+        doc.save(`SVYM_Receipt_${transactionId}.pdf`);
     }
 
     // -------------------------- PAGINATION --------------------------

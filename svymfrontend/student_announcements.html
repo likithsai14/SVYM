@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SVYM Tech4Hope - Student Announcements</title>
+  <link rel="icon" type="image/png" href="public/favicon.png" />
+
+  <!-- NAV & SITE STYLES / SCRIPTS -->
+  <script src="./Javascripts/nav.js" defer></script>
+  <script src="./Javascripts/modal.js"></script>
+  <script src="./Javascripts/auth.js"></script>
+
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    .announcements-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .announcement-card {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.2s ease;
+    }
+    .announcement-card:hover {
+      transform: translateY(-5px);
+    }
+    .announcement-card h3 {
+      color: #2e4f8f;
+      margin-bottom: 10px;
+      font-size: 1.4em;
+    }
+    .announcement-date {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+    }
+    .announcement-date i {
+      margin-right: 8px;
+    }
+    .announcement-description {
+      line-height: 1.6;
+      color: #333;
+    }
+    .no-announcements {
+      text-align: center;
+      color: #666;
+      font-size: 1.2em;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="hamburger" id="hamburger">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="side-menu" id="sideMenu"></aside>
+
+  <div class="container main-content">
+    <h1>All Announcements</h1>
+    <div class="announcements-container" id="announcementsContainer">
+      <!-- Announcements will be loaded here -->
+    </div>
+    <div id="footer"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="Javascripts/student_announcements.js"></script>
+  <script src="Javascripts/footer.js"></script>
+</body>
+</html>

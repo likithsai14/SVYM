@@ -25,7 +25,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: 'studentId, courseId, amount and paymentMethod are required' }) };
     }
 
-    const session = await mongoose.startSession();
+    const session = await mongoose.connection.startSession();
     session.startTransaction();
 
     try {

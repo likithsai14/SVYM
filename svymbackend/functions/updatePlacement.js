@@ -17,7 +17,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: "Placement ID is required" }) };
     }
 
-    const updatedPlacement = await Placement.findByIdAndUpdate(id, updateData, { new: true });
+    const updatedPlacement = await Placement.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 
     if (!updatedPlacement) {
       return { statusCode: 404, body: JSON.stringify({ message: "Placement not found" }) };

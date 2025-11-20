@@ -27,6 +27,21 @@ exports.handler = async (event) => {
 
     await newAnnouncement.save();
 
+    // Log activity
+    try {
+      await fetch(process.env.NETLIFY_URL + '/.netlify/functions/addActivity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'announcement_added',
+          description: `New announcement "<strong>${title}</strong>" was added.`,
+          userId: addedBy
+        })
+      });
+    } catch (activityError) {
+      console.error('Error logging activity:', activityError);
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "Announcement added successfully", announcement: newAnnouncement }),
