@@ -9,9 +9,12 @@ function toggleBodyScroll() {
 
 // Close modal on close button click
 modals.forEach(modal => {
-    modal.querySelector('.close-btn').onclick = function() {
-        modal.classList.remove('show');
-        toggleBodyScroll();
+    const closeBtn = modal.querySelector('.close-btn');
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            modal.classList.remove('show');
+            toggleBodyScroll();
+        };
     }
 });
 
