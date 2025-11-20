@@ -47,6 +47,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // Function to format date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
   // Modal event listeners
 
   const changeModal = document.getElementById('changePasswordModal');
@@ -78,8 +84,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Open change password modal
-  document.getElementById('changePasswordBtn').addEventListener('click', () => {
-    changeModal.style.display = 'flex';
+  document.getElementById('changePassword').addEventListener('click', () => {
+    changeModal.style.display = 'block';
   });
 
   // Change password form submit

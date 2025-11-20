@@ -77,14 +77,27 @@ function populateContactSection(data) {
             const emailItem = document.createElement('div');
             emailItem.className = 'contact-item';
             emailItem.innerHTML = `
-                <span>${email}</span>
+                <span class="contact-value">${email}</span>
                 <div class="org-actions">
+                    <button class="view-btn" data-type="email" data-index="${index}"><i class="fas fa-eye"></i></button>
                     <button class="edit-btn" data-type="email" data-index="${index}"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn" data-type="email" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
             emailList.appendChild(emailItem);
         });
+    } else {
+        const emailItem = document.createElement('div');
+        emailItem.className = 'contact-item';
+        emailItem.innerHTML = `
+            <span class="contact-value">No emails added yet.</span>
+            <div class="org-actions">
+                <button class="view-btn"><i class="fas fa-eye"></i></button>
+                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `;
+        emailList.appendChild(emailItem);
     }
 
     // Populate Phones
@@ -95,14 +108,27 @@ function populateContactSection(data) {
             const phoneItem = document.createElement('div');
             phoneItem.className = 'contact-item';
             phoneItem.innerHTML = `
-                <span>${phone}</span>
+                <span class="contact-value">${phone}</span>
                 <div class="org-actions">
+                    <button class="view-btn" data-type="phone" data-index="${index}"><i class="fas fa-eye"></i></button>
                     <button class="edit-btn" data-type="phone" data-index="${index}"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn" data-type="phone" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
             phoneList.appendChild(phoneItem);
         });
+    } else {
+        const phoneItem = document.createElement('div');
+        phoneItem.className = 'contact-item';
+        phoneItem.innerHTML = `
+            <span class="contact-value">No phones added yet.</span>
+            <div class="org-actions">
+                <button class="view-btn"><i class="fas fa-eye"></i></button>
+                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `;
+        phoneList.appendChild(phoneItem);
     }
 
     // Populate Addresses
@@ -113,14 +139,27 @@ function populateContactSection(data) {
             const addressItem = document.createElement('div');
             addressItem.className = 'contact-item';
             addressItem.innerHTML = `
-                <span>${address}</span>
+                <span class="contact-value">${address}</span>
                 <div class="org-actions">
+                    <button class="view-btn" data-type="address" data-index="${index}"><i class="fas fa-eye"></i></button>
                     <button class="edit-btn" data-type="address" data-index="${index}"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn" data-type="address" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
             addressList.appendChild(addressItem);
         });
+    } else {
+        const addressItem = document.createElement('div');
+        addressItem.className = 'contact-item';
+        addressItem.innerHTML = `
+            <span class="contact-value">No addresses added yet.</span>
+            <div class="org-actions">
+                <button class="view-btn"><i class="fas fa-eye"></i></button>
+                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `;
+        addressList.appendChild(addressItem);
     }
 }
 
@@ -578,24 +617,23 @@ function openViewFaqModal(index) {
         });
 }
 
-function openViewContactModal() {
+function openViewContactModal(type, index) {
     fetch('/.netlify/functions/org-get-contact')
         .then(res => res.json())
         .then(data => {
             const content = document.getElementById('viewContactContent');
             content.innerHTML = '';
 
-            if (data.emails && data.emails.length > 0) {
-                content.innerHTML += `<h4>Emails</h4><ul>${data.emails.map(email => `<li>${email}</li>`).join('')}</ul>`;
-            }
-            if (data.phones && data.phones.length > 0) {
-                content.innerHTML += `<h4>Phones</h4><ul>${data.phones.map(phone => `<li>${phone}</li>`).join('')}</ul>`;
-            }
-            if (data.addresses && data.addresses.length > 0) {
-                content.innerHTML += `<h4>Addresses</h4><ul>${data.addresses.map(address => `<li>${address}</li>`).join('')}</ul>`;
-            }
-            if (data.socialMedia && Object.keys(data.socialMedia).length > 0) {
-                content.innerHTML += `<h4>Social Media</h4><ul>${Object.entries(data.socialMedia).map(([platform, url]) => `<li><a href="${url}" target="_blank">${platform}</a></li>`).join('')}</ul>`;
+            let value = '';
+            if (type === 'email' && data.emails && data.emails[index]) {
+                value = data.emails[index];
+                content.innerHTML = `<h4>Email</h4><p>${value}</p>`;
+            } else if (type === 'phone' && data.phones && data.phones[index]) {
+                value = data.phones[index];
+                content.innerHTML = `<h4>Phone</h4><p>${value}</p>`;
+            } else if (type === 'address' && data.addresses && data.addresses[index]) {
+                value = data.addresses[index];
+                content.innerHTML = `<h4>Address</h4><p>${value}</p>`;
             }
 
             document.getElementById('viewContactModal').classList.add('show');
@@ -952,6 +990,18 @@ document.addEventListener('click', (e) => {
         if (type === 'email' || type === 'phone' || type === 'address') {
             openContactItemModal(type);
         } else if (type === 'social') {
+            openSocialModal();
+        }
+    } else if (e.target.closest('.add-btn-small')) {
+        const btn = e.target.closest('.add-btn-small');
+        const id = btn.id;
+        if (id === 'addEmailBtn') {
+            openContactItemModal('email');
+        } else if (id === 'addPhoneBtn') {
+            openContactItemModal('phone');
+        } else if (id === 'addAddressBtn') {
+            openContactItemModal('address');
+        } else if (id === 'addSocialBtn') {
             openSocialModal();
         }
     }
