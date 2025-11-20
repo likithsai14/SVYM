@@ -276,16 +276,14 @@ document.addEventListener("DOMContentLoaded", function () {
             <i class="fas fa-toggle-on" style="margin-right: 10px; color: #fd7e14;"></i>
             <div><strong>Status:</strong> ${trainer.status || '-'}</div>
           </div>
-          ${trainer.deactivateDate ?
-            `<div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-              <i class="fas fa-calendar-times" style="margin-right: 10px; color: #dc3545;"></i>
-              <div><strong>Deactivate Date:</strong> ${new Date(trainer.deactivateDate).toLocaleDateString()}</div>
-            </div>` :
-            `<div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-              <i class="fas fa-calendar-check" style="margin-right: 10px; color: #28a745;"></i>
-              <div><strong>Active Date:</strong> ${trainer.activeDate ? new Date(trainer.activeDate).toLocaleDateString() : '-'}</div>
-            </div>`
-          }
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-calendar-check" style="margin-right: 10px; color: #28a745;"></i>
+            <div><strong>Active Date:</strong> ${trainer.activeDate ? new Date(trainer.activeDate).toLocaleDateString() : '-'}</div>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+            <i class="fas fa-calendar-times" style="margin-right: 10px; color: #dc3545;"></i>
+            <div><strong>Deactivate Date:</strong> ${trainer.deactivateDate ? new Date(trainer.deactivateDate).toLocaleDateString() : '-'}</div>
+          </div>
           <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
             <i class="fas fa-clock" style="margin-right: 10px; color: #20c997;"></i>
             <div><strong>Created At:</strong> ${trainer.createdAt ? new Date(trainer.createdAt).toLocaleDateString() : '-'}</div>

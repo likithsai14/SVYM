@@ -198,24 +198,11 @@
         </div>
     </div>
     <!-- Modals for Team Members -->
-    <div id="teamModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="modal-header">
-                <h2>Manage Team Members</h2>
-            </div>
-            <div class="modal-body">
-                <div id="teamList"></div>
-                <button id="addTeamMemberBtnModal" class="btn btn-secondary">Add Team Member</button>
-            </div>
-        </div>
-    </div>
-
     <div id="teamMemberModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div class="modal-header">
-                <h2>Edit Team Member</h2>
+                <h2 id="teamMemberModalTitle">Add Team Member</h2>
             </div>
             <div class="modal-body">
                 <form id="teamMemberForm">
@@ -304,6 +291,19 @@
             <div class="modal-body">
                 <p><strong>Name:</strong> <span id="viewMemberName"></span></p>
                 <p><strong>Role:</strong> <span id="viewMemberRole"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewSocialModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>View Social Media</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>Platform:</strong> <span id="viewSocialPlatform"></span></p>
+                <p><strong>URL:</strong> <a id="viewSocialUrl" href="" target="_blank"></a></p>
             </div>
         </div>
     </div>
@@ -408,13 +408,13 @@
             </div>
             <div class="modal-body">
                 <div id="emailsList"></div>
-                <button id="addEmailBtn" class="btn btn-secondary">Add Email</button>
+                <button id="modalAddEmailBtn" class="btn btn-secondary">Add Email</button>
                 <div id="phonesList"></div>
-                <button id="addPhoneBtn" class="btn btn-secondary">Add Phone</button>
+                <button id="modalAddPhoneBtn" class="btn btn-secondary">Add Phone</button>
                 <div id="addressesList"></div>
-                <button id="addAddressBtn" class="btn btn-secondary">Add Address</button>
+                <button id="modalAddAddressBtn" class="btn btn-secondary">Add Address</button>
                 <div id="socialList"></div>
-                <button id="addSocialBtn" class="btn btn-secondary">Add Social Media</button>
+                <button id="modalAddSocialBtn" class="btn btn-secondary">Add Social Media</button>
             </div>
         </div>
     </div>
@@ -430,6 +430,7 @@
                     <div class="form-group">
                         <label for="contactItemValue">Value:</label>
                         <input type="text" id="contactItemValue" name="value" required>
+                        <div id="contactItemError" class="error-message" style="display: none; color: red; font-size: 14px; margin-top: 5px;"></div>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
@@ -467,9 +468,7 @@
                 <h2>Confirm Delete</h2>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this item?</p>
-                <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
-                <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+                <!-- Content will be dynamically populated -->
             </div>
         </div>
     </div>
