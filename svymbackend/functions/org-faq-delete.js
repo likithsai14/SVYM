@@ -10,11 +10,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { faqId } = JSON.parse(event.body);
-    if (!faqId || typeof faqId !== 'string' || faqId.trim() === '') {
+    const { index } = JSON.parse(event.body);
+    if (index === undefined || index === null || typeof index !== 'number' || index < 0) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'faqId is required and must be a non-empty string' })
+        body: JSON.stringify({ message: 'index is required and must be a non-negative number' })
       };
     }
 
@@ -27,15 +27,14 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const faq = org.help.id(faqId);
-    if (!faq) {
+    if (index >= org.help.length) {
       return {
         statusCode: 404,
         body: JSON.stringify({ message: 'FAQ not found' })
       };
     }
 
-    org.help.pull(faqId);
+    org.help.splice(index, 1);
     await org.save();
 
     return {

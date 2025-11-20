@@ -138,8 +138,8 @@ function populateSocialSection(data) {
                     <p class="social-platform">${platform}</p>
                 </div>
                 <div class="org-actions">
-                    <button class="view-btn" data-type="social" data-platform="${platform}"><i class="fas fa-eye"></i></button>
-                    <button class="edit-btn" data-type="social" data-platform="${platform}"><i class="fas fa-edit"></i></button>
+                    <button class="view-btn" data-type="social-view" data-platform="${platform}" data-url="${url}"><i class="fas fa-eye"></i></button>
+                    <button class="edit-btn" data-type="social" data-platform="${platform}" data-url="${url}"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn" data-type="social" data-platform="${platform}"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
@@ -208,8 +208,8 @@ function setupEventListeners() {
     document.getElementById('addFaqBtn').addEventListener('click', () => openFaqModal());
 
     // Team section buttons
-    document.getElementById('addTeamMemberBtn').addEventListener('click', () => openTeamModal());
-    document.getElementById('addTeamMemberBtnModal').addEventListener('click', () => openTeamMemberModal());
+    document.getElementById('addTeamMemberBtn').addEventListener('click', () => openTeamMemberModal());
+    // Removed the reference to addTeamMemberBtnModal since the modal was removed
 
     // FAQ view buttons
     document.addEventListener('click', (e) => {
@@ -243,6 +243,12 @@ function setupEventListeners() {
     document.getElementById('addAddressBtn').addEventListener('click', () => openContactItemModal('address'));
     document.getElementById('addSocialBtn').addEventListener('click', () => openSocialModal());
     document.getElementById('addTeamMemberBtn').addEventListener('click', () => openTeamMemberModal());
+
+    // Modal add buttons
+    document.getElementById('modalAddEmailBtn').addEventListener('click', () => openContactItemModal('email'));
+    document.getElementById('modalAddPhoneBtn').addEventListener('click', () => openContactItemModal('phone'));
+    document.getElementById('modalAddAddressBtn').addEventListener('click', () => openContactItemModal('address'));
+    document.getElementById('modalAddSocialBtn').addEventListener('click', () => openSocialModal());
 }
 
 function openTeamMemberModal(index = null, name = '', role = '') {
@@ -278,7 +284,6 @@ async function handleTeamMemberSubmit(e) {
 
         if (response.ok) {
             closeModal('teamMemberModal');
-            closeModal('teamModal');
             loadOrganizationData();
         } else {
             alert('Error updating team member');
@@ -287,10 +292,6 @@ async function handleTeamMemberSubmit(e) {
         console.error('Error:', error);
         alert('Error updating team member');
     }
-
-    // Delete confirmation
-    document.getElementById('confirmDeleteBtn').addEventListener('click', handleDeleteConfirm);
-    document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteModal'));
 }
 
 // Modal functions
@@ -329,31 +330,7 @@ function openValuesModal() {
         });
 }
 
-function openTeamModal() {
-    // Load current team
-    fetch('/.netlify/functions/org-get-team')
-        .then(res => res.json())
-        .then(data => {
-            const teamList = document.getElementById('teamList');
-            teamList.innerHTML = '';
-            data.forEach((member, index) => {
-                const memberItem = document.createElement('div');
-                memberItem.className = 'member-item';
-                memberItem.innerHTML = `
-                    <div class="member-info">
-                        <p class="member-name">${member.name}</p>
-                        <p class="member-role">${member.role}</p>
-                    </div>
-                    <div class="org-actions">
-                        <button class="edit-btn" data-type="team" data-index="${index}"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn" data-type="team" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                `;
-                teamList.appendChild(memberItem);
-            });
-            document.getElementById('teamModal').classList.add('show');
-        });
-}
+
 
 function openValueEditModal(index = null, value = '') {
     document.getElementById('valueText').value = value;
@@ -469,10 +446,49 @@ function populateContactLists(data) {
 }
 
 function openContactItemModal(type, index = null, value = '') {
-    document.getElementById('contactItemValue').value = value;
+    const modal = document.getElementById('contactItemModal');
+    const header = modal.querySelector('.modal-header h2');
+    const label = modal.querySelector('label[for="contactItemValue"]');
+    const input = document.getElementById('contactItemValue');
+    const errorDiv = document.getElementById('contactItemError');
+
+    // Set dynamic header
+    const action = index !== null ? 'Edit' : 'Add';
+    const typeCapitalized = type.charAt(0).toUpperCase() + type.slice(1);
+    header.textContent = `${action} ${typeCapitalized}`;
+
+    // Set dynamic label
+    label.textContent = typeCapitalized + ':';
+
+    // Clear any previous error
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+
+    // Set input type and placeholder based on type
+    if (type === 'phone') {
+        input.type = 'text';
+        input.placeholder = 'Enter 10-digit phone number';
+        input.maxLength = 10;
+        // Restrict input to digits only
+        input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    } else if (type === 'email') {
+        input.type = 'email';
+        input.placeholder = 'Enter email address';
+        input.maxLength = '';
+    } else if (type === 'address') {
+        input.type = 'text';
+        input.placeholder = 'Enter address';
+        input.maxLength = '';
+    }
+
+    input.value = value;
+    // Ensure focus after modal is shown
+    setTimeout(() => input.focus(), 100);
     document.getElementById('contactItemForm').dataset.type = type;
     document.getElementById('contactItemForm').dataset.index = index;
-    document.getElementById('contactItemModal').classList.add('show');
+    modal.classList.add('show');
 }
 
 function openSocialModal(platform = '', url = '') {
@@ -511,10 +527,15 @@ function setupModalClose() {
         }
     });
 
-    // Prevent body scroll when modal is open
+    // Prevent body scroll when modal is open and stop propagation for inputs inside modals
     document.addEventListener('click', (e) => {
         const openModals = document.querySelectorAll('.modal.show');
         document.body.style.overflow = openModals.length > 0 ? 'hidden' : '';
+
+        // If the click is inside a modal and not on a close button, stop propagation to prevent global handlers
+        if (e.target.closest('.modal.show') && !e.target.classList.contains('close-btn') && !e.target.closest('.close-btn')) {
+            e.stopPropagation();
+        }
     });
 }
 
@@ -590,6 +611,14 @@ function openViewTeamMemberModal(index) {
             document.getElementById('viewMemberRole').textContent = member.role;
             document.getElementById('viewTeamMemberModal').classList.add('show');
         });
+}
+
+function openViewSocialModal(platform, url) {
+    document.getElementById('viewSocialPlatform').textContent = platform;
+    const urlElement = document.getElementById('viewSocialUrl');
+    urlElement.href = url;
+    urlElement.textContent = url;
+    document.getElementById('viewSocialModal').classList.add('show');
 }
 
 // Form handlers
@@ -710,9 +739,44 @@ async function handleFaqSubmit(e) {
 
 async function handleContactItemSubmit(e) {
     e.preventDefault();
-    const value = document.getElementById('contactItemValue').value.trim();
+    const input = document.getElementById('contactItemValue');
+    const value = input.value.trim();
     const type = e.target.dataset.type;
     const index = e.target.dataset.index;
+    const errorDiv = document.getElementById('contactItemError');
+
+    // Validation
+    let isValid = true;
+    let errorMessage = '';
+
+    if (type === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid email address.';
+        }
+    } else if (type === 'phone') {
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(value)) {
+            isValid = false;
+            errorMessage = 'Please enter a 10-digit phone number.';
+        }
+    } else if (type === 'address') {
+        if (value.length < 5) {
+            isValid = false;
+            errorMessage = 'Please enter a valid address (at least 5 characters).';
+        }
+    }
+
+    if (!isValid) {
+        errorDiv.textContent = errorMessage;
+        errorDiv.style.display = 'block';
+        input.focus();
+        return;
+    }
+
+    // Clear error
+    errorDiv.style.display = 'none';
 
     const endpoints = {
         email: index !== 'null' ? 'org-email-edit' : 'org-email-add',
@@ -766,7 +830,7 @@ async function handleSocialSubmit(e) {
     }
 }
 
-function handleDeleteConfirm() {
+async function handleDeleteConfirm() {
     const { type, index, platform } = window.deleteItem;
     let endpoint, body;
 
@@ -793,27 +857,30 @@ function handleDeleteConfirm() {
         body = { index: parseInt(index) };
     }
 
-    fetch(`/.netlify/functions/${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    })
-    .then(response => {
+    try {
+        const response = await fetch(`/.netlify/functions/${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
         if (response.ok) {
             closeModal('deleteModal');
             loadOrganizationData();
         } else {
             alert('Error deleting item');
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Error:', error);
         alert('Error deleting item');
-    });
+    }
 }
 
 // Event delegation for dynamic buttons
 document.addEventListener('click', (e) => {
+    // Ignore clicks inside open modals to prevent interference
+    if (e.target.closest('.modal.show')) return;
+
     if (e.target.closest('.edit-btn')) {
         const btn = e.target.closest('.edit-btn');
         const type = btn.dataset.type;
@@ -829,14 +896,18 @@ document.addEventListener('click', (e) => {
                     openTeamMemberModal(index, member.name, member.role);
                 });
         } else if (type === 'email' || type === 'phone' || type === 'address') {
-            const value = btn.parentElement.previousElementSibling.textContent;
+            const value = btn.parentElement.previousElementSibling.textContent.trim();
             openContactItemModal(type, index, value);
         } else if (type === 'social') {
             // Social media edit
-            const socialInfo = btn.closest('.social-item').querySelector('.social-info');
-            const platform = socialInfo.querySelector('.social-platform').textContent;
-            const url = socialInfo.querySelector('.social-url a').href;
+            const platform = btn.dataset.platform;
+            const url = btn.dataset.url;
             openSocialModal(platform, url);
+        } else if (type === 'social-view') {
+            // Social media view
+            const platform = btn.dataset.platform;
+            const url = btn.dataset.url;
+            openViewSocialModal(platform, url);
         } else if (btn.dataset.id !== undefined) {
             // FAQ edit
             openFaqModal(parseInt(btn.dataset.id));
@@ -857,16 +928,21 @@ document.addEventListener('click', (e) => {
         if (type === 'team') {
             // Team member delete - check first
             window.deleteItem = { type: 'team', index };
+            showDeleteModal('team', index);
         } else if (type === 'email' || type === 'phone' || type === 'address') {
             window.deleteItem = { type, index: btn.parentElement.previousElementSibling.textContent };
+            showDeleteModal(type, btn.parentElement.previousElementSibling.textContent);
         } else if (type === 'social') {
             window.deleteItem = { type, platform };
+            showDeleteModal('social', platform);
         } else if (btn.dataset.id !== undefined) {
             // FAQ delete
             window.deleteItem = { type: 'faq', index: btn.dataset.id };
+            showDeleteModal('faq', btn.dataset.id);
         } else if (index !== undefined) {
             // Value delete
             window.deleteItem = { type: 'value', index };
+            showDeleteModal('value', index);
         }
 
         document.getElementById('deleteModal').classList.add('show');
@@ -880,3 +956,78 @@ document.addEventListener('click', (e) => {
         }
     }
 });
+
+// Function to show delete modal with specific content
+function showDeleteModal(type, identifier, index = null) {
+    const modalBody = document.querySelector('#deleteModal .modal-body');
+    modalBody.innerHTML = '';
+
+    if (type === 'faq') {
+        // Fetch FAQ data
+        fetch('/.netlify/functions/org-get-help-faqs')
+            .then(res => res.json())
+            .then(data => {
+                const faq = data[identifier];
+                modalBody.innerHTML = `
+                    <p>Are you sure you want to delete this FAQ?</p>
+                    <div class="delete-preview">
+                        <h4>Question:</h4>
+                        <p>${faq.qtn}</p>
+                        <h4>Answer:</h4>
+                        <p>${faq.answer}</p>
+                    </div>
+                    <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                    <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+                `;
+                // Add event listeners
+                document.getElementById('confirmDeleteBtn').addEventListener('click', handleDeleteConfirm);
+                document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteModal'));
+            });
+    } else if (type === 'team') {
+        // Fetch team member data
+        fetch('/.netlify/functions/org-get-team')
+            .then(res => res.json())
+            .then(data => {
+                const member = data[identifier];
+                modalBody.innerHTML = `
+                    <p>Are you sure you want to delete this team member?</p>
+                    <div class="delete-preview">
+                        <h4>Name:</h4>
+                        <p>${member.name}</p>
+                        <h4>Role:</h4>
+                        <p>${member.role}</p>
+                    </div>
+                    <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                    <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+                `;
+                // Add event listeners
+                document.getElementById('confirmDeleteBtn').addEventListener('click', handleDeleteConfirm);
+                document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteModal'));
+            });
+    } else if (type === 'email' || type === 'phone' || type === 'address') {
+        // Show the contact item being deleted
+        const typeCapitalized = type.charAt(0).toUpperCase() + type.slice(1);
+        modalBody.innerHTML = `
+            <p>Are you sure you want to delete this ${type}?</p>
+            <div class="delete-preview">
+                <h4>${typeCapitalized}:</h4>
+                <p>${identifier}</p>
+            </div>
+            <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+            <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+        `;
+        // Add event listeners
+        document.getElementById('confirmDeleteBtn').addEventListener('click', handleDeleteConfirm);
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteModal'));
+    } else {
+        // Default for other types
+        modalBody.innerHTML = `
+            <p>Are you sure you want to delete this ${type}?</p>
+            <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+            <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+        `;
+        // Add event listeners
+        document.getElementById('confirmDeleteBtn').addEventListener('click', handleDeleteConfirm);
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteModal'));
+    }
+}
