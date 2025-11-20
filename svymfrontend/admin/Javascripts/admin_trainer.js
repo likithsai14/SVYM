@@ -1,7 +1,7 @@
 let trainers = [];
 let editingTrainerIndex = -1;
 
-function saveTrainer() {
+async function saveTrainer() {
   const name = document.getElementById("trainerName").value.trim();
   const subject = document.getElementById("subject").value.trim();
   const phone = document.getElementById("trainerPhone").value.trim();
@@ -13,55 +13,79 @@ function saveTrainer() {
     return;
   }
 
-  const trainerData = { name, subject, phone, email, district };
+  const trainerData = { name, expertise: subject, mobile: phone, email, address: district };
 
-  if (editingTrainerIndex >= 0) {
-    trainers[editingTrainerIndex] = trainerData;
-    editingTrainerIndex = -1;
-    document.getElementById("trainerFormTitle").innerText = "Add Trainer";
-  } else {
-    trainers.push(trainerData);
+  try {
+    if (editingTrainerId) {
+      // Edit existing trainer
+      trainerData.trainerId = editingTrainerId;
+      const response = await fetch('/.netlify/functions/editTrainer', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(trainerData)
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      alert('Trainer updated successfully');
+    } else {
+      // Add new trainer
+      const response = await fetch('/.netlify/functions/createTrainer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(trainerData)
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      alert('Trainer added successfully');
+    }
+  } catch (error) {
+    alert('Error: ' + error.message);
+    return;
   }
 
+  editingTrainerId = null;
+  document.getElementById("trainerFormTitle").innerText = "Add Trainer";
   clearTrainerForm();
-  renderTrainerList();
+  await fetchTrainers();
 }
 
 function renderTrainerList() {
   const trainerBody = document.getElementById("trainerBody");
   trainerBody.innerHTML = "";
 
-  trainers.forEach((trainer, index) => {
+  trainers.forEach((trainer) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${trainer.name}</td>
-      <td>${trainer.subject}</td>
-      <td>${trainer.phone}</td>
+      <td>${trainer.expertise || trainer.subject}</td>
+      <td>${trainer.mobile || trainer.phone}</td>
       <td>${trainer.email}</td>
-      <td>${trainer.district}</td>
+      <td>${trainer.address || trainer.district}</td>
       <td>
-        <button class="action-btn edit-btn" onclick="editTrainer(${index})">Edit</button>
-        <button class="action-btn delete-btn" onclick="deleteTrainer(${index})">Delete</button>
+        <button class="action-btn edit-btn" onclick="editTrainer('${trainer.trainerId}')">Edit</button>
+        <button class="action-btn delete-btn" onclick="deleteTrainer('${trainer.trainerId}')">Delete</button>
       </td>
     `;
     trainerBody.appendChild(row);
   });
 }
 
-function editTrainer(index) {
-  const trainer = trainers[index];
+function editTrainer(trainerId) {
+  const trainer = trainers.find(t => t.trainerId === trainerId);
+  if (!trainer) return;
   document.getElementById("trainerName").value = trainer.name;
-  document.getElementById("subject").value = trainer.subject;
-  document.getElementById("trainerPhone").value = trainer.phone;
+  document.getElementById("subject").value = trainer.expertise || trainer.subject;
+  document.getElementById("trainerPhone").value = trainer.mobile || trainer.phone;
   document.getElementById("trainerEmail").value = trainer.email;
-  document.getElementById("trainerDistrict").value = trainer.district;
-  editingTrainerIndex = index;
+  document.getElementById("trainerDistrict").value = trainer.address || trainer.district;
+  editingTrainerId = trainerId;
   document.getElementById("trainerFormTitle").innerText = "Edit Trainer";
 }
 
-function deleteTrainer(index) {
+function deleteTrainer(trainerId) {
   if (confirm("Are you sure you want to delete this trainer?")) {
-    trainers.splice(index, 1);
+    // For now, just remove from local array; in future, call delete API
+    trainers = trainers.filter(t => t.trainerId !== trainerId);
     renderTrainerList();
   }
 }
@@ -83,20 +107,20 @@ document.getElementById("searchTrainer").addEventListener("input", function () {
     .filter(
       (trainer) =>
         trainer.name.toLowerCase().includes(query) ||
-        trainer.subject.toLowerCase().includes(query) ||
-        trainer.district.toLowerCase().includes(query)
+        (trainer.expertise || trainer.subject || "").toLowerCase().includes(query) ||
+        (trainer.address || trainer.district || "").toLowerCase().includes(query)
     )
-    .forEach((trainer, index) => {
+    .forEach((trainer) => {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${trainer.name}</td>
-        <td>${trainer.subject}</td>
-        <td>${trainer.phone}</td>
+        <td>${trainer.expertise || trainer.subject}</td>
+        <td>${trainer.mobile || trainer.phone}</td>
         <td>${trainer.email}</td>
-        <td>${trainer.district}</td>
+        <td>${trainer.address || trainer.district}</td>
         <td>
-          <button class="action-btn edit-btn" onclick="editTrainer(${index})">Edit</button>
-          <button class="action-btn delete-btn" onclick="deleteTrainer(${index})">Delete</button>
+          <button class="action-btn edit-btn" onclick="editTrainer('${trainer.trainerId}')">Edit</button>
+          <button class="action-btn delete-btn" onclick="deleteTrainer('${trainer.trainerId}')">Delete</button>
         </td>
       `;
       trainerBody.appendChild(row);

@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const date = new Date(placement.completionDate);
     completionDate.value = date.toISOString().split('T')[0];
 
-    isPlaced.value = placement.isPlaced ? "Yes" : "No";
+    isPlaced.value = placement.isPlaced ? "true" : "false";
     jobPlace.value = placement.jobPlace;
     earningPerMonth.value = placement.earningPerMonth === "nil" ? "" : placement.earningPerMonth;
     employmentType.value = placement.employmentType === "nil" ? "" : placement.employmentType || '';
@@ -494,7 +494,8 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     errorMsg.textContent = "";
 
-    const isPlacedValue = isPlaced.value === "Yes";
+  // isPlaced select stores "true"/"false" as option values in the HTML
+  const isPlacedValue = isPlaced.value === "true";
     const formData = {
       userId: userId.value.trim(),
       alumniName: alumniName.value.trim(),
@@ -551,12 +552,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (formData.isPlaced === undefined) {
+    if (isPlaced.value === "") {
       errorMsg.textContent = "Please select placement status.";
       return;
     }
 
-    if (!formData.jobPlace) {
+    // jobPlace is required only when placed
+    if (isPlacedValue && !formData.jobPlace) {
       errorMsg.textContent = "Please enter job place.";
       return;
     }

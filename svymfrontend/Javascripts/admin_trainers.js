@@ -220,91 +220,101 @@ document.addEventListener("DOMContentLoaded", function () {
     modal.className = "modal show";
     modal.style.display = "block";
     modal.innerHTML = `
-      <div class="modal-content" style="max-width: 800px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #fff;">
+      <div class="modal-content" style="max-width: 1200px; width: 90%; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #fff;">
         <button class="close-btn" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
         <h2 style="text-align:center; margin-bottom: 20px; color: #333; font-weight: bold;">Trainer Details</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-id-card" style="color: #007bff;"></i>
-            <div><strong>Trainer ID:</strong><br>${trainer.trainerId || '-'}</div>
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
+          <!-- Personal Details Section -->
+          <h3 style="color: #2e4f8f; margin-bottom: 15px; border-bottom: 2px solid #2e4f8f; padding-bottom: 5px;">Personal Details</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-id-card" style="margin-right: 10px; color: #007bff;"></i>
+              <div><strong>Trainer ID:</strong> ${trainer.trainerId || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-user" style="margin-right: 10px; color: #28a745;"></i>
+              <div><strong>Name:</strong> ${trainer.name || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i>
+              <div><strong>Email:</strong> ${trainer.email || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-phone" style="margin-right: 10px; color: #17a2b8;"></i>
+              <div><strong>Phone:</strong> ${trainer.mobile || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-birthday-cake" style="margin-right: 10px; color: #e83e8c;"></i>
+              <div><strong>Date of Birth:</strong> ${trainer.dateOfBirth ? new Date(trainer.dateOfBirth).toLocaleDateString() : '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-calendar-alt" style="margin-right: 10px; color: #6f42c1;"></i>
+              <div><strong>Age:</strong> ${trainer.age || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-graduation-cap" style="margin-right: 10px; color: #fd7e14;"></i>
+              <div><strong>Qualification:</strong> ${trainer.qualification || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-tools" style="margin-right: 10px; color: #ffc107;"></i>
+              <div><strong>Expertise:</strong> ${trainer.expertise || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff; grid-column: span 2;">
+              <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #20c997;"></i>
+              <div><strong>Address:</strong> ${trainer.address || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-id-badge" style="margin-right: 10px; color: #007bff;"></i>
+              <div><strong>Aadhaar Number:</strong> ${trainer.aadhaarNumber || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-calendar-check" style="margin-right: 10px; color: #28a745;"></i>
+              <div><strong>Joining Date:</strong> ${trainer.joiningDate ? new Date(trainer.joiningDate).toLocaleDateString() : '-'}</div>
+            </div>
           </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-user" style="color: #28a745;"></i>
-            <div><strong>Name:</strong><br>${trainer.name || '-'}</div>
+          <!-- Bank Details Section -->
+          <h3 style="color: #2e4f8f; margin-bottom: 15px; border-bottom: 2px solid #2e4f8f; padding-bottom: 5px;">Bank Details</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-credit-card" style="margin-right: 10px; color: #dc3545;"></i>
+              <div><strong>Account Number:</strong> ${trainer.bankDetails?.accNumber || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-code-branch" style="margin-right: 10px; color: #ffc107;"></i>
+              <div><strong>IFSC Code:</strong> ${trainer.bankDetails?.ifscCode || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-university" style="margin-right: 10px; color: #17a2b8;"></i>
+              <div><strong>Bank Name:</strong> ${trainer.bankDetails?.bankName || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-user-tie" style="margin-right: 10px; color: #e83e8c;"></i>
+              <div><strong>Full Name:</strong> ${trainer.bankDetails?.fullName || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-building" style="margin-right: 10px; color: #6f42c1;"></i>
+              <div><strong>Branch:</strong> ${trainer.bankDetails?.branch || '-'}</div>
+            </div>
           </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-envelope" style="color: #dc3545;"></i>
-            <div><strong>Email:</strong><br>${trainer.email || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-tools" style="color: #ffc107;"></i>
-            <div><strong>Expertise:</strong><br>${trainer.expertise || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-phone" style="color: #17a2b8;"></i>
-            <div><strong>Phone:</strong><br>${trainer.mobile || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-birthday-cake" style="color: #e83e8c;"></i>
-            <div><strong>Date of Birth:</strong><br>${trainer.dateOfBirth ? new Date(trainer.dateOfBirth).toLocaleDateString() : '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-calendar-alt" style="color: #6f42c1;"></i>
-            <div><strong>Age:</strong><br>${trainer.age || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-graduation-cap" style="color: #fd7e14;"></i>
-            <div><strong>Qualification:</strong><br>${trainer.qualification || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff; grid-column: span 2;">
-            <i class="fas fa-map-marker-alt" style="color: #20c997;"></i>
-            <div><strong>Address:</strong><br>${trainer.address || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-id-badge" style="color: #007bff;"></i>
-            <div><strong>Aadhaar Number:</strong><br>${trainer.aadhaarNumber || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-calendar-check" style="color: #28a745;"></i>
-            <div><strong>Joining Date:</strong><br>${trainer.joiningDate ? new Date(trainer.joiningDate).toLocaleDateString() : '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-credit-card" style="color: #dc3545;"></i>
-            <div><strong>Bank Account Number:</strong><br>${trainer.bankDetails?.accNumber || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-code-branch" style="color: #ffc107;"></i>
-            <div><strong>IFSC Code:</strong><br>${trainer.bankDetails?.ifscCode || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-university" style="color: #17a2b8;"></i>
-            <div><strong>Bank Name:</strong><br>${trainer.bankDetails?.bankName || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-user-tie" style="color: #e83e8c;"></i>
-            <div><strong>Bank Full Name:</strong><br>${trainer.bankDetails?.fullName || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-building" style="color: #6f42c1;"></i>
-            <div><strong>Bank Branch:</strong><br>${trainer.bankDetails?.branch || '-'}</div>
-          </div>
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-toggle-on" style="color: #fd7e14;"></i>
-            <div><strong>Status:</strong><br>${trainer.status || '-'}</div>
-          </div>
-          ${trainer.deactivateDate ?
-            `<div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-              <i class="fas fa-calendar-times" style="color: #dc3545;"></i>
-              <div><strong>Deactivate Date:</strong><br>${new Date(trainer.deactivateDate).toLocaleDateString()}</div>
-            </div>` :
-            `<div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-              <i class="fas fa-calendar-check" style="color: #28a745;"></i>
-              <div><strong>Active Date:</strong><br>${trainer.activeDate ? new Date(trainer.activeDate).toLocaleDateString() : '-'}</div>
-            </div>`
-          }
-          <div style="padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-            <i class="fas fa-clock" style="color: #20c997;"></i>
-            <div><strong>Created At:</strong><br>${trainer.createdAt ? new Date(trainer.createdAt).toLocaleDateString() : '-'}</div>
+          <!-- Status and Dates Section -->
+          <h3 style="color: #2e4f8f; margin-bottom: 15px; border-bottom: 2px solid #2e4f8f; padding-bottom: 5px;">Status & Dates</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-toggle-on" style="margin-right: 10px; color: #fd7e14;"></i>
+              <div><strong>Status:</strong> ${trainer.status || '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-calendar-check" style="margin-right: 10px; color: #28a745;"></i>
+              <div><strong>Active Date:</strong> ${trainer.status === 'Active' && trainer.activeDate ? new Date(trainer.activeDate).toLocaleDateString() : '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-calendar-times" style="margin-right: 10px; color: #dc3545;"></i>
+              <div><strong>Deactivate Date:</strong> ${trainer.status === 'Inactive' && trainer.deactivateDate ? new Date(trainer.deactivateDate).toLocaleDateString() : '-'}</div>
+            </div>
+            <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
+              <i class="fas fa-clock" style="margin-right: 10px; color: #20c997;"></i>
+              <div><strong>Created At:</strong> ${trainer.createdAt ? new Date(trainer.createdAt).toLocaleDateString() : '-'}</div>
+            </div>
           </div>
         </div>
       </div>
