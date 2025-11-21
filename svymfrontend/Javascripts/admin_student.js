@@ -666,118 +666,41 @@ document.addEventListener('DOMContentLoaded', async function () {
         modal.style.display = "block";
         modal.innerHTML = `
           <div class="modal-content" style="max-width: 900px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #fff;">
-            <button class="close-btn" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
+            <button class="close-btn" style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
             <h2 style="text-align:center; margin-bottom: 20px; color: #333; font-weight: bold;">Student Details</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-id-card" style="margin-right: 10px; color: #007bff;"></i>
-                <div><strong>User ID:</strong> ${student.userId || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user" style="margin-right: 10px; color: #28a745;"></i>
-                <div><strong>Name:</strong> ${student.candidateName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i>
-                <div><strong>Email:</strong> ${student.email || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-mobile-alt" style="margin-right: 10px; color: #17a2b8;"></i>
-                <div><strong>Mobile:</strong> ${student.mobile || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-birthday-cake" style="margin-right: 10px; color: #e83e8c;"></i>
-                <div><strong>Date of Birth:</strong> ${student.dob || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-calendar-alt" style="margin-right: 10px; color: #6f42c1;"></i>
-                <div><strong>Age:</strong> ${student.age || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-venus-mars" style="margin-right: 10px; color: #fd7e14;"></i>
-                <div><strong>Gender:</strong> ${student.gender || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-graduation-cap" style="margin-right: 10px; color: #20c997;"></i>
-                <div><strong>Education:</strong> ${student.education === 'Other' ? (student.otherQualification || '-') : (student.education || '-')}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-id-badge" style="margin-right: 10px; color: #007bff;"></i>
-                <div><strong>Aadhaar Number:</strong> ${student.aadharNumber || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-users" style="margin-right: 10px; color: #28a745;"></i>
-                <div><strong>Father/Husband Name:</strong> ${student.fatherHusbandName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-home" style="margin-right: 10px; color: #dc3545;"></i>
-                <div><strong>Village:</strong> ${student.villageName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #17a2b8;"></i>
-                <div><strong>District:</strong> ${student.districtName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-city" style="margin-right: 10px; color: #e83e8c;"></i>
-                <div><strong>Taluk:</strong> ${student.talukName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user-friends" style="margin-right: 10px; color: #6f42c1;"></i>
-                <div><strong>Caste:</strong> ${student.caste || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user-tag" style="margin-right: 10px; color: #fd7e14;"></i>
-                <div><strong>Other Caste:</strong> ${student.otherCaste || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-users-cog" style="margin-right: 10px; color: #20c997;"></i>
-                <div><strong>Tribal:</strong> ${student.tribal || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-wheelchair" style="margin-right: 10px; color: #007bff;"></i>
-                <div><strong>PWD:</strong> ${student.pwd || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user-check" style="margin-right: 10px; color: #28a745;"></i>
-                <div><strong>Other Tribal:</strong> ${student.otherTribal || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user-injured" style="margin-right: 10px; color: #dc3545;"></i>
-                <div><strong>Other PWD:</strong> ${student.otherPwd || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-phone" style="margin-right: 10px; color: #17a2b8;"></i>
-                <div><strong>Parent Phone:</strong> ${student.parentPhone || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-users" style="margin-right: 10px; color: #e83e8c;"></i>
-                <div><strong>Family Members:</strong> ${student.familyMembers || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-project-diagram" style="margin-right: 10px; color: #6f42c1;"></i>
-                <div><strong>Supported Project:</strong> ${student.supportedProject || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-handshake" style="margin-right: 10px; color: #fd7e14;"></i>
-                <div><strong>Referral Source:</strong> ${student.referralSource || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user-tie" style="margin-right: 10px; color: #20c997;"></i>
-                <div><strong>Staff Name:</strong> ${student.staffName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-user-friends" style="margin-right: 10px; color: #007bff;"></i>
-                <div><strong>Field Mobiliser:</strong> ${student.fieldMobiliserName || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-toggle-on" style="margin-right: 10px; color: #28a745;"></i>
-                <div><strong>Status:</strong> ${student.status || '-'}</div>
-              </div>
-              <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 5px; background: #fff;">
-                <i class="fas fa-clock" style="margin-right: 10px; color: #dc3545;"></i>
-                <div><strong>Creation Date:</strong> ${student.creationDate || '-'}</div>
-              </div>
-            </div>
+            <table class="student-details-table" id="studentDetailsTable">
+              <tr><td colspan="2" class="group-title">Basic Information</td></tr>
+              <tr><td><i class="fas fa-id-card" style="margin-right: 10px; color: #007bff;"></i><strong>User ID:</strong></td><td>${student.userId || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-user" style="margin-right: 10px; color: #28a745;"></i><strong>Name:</strong></td><td>${student.candidateName || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-envelope" style="margin-right: 10px; color: #dc3545;"></i><strong>Email:</strong></td><td>${student.email || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-toggle-on" style="margin-right: 10px; color: #fd7e14;"></i><strong>Status:</strong></td><td>${student.status || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-clock" style="margin-right: 10px; color: #20c997;"></i><strong>Creation Date:</strong></td><td>${student.creationDate || "N/A"}</td></tr>
+              <tr><td colspan="2" class="group-title">Personal Details</td></tr>
+              <tr><td><i class="fas fa-users" style="margin-right: 10px; color: #28a745;"></i><strong>Father/Husband Name:</strong></td><td>${student.fatherHusbandName || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-home" style="margin-right: 10px; color: #dc3545;"></i><strong>Village Name:</strong></td><td>${student.villageName || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-city" style="margin-right: 10px; color: #e83e8c;"></i><strong>Taluk Name:</strong></td><td>${student.talukName || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #17a2b8;"></i><strong>District Name:</strong></td><td>${student.districtName || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-birthday-cake" style="margin-right: 10px; color: #e83e8c;"></i><strong>Date of Birth:</strong></td><td>${student.dob || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-calendar-alt" style="margin-right: 10px; color: #6f42c1;"></i><strong>Age:</strong></td><td>${student.age || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-venus-mars" style="margin-right: 10px; color: #fd7e14;"></i><strong>Gender:</strong></td><td>${student.gender || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-users-cog" style="margin-right: 10px; color: #20c997;"></i><strong>Tribal:</strong></td><td>${student.tribal || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-wheelchair" style="margin-right: 10px; color: #007bff;"></i><strong>Person with Disability:</strong></td><td>${student.pwd || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-user-check" style="margin-right: 10px; color: #28a745;"></i><strong>Other Tribal:</strong></td><td>${student.otherTribal || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-user-injured" style="margin-right: 10px; color: #dc3545;"></i><strong>Other PWD:</strong></td><td>${student.otherPwd || "N/A"}</td></tr>
+              <tr><td colspan="2" class="group-title">Contact & Identification</td></tr>
+              <tr><td><i class="fas fa-id-badge" style="margin-right: 10px; color: #007bff;"></i><strong>Aadhaar Number:</strong></td><td>${student.aadharNumber || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-mobile-alt" style="margin-right: 10px; color: #17a2b8;"></i><strong>Mobile Number:</strong></td><td>${student.mobile || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-phone" style="margin-right: 10px; color: #17a2b8;"></i><strong>Parent Mobile No:</strong></td><td>${student.parentPhone || "N/A"}</td></tr>
+              <tr><td colspan="2" class="group-title">Additional Information</td></tr>
+              <tr><td><i class="fas fa-users" style="margin-right: 10px; color: #e83e8c;"></i><strong>Family Members:</strong></td><td>${student.familyMembers || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-graduation-cap" style="margin-right: 10px; color: #20c997;"></i><strong>Qualification:</strong></td><td>${student.education === 'Other' ? (student.otherQualification || 'N/A') : (student.education || 'N/A')}</td></tr>
+              <tr><td><i class="fas fa-user-friends" style="margin-right: 10px; color: #6f42c1;"></i><strong>Caste:</strong></td><td>${student.caste || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-user-tag" style="margin-right: 10px; color: #fd7e14;"></i><strong>Other Caste:</strong></td><td>${student.otherCaste || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-user-friends" style="margin-right: 10px; color: #007bff;"></i><strong>Mobiliser Name:</strong></td><td>${student.fieldMobiliserName || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-project-diagram" style="margin-right: 10px; color: #6f42c1;"></i><strong>Supported Project:</strong></td><td>${student.supportedProject || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-handshake" style="margin-right: 10px; color: #fd7e14;"></i><strong>Referral Source:</strong></td><td>${student.referralSource || "N/A"}</td></tr>
+              <tr><td><i class="fas fa-user-tie" style="margin-right: 10px; color: #20c997;"></i><strong>Staff Name:</strong></td><td>${student.staffName || "N/A"}</td></tr>
+            </table>
           </div>
         `;
 
