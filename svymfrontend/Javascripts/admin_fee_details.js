@@ -460,7 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add logo if loaded
         if (logoBase64) {
             const logoWidth = 80;
-            const logoHeight = 35;
+            const logoHeight = 35   ;
             const logoX = center - (logoWidth / 2);
             doc.addImage(logoBase64, 'PNG', logoX, y, logoWidth, logoHeight);
             y += 55;
@@ -493,7 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Create table data
         const tableData = [
-            ["Receipt No:", transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId],
+            ["Transaction No:", transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId],
             ["Date:", date],
             ["Payment Mode:", method],
             ["Received From:", studentName],

@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Create table data
         const tableData = [
-            ["Receipt No:", transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId],
+            ["Transaction No:", transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId],
             ["Date:", date],
             ["Payment Mode:", method],
             ["Received From:", studentName],
