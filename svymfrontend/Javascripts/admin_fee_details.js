@@ -406,7 +406,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return words.charAt(0).toUpperCase() + words.slice(1);
     }
 
-    function generateSingleReceiptPdf(data) {
+    // Helper function to load image as base64
+    async function getImageBase64(url) {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    async function generateSingleReceiptPdf(data) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
@@ -423,7 +434,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const leftMargin = 20;
         const rightMargin = 190;
         const center = 105;
-        let y = 20; // Current Y position
+        let y = 10; // Current Y position
+
+        // Load logo
+        let logoBase64 = '';
+        try {
+            logoBase64 = await getImageBase64('public/Logos BW.png');
+        } catch (e) {
+            console.error('Failed to load logo', e);
+        }
 
         // --- Helper: Draw dotted line ---
         const drawDottedLine = (x1, x2, yPos) => {
@@ -433,16 +452,21 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         // --- 1. Header ---
-
-        // Note: To add the logo, you must first convert 'image_9dafc5.jpg'
-        // to a Base64 string and paste it here.
-        // Example: const logoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZ...";
-        // doc.addImage(logoBase64, 'JPEG', leftMargin, 15, 20, 20);
-
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
         doc.text("Reg No. 122/84-5", rightMargin, y, { align: 'right' });
         y += 10;
+
+        // Add logo if loaded
+        if (logoBase64) {
+            const logoWidth = 80;
+            const logoHeight = 35;
+            const logoX = center - (logoWidth / 2);
+            doc.addImage(logoBase64, 'PNG', logoX, y, logoWidth, logoHeight);
+            y += 55;
+        } else {
+            y += 5; // small adjustment if no logo
+        }
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(16);
@@ -456,100 +480,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
-        doc.text("Acknowledgement of Receipts", center, y, { align: 'center' });
+        doc.text("FEE RECEIPT", center, y, { align: 'center' });
         y += 5;
 
         doc.setLineWidth(0.5);
-        doc.line(leftMargin + 10, y, rightMargin - 10, y); // Underline title
+        doc.line(leftMargin + 20, y, rightMargin - 20, y); // Underline title
         y += 15;
 
-        // --- 2. Body (Fill-in-the-blanks) ---
+        // --- 2. Receipt Details Table ---
         doc.setFont("helvetica", "normal");
         doc.setFontSize(11);
 
-        // Line 1: Receipt No and Date
-        doc.text("No.R", leftMargin, y);
-        doc.setFont("helvetica", "bold");
-        // Using part of transaction ID as Receipt No for space
-        const receiptNo = transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId;
-        doc.text(receiptNo, leftMargin + 10, y);
-        doc.setFont("helvetica", "normal");
-        drawDottedLine(leftMargin + 9, 130, y + 1);
+        // Create table data
+        const tableData = [
+            ["Receipt No:", transactionId.length > 20 ? transactionId.substring(0, 20) + '...' : transactionId],
+            ["Date:", date],
+            ["Payment Mode:", method],
+            ["Received From:", studentName],
+            ["Course:", courseName],
+            ["Amount:", `INR ${amount}`],
+            ["Amount in Words:", amountInWords]
+        ];
 
-        doc.text("Date:", 140, y);
-        doc.setFont("helvetica", "bold");
-        doc.text(date, 152, y);
-        drawDottedLine(151, rightMargin, y + 1);
-        y += 12;
+        // AutoTable for better organization
+        doc.autoTable({
+            startY: y,
+            head: [],
+            body: tableData,
+            theme: 'plain',
+            styles: {
+                fontSize: 11,
+                cellPadding: 8,
+                lineColor: [0, 0, 0],
+                lineWidth: 0.1
+            },
+            columnStyles: {
+                0: { fontStyle: 'bold', cellWidth: 50 },
+                1: { cellWidth: 130 }
+            },
+            alternateRowStyles: { fillColor: [245, 245, 245] },
+            margin: { left: leftMargin, right: rightMargin }
+        });
 
-        // Line 2: Received From
-        const receivedLabel = "Received from Mr/Ms/M/s.";
-        doc.text(receivedLabel, leftMargin, y);
-        doc.setFont("helvetica", "bold");
-        doc.text(studentName, leftMargin + 48, y);
-        drawDottedLine(leftMargin + 47, rightMargin, y + 1);
-        y += 12;
-
-        // Line 3: Sum of Rupees
-        const sumLabel = "a Sum of Rupees...";
-        doc.setFont("helvetica", "normal");
-        doc.text(sumLabel, leftMargin, y);
-        doc.setFont("helvetica", "bold");
-        const amountStr = `INR ${amount}`;
-        doc.text(amountStr, leftMargin + 38, y);
-        drawDottedLine(leftMargin + 37, 100, y + 1);
-
-        // Line 3 (continued): Amount in Words
-        doc.setFont("helvetica", "normal");
-        doc.text("Amount in Words...", 105, y);
-        drawDottedLine(140, rightMargin, y + 1);
-        y += 12;
-
-        // Line 4: Amount in Words (continued)
-        doc.setFont("helvetica", "bold");
-        // Using maxWidth to auto-wrap the text if it's too long
-        doc.text(amountInWords, leftMargin, y, { maxWidth: rightMargin - leftMargin - 10 });
-
-        // Calculate Y position for the line after text wrapping
-        const textLines = doc.splitTextToSize(amountInWords, rightMargin - leftMargin - 10);
-        const textHeight = textLines.length * (doc.getFontSize() * 0.35); // Approx line height
-        drawDottedLine(leftMargin, rightMargin, y + textHeight);
-        y += textHeight + 10;
-
-        // Line 5: Towards
-        const towardsLabel = "towards...";
-        doc.setFont("helvetica", "normal");
-        doc.text(towardsLabel, leftMargin, y);
-        doc.setFont("helvetica", "bold");
-        doc.text(courseName, leftMargin + 20, y);
-        drawDottedLine(leftMargin + 19, rightMargin, y + 1);
-        y += 12;
-
-        // Line 6: Payment Method and Date
-        const methodLabel = "by Cash/Cheque/Online...";
-        doc.setFont("helvetica", "normal");
-        doc.text(methodLabel, leftMargin, y);
-        doc.setFont("helvetica", "bold");
-        // Using a cleaner value for the method
-        const methodValue = `${method} (ID: ${receiptNo})`;
-        doc.text(methodValue, leftMargin + 45, y, { maxWidth: 90 }); // Constrain width
-        drawDottedLine(leftMargin + 44, 130, y + 1);
-
-        doc.setFont("helvetica", "normal");
-        doc.text("dated:", 140, y);
-        doc.setFont("helvetica", "bold");
-        doc.text(date, 152, y);
-        drawDottedLine(151, rightMargin, y + 1);
-        y += 30; // More space for signature
+        y = doc.lastAutoTable.finalY + 20;
 
         // --- 3. Footer ---
         doc.setFont("helvetica", "bold");
-        doc.text("Authorized Sign", rightMargin, y, { align: 'right' });
-        doc.setLineWidth(0.3);
-        doc.line(rightMargin - 30, y - 2, rightMargin, y - 2); // Line above signature
+        doc.setFontSize(12);
+        doc.text("Authorized Signature", rightMargin, y, { align: 'right' });
 
         // --- 4. Save ---
-        doc.save(`SVYM_Receipt_${transactionId}.pdf`);
+        doc.save(`SVYM_Fee_Receipt_${transactionId}.pdf`);
     }
 
     // -------------------------- PAGINATION --------------------------
