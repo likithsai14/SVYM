@@ -1,3 +1,4 @@
+const { connectDB } = require('./utils/mongodb');
 const mongoose = require('mongoose');
 const Organization = require('./models/Organization');
 
@@ -18,7 +19,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    await mongoose.connect(process.env.MONGODB_URI);
+    await connectDB();
     const org = await Organization.findOne();
     if (!org) {
       return {

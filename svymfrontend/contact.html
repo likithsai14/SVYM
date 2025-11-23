@@ -64,7 +64,13 @@
       margin-bottom: 10px;
     }
 
-    .contact-card p, 
+    .contact-card div{
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+    }
+
     .contact-card a {
       font-size: 1rem;
       color: #555;
@@ -105,32 +111,26 @@
       <div class="contact-card">
         <i class="fas fa-envelope"></i>
         <h3>Email</h3>
-        <p><a href="vrlc@svym.org.in">vrlc@svym.org.in</a></p>
+        <p id="emailContainer"><a href=""></a></p>
       </div>
 
       <div class="contact-card">
         <i class="fas fa-phone-alt"></i>
         <h3>Phone</h3>
-        <p>+91 99000 80240</p>
-        <p>+91 98454 97725</p>
+        <div id="phoneContainer"></div>
       </div>
 
       <div class="contact-card">
         <i class="fas fa-map-marker-alt"></i>
         <h3>Address</h3>
-        <p>Swami Vivekananda Youth Movements</p>
-        <p>Kenchanahalli, Karnataka, India - 560001</p>
+        <p id="addressLine1"></p>
+        <p id="addressLine2"></p>
       </div>
 
       <div class="contact-card">
         <i class="fas fa-globe"></i>
         <h3>Follow Us</h3>
-        <p>
-          <a href="https://www.facebook.com/vlead2021/"><i class="fab fa-facebook-f"></i></a> &nbsp;
-          <a href="https://x.com/svym"><i class="fab fa-x-twitter"></i></a> &nbsp;
-          <a href="https://www.instagram.com/svym.india/"><i class="fab fa-instagram"></i></a> &nbsp;
-          <a href="https://www.youtube.com/channel/UCEiQqJv2AdDv5Y9se6-IUqg"><i class="fab fa-youtube"></i></a>
-        </p>
+        <div id="socialLinksContainer"></div>
       </div>
     </div>
 
@@ -140,6 +140,7 @@
     <div id="footer"></div>
   </div>
 
+  <script src="Javascripts/contact.js"></script>
   <script src="Javascripts/footer.js"></script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+const { connectDB } = require('./utils/mongodb');
 const mongoose = require('mongoose');
 const Organization = require('./models/Organization');
 
@@ -26,14 +27,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    await mongoose.connect(process.env.MONGODB_URI);
-    const org = await Organization.findOne();
-    if (!org) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Organization data not found' })
-      };
-    }
+    await connectDB();
+    const org = await Organization.getSingleton();
 
     if (org.contactus.phones.includes(phone.trim())) {
       return {

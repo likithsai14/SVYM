@@ -23,6 +23,8 @@ async function loadOrganizationData() {
             fetch('/.netlify/functions/org-get-team').then(res => res.json())
         ]);
 
+        console.log("Fetched org team data:", teamData);
+
         populateAboutSection(aboutData);
         populateHelpSection(helpData);
         populateContactSection(contactData);
@@ -37,6 +39,97 @@ function populateAboutSection(data) {
     document.getElementById('orgMission').textContent = data.mission;
     document.getElementById('orgVision').textContent = data.vision;
     document.getElementById('orgValues').textContent = data.values.join(', ');
+}
+
+function populateContactSection(contactData) {
+    const contactContent = document.getElementById('contactContent');
+    if (!contactContent) {
+        console.error('contactContent element not found');
+        return;
+    }
+    contactContent.innerHTML = '';
+
+    // Emails
+    const emailsContainer = document.createElement('div');
+    emailsContainer.className = 'contact-list-item';
+    emailsContainer.innerHTML = `
+        <div class="header-container">
+            <h4>Emails</h4>
+            <button id="addEmailBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="contact-list" id="emailList">
+        </div>
+    `;
+    contactContent.appendChild(emailsContainer);
+
+    // Phones
+    const phonesContainer = document.createElement('div');
+    phonesContainer.className = 'contact-list-item';
+    phonesContainer.innerHTML = `
+        <div class="header-container">
+            <h4>Phones</h4>
+            <button id="addPhoneBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="contact-list" id="phoneList">
+        </div>
+    `;
+    contactContent.appendChild(phonesContainer);
+
+    // Addresses
+    const addressesContainer = document.createElement('div');
+    addressesContainer.className = 'contact-list-item';
+    addressesContainer.innerHTML = `
+        <div class="header-container">
+            <h4>Addresses</h4>
+            <button id="addAddressBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="contact-list" id="addressList">
+        </div>
+    `;
+    contactContent.appendChild(addressesContainer);
+
+    // Populate lists
+    populateContactLists(contactData);
+}
+
+function populateSocialSection(socialData) {
+    const socialContent = document.getElementById('socialContent');
+    if (!socialContent) {
+        console.error('socialContent element not found');
+        return;
+    }
+    socialContent.innerHTML = '';
+
+    const socialContainer = document.createElement('div');
+    socialContainer.className = 'contact-list-item';
+    socialContainer.innerHTML = `
+        <div class="header-container">
+            <h4>Social Media</h4>
+            <button id="addSocialBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="contact-list" id="socialList">
+        </div>
+    `;
+    socialContent.appendChild(socialContainer);
+
+    // Populate social list only
+    const socialList = document.getElementById('socialList');
+    socialList.innerHTML = '';
+    if (socialData.socialMedia) {
+        Object.entries(socialData.socialMedia).forEach(([platform, url]) => {
+            const item = document.createElement('div');
+            item.className = 'contact-item';
+            item.innerHTML = `
+                <span>${platform}</span>
+                <div class="org-actions">
+                    <button class="view-btn" data-type="social-view" data-platform="${platform}" data-url="${url}"><i class="fas fa-eye"></i></button>
+                    <button class="edit-btn" data-type="social" data-platform="${platform}" data-url="${url}"><i class="fas fa-edit"></i></button>
+                    <button class="delete-btn" data-type="social" data-platform="${platform}"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+            socialList.appendChild(item);
+        });
+    }
 }
 
 function populateHelpSection(data) {
@@ -68,130 +161,13 @@ function populateHelpSection(data) {
     setupFAQToggle();
 }
 
-function populateContactSection(data) {
-    // Populate Emails
-    const emailList = document.getElementById('emailList');
-    emailList.innerHTML = '';
-    if (data.emails && data.emails.length > 0) {
-        data.emails.forEach((email, index) => {
-            const emailItem = document.createElement('div');
-            emailItem.className = 'contact-item';
-            emailItem.innerHTML = `
-                <span class="contact-value">${email}</span>
-                <div class="org-actions">
-                    <button class="view-btn" data-type="email" data-index="${index}"><i class="fas fa-eye"></i></button>
-                    <button class="edit-btn" data-type="email" data-index="${index}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" data-type="email" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            emailList.appendChild(emailItem);
-        });
-    } else {
-        const emailItem = document.createElement('div');
-        emailItem.className = 'contact-item';
-        emailItem.innerHTML = `
-            <span class="contact-value">No emails added yet.</span>
-            <div class="org-actions">
-                <button class="view-btn"><i class="fas fa-eye"></i></button>
-                <button class="edit-btn"><i class="fas fa-edit"></i></button>
-                <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        `;
-        emailList.appendChild(emailItem);
-    }
 
-    // Populate Phones
-    const phoneList = document.getElementById('phoneList');
-    phoneList.innerHTML = '';
-    if (data.phones && data.phones.length > 0) {
-        data.phones.forEach((phone, index) => {
-            const phoneItem = document.createElement('div');
-            phoneItem.className = 'contact-item';
-            phoneItem.innerHTML = `
-                <span class="contact-value">${phone}</span>
-                <div class="org-actions">
-                    <button class="view-btn" data-type="phone" data-index="${index}"><i class="fas fa-eye"></i></button>
-                    <button class="edit-btn" data-type="phone" data-index="${index}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" data-type="phone" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            phoneList.appendChild(phoneItem);
-        });
-    } else {
-        const phoneItem = document.createElement('div');
-        phoneItem.className = 'contact-item';
-        phoneItem.innerHTML = `
-            <span class="contact-value">No phones added yet.</span>
-            <div class="org-actions">
-                <button class="view-btn"><i class="fas fa-eye"></i></button>
-                <button class="edit-btn"><i class="fas fa-edit"></i></button>
-                <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        `;
-        phoneList.appendChild(phoneItem);
-    }
-
-    // Populate Addresses
-    const addressList = document.getElementById('addressList');
-    addressList.innerHTML = '';
-    if (data.addresses && data.addresses.length > 0) {
-        data.addresses.forEach((address, index) => {
-            const addressItem = document.createElement('div');
-            addressItem.className = 'contact-item';
-            addressItem.innerHTML = `
-                <span class="contact-value">${address}</span>
-                <div class="org-actions">
-                    <button class="view-btn" data-type="address" data-index="${index}"><i class="fas fa-eye"></i></button>
-                    <button class="edit-btn" data-type="address" data-index="${index}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" data-type="address" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            addressList.appendChild(addressItem);
-        });
-    } else {
-        const addressItem = document.createElement('div');
-        addressItem.className = 'contact-item';
-        addressItem.innerHTML = `
-            <span class="contact-value">No addresses added yet.</span>
-            <div class="org-actions">
-                <button class="view-btn"><i class="fas fa-eye"></i></button>
-                <button class="edit-btn"><i class="fas fa-edit"></i></button>
-                <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        `;
-        addressList.appendChild(addressItem);
-    }
-}
-
-function populateSocialSection(data) {
-    const socialContent = document.getElementById('socialContent');
-    socialContent.innerHTML = '';
-
-    // Social Media items
-    if (data.socialMedia && Object.keys(data.socialMedia).length > 0) {
-        Object.entries(data.socialMedia).forEach(([platform, url]) => {
-            const socialItem = document.createElement('div');
-            socialItem.className = 'social-item';
-            socialItem.innerHTML = `
-                <div class="social-info">
-                    <p class="social-platform">${platform}</p>
-                </div>
-                <div class="org-actions">
-                    <button class="view-btn" data-type="social-view" data-platform="${platform}" data-url="${url}"><i class="fas fa-eye"></i></button>
-                    <button class="edit-btn" data-type="social" data-platform="${platform}" data-url="${url}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" data-type="social" data-platform="${platform}"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            socialContent.appendChild(socialItem);
-        });
-    } else {
-        socialContent.innerHTML = '<p>No social media links added yet.</p>';
-    }
-}
 
 function populateTeamSection(data) {
     const teamContent = document.getElementById('teamContent');
     teamContent.innerHTML = '';
+
+    console.log(`Rendering ${data.length} team members`);  // Added log
 
     if (data && data.length > 0) {
         data.forEach((member, index) => {
@@ -241,7 +217,10 @@ function setupEventListeners() {
     document.getElementById('viewValuesBtn').addEventListener('click', () => openViewValuesModal());
     document.getElementById('editValuesBtn').addEventListener('click', () => openValuesModal());
 
-
+    // Add Contact Add buttons explicitly
+    document.getElementById('addEmailBtn').addEventListener('click', () => openContactItemModal('email'));
+    document.getElementById('addPhoneBtn').addEventListener('click', () => openContactItemModal('phone'));
+    document.getElementById('addAddressBtn').addEventListener('click', () => openContactItemModal('address'));
 
     // Help section buttons
     document.getElementById('addFaqBtn').addEventListener('click', () => openFaqModal());
@@ -271,23 +250,13 @@ function setupEventListeners() {
     document.getElementById('visionForm').addEventListener('submit', handleVisionSubmit);
     document.getElementById('faqForm').addEventListener('submit', handleFaqSubmit);
     document.getElementById('valueForm').addEventListener('submit', handleValueSubmit);
-    document.getElementById('contactItemForm').addEventListener('submit', handleContactItemSubmit);
-    document.getElementById('socialForm').addEventListener('submit', handleSocialSubmit);
     document.getElementById('teamMemberForm').addEventListener('submit', handleTeamMemberSubmit);
+    document.getElementById('contactItemForm').addEventListener('submit', handleContactItemSubmit);
+    document.getElementById('socialForm').addEventListener('submit', handleSocialSubmit); // Add this for social media submit
 
     // Add buttons
     document.getElementById('addValueBtn').addEventListener('click', () => openValueEditModal());
-    document.getElementById('addEmailBtn').addEventListener('click', () => openContactItemModal('email'));
-    document.getElementById('addPhoneBtn').addEventListener('click', () => openContactItemModal('phone'));
-    document.getElementById('addAddressBtn').addEventListener('click', () => openContactItemModal('address'));
-    document.getElementById('addSocialBtn').addEventListener('click', () => openSocialModal());
     document.getElementById('addTeamMemberBtn').addEventListener('click', () => openTeamMemberModal());
-
-    // Modal add buttons
-    document.getElementById('modalAddEmailBtn').addEventListener('click', () => openContactItemModal('email'));
-    document.getElementById('modalAddPhoneBtn').addEventListener('click', () => openContactItemModal('phone'));
-    document.getElementById('modalAddAddressBtn').addEventListener('click', () => openContactItemModal('address'));
-    document.getElementById('modalAddSocialBtn').addEventListener('click', () => openSocialModal());
 }
 
 function openTeamMemberModal(index = null, name = '', role = '') {
@@ -410,10 +379,8 @@ function openContactModal() {
 
 function populateContactLists(data) {
     // Emails
-    const emailsList = document.getElementById('emailsList');
-    const headDiv = document.createElement('div');
-    headDiv.className = 'header-container';
-    headDiv.innerHTML = '<h4>Emails</h4>';
+    const emailsList = document.getElementById('emailList');
+    emailsList.innerHTML = '';
     if (data.emails) {
         data.emails.forEach((email, index) => {
             const item = document.createElement('div');
@@ -430,8 +397,8 @@ function populateContactLists(data) {
     }
 
     // Phones
-    const phonesList = document.getElementById('phonesList');
-    phonesList.innerHTML = '<h4>Phones</h4>';
+    const phonesList = document.getElementById('phoneList');
+    phonesList.innerHTML = '';
     if (data.phones) {
         data.phones.forEach((phone, index) => {
             const item = document.createElement('div');
@@ -448,8 +415,8 @@ function populateContactLists(data) {
     }
 
     // Addresses
-    const addressesList = document.getElementById('addressesList');
-    addressesList.innerHTML = '<h4>Addresses</h4>';
+    const addressesList = document.getElementById('addressList');
+    addressesList.innerHTML = '';
     if (data.addresses) {
         data.addresses.forEach((address, index) => {
             const item = document.createElement('div');
@@ -467,24 +434,27 @@ function populateContactLists(data) {
 
     // Social Media
     const socialList = document.getElementById('socialList');
-    socialList.innerHTML = '<h4>Social Media</h4>';
-    if (data.socialMedia) {
-        Object.entries(data.socialMedia).forEach(([platform, url]) => {
-            const item = document.createElement('div');
-            item.className = 'contact-item';
-            item.innerHTML = `
-                <span><a href="${url}" target="_blank">${platform}</a></span>
-                <div class="org-actions">
-                    <button class="edit-btn" data-type="social" data-platform="${platform}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" data-type="social" data-platform="${platform}"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            socialList.appendChild(item);
-        });
-    }
+        if (data.socialMedia) {
+            Object.entries(data.socialMedia).forEach(([platform, url]) => {
+                const item = document.createElement('div');
+                item.className = 'contact-item';
+                item.innerHTML = `
+                    <span><a href="${url}" target="_blank">${platform}</a></span>
+                    <div class="org-actions">
+                        <button class="view-btn" data-type="social-view" data-platform="${platform}" data-url="${url}"><i class="fas fa-eye"></i></button>
+                        <button class="edit-btn" data-type="social" data-platform="${platform}" data-url="${url}"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn" data-type="social" data-platform="${platform}"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                `;
+                socialList.appendChild(item);
+            });
+        }
 }
 
+
+
 function openContactItemModal(type, index = null, value = '') {
+    console.log('Opening contact item modal for type:', type, 'index:', index, 'value:', value);
     const modal = document.getElementById('contactItemModal');
     const header = modal.querySelector('.modal-header h2');
     const label = modal.querySelector('label[for="contactItemValue"]');
@@ -503,7 +473,7 @@ function openContactItemModal(type, index = null, value = '') {
     errorDiv.style.display = 'none';
     errorDiv.textContent = '';
 
-    // Set input type and placeholder based on type
+    // Fix maxLength setting to avoid zero or invalid
     if (type === 'phone') {
         input.type = 'text';
         input.placeholder = 'Enter 10-digit phone number';
@@ -515,24 +485,42 @@ function openContactItemModal(type, index = null, value = '') {
     } else if (type === 'email') {
         input.type = 'email';
         input.placeholder = 'Enter email address';
-        input.maxLength = '';
+        // Remove maxLength setting to avoid invalid zero
+        input.removeAttribute('maxLength');
+        // Remove any previous input restriction listener
+        input.removeEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
     } else if (type === 'address') {
         input.type = 'text';
         input.placeholder = 'Enter address';
-        input.maxLength = '';
+        // Remove maxLength setting to avoid invalid zero
+        input.removeAttribute('maxLength');
+        // Remove any previous input restriction listener for digits only (this is only for phone)
+        input.removeEventListener('input', (e) => {
+            // No digits only restriction here - do nothing
+        });
     }
 
     input.value = value;
+    // Set oldValue for edit mode to send in request body
+    document.getElementById('contactItemForm').dataset.oldValue = value;
+
     // Ensure focus after modal is shown
-    setTimeout(() => input.focus(), 100);
+    setTimeout(() => {
+        input.focus();
+        console.log('Input focused for type:', type);
+    }, 100);
     document.getElementById('contactItemForm').dataset.type = type;
     document.getElementById('contactItemForm').dataset.index = index;
     modal.classList.add('show');
 }
 
 function openSocialModal(platform = '', url = '') {
+    console.log("openSocialModal called with platform:", platform, "url:", url);
     document.getElementById('socialPlatform').value = platform;
     document.getElementById('socialUrl').value = url;
+    document.getElementById('socialForm').dataset.platform = platform; // store original platform for edit
     document.getElementById('socialModal').classList.add('show');
 }
 
@@ -781,6 +769,7 @@ async function handleContactItemSubmit(e) {
     const value = input.value.trim();
     const type = e.target.dataset.type;
     const index = e.target.dataset.index;
+    const oldValue = e.target.dataset.oldValue;
     const errorDiv = document.getElementById('contactItemError');
 
     // Validation
@@ -822,8 +811,21 @@ async function handleContactItemSubmit(e) {
         address: index !== 'null' ? 'org-address-edit' : 'org-address-add'
     };
 
+    let body = {};
+
+    if (index !== 'null') {
+        if (type === 'email') {
+            body = { oldEmail: oldValue, newEmail: value };
+        } else if (type === 'phone') {
+            body = { oldPhone: oldValue, newPhone: value };
+        } else if (type === 'address') {
+            body = { oldAddress: oldValue, newAddress: value };
+        }
+    } else {
+        body = { [type]: value };
+    }
+
     try {
-        const body = index !== 'null' ? { index: parseInt(index), [type]: value } : { [type]: value };
         const response = await fetch(`/.netlify/functions/${endpoints[type]}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -845,17 +847,27 @@ async function handleContactItemSubmit(e) {
 
 async function handleSocialSubmit(e) {
     e.preventDefault();
-    const platform = document.getElementById('socialPlatform').value.trim();
+    console.log("handleSocialSubmit called");
+    let platform = document.getElementById('socialPlatform').value.trim();
     const url = document.getElementById('socialUrl').value.trim();
+    platform = platform.toLowerCase();
+    console.log("Submitting social media:", { platform, url });
 
     try {
         const response = await fetch('/.netlify/functions/org-social-update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ platform, url })
+            body: JSON.stringify({ 
+                platform,
+                url 
+            })
         });
+        console.log('Response status:', response.status);
+        const respText = await response.text();
+        console.log('Response text:', respText);
 
         if (response.ok) {
+            console.log("Social media updated successfully");
             closeModal('socialModal');
             closeModal('contactModal');
             loadOrganizationData();
@@ -889,7 +901,7 @@ async function handleDeleteConfirm() {
         body = { address: index };
     } else if (type === 'social') {
         endpoint = 'org-social-delete';
-        body = { platform };
+        body = { platform: platform.trim().toLowerCase() };
     } else if (type === 'team') {
         endpoint = 'org-team-delete';
         body = { index: parseInt(index) };
@@ -914,98 +926,104 @@ async function handleDeleteConfirm() {
     }
 }
 
-// Event delegation for dynamic buttons
-document.addEventListener('click', (e) => {
-    // Ignore clicks inside open modals to prevent interference
-    if (e.target.closest('.modal.show')) return;
+    // Event delegation for dynamic buttons
+    document.addEventListener('click', (e) => {
+        // Ignore clicks inside open modals to prevent interference
+        if (e.target.closest('.modal.show')) return;
 
-    if (e.target.closest('.edit-btn')) {
-        const btn = e.target.closest('.edit-btn');
-        const type = btn.dataset.type;
-        const index = btn.dataset.index;
-        const platform = btn.dataset.platform;
-
-        if (type === 'team') {
-            // Team member edit - check first
-            fetch('/.netlify/functions/org-get-team')
-                .then(res => res.json())
-                .then(data => {
-                    const member = data[index];
-                    openTeamMemberModal(index, member.name, member.role);
-                });
-        } else if (type === 'email' || type === 'phone' || type === 'address') {
-            const value = btn.parentElement.previousElementSibling.textContent.trim();
-            openContactItemModal(type, index, value);
-        } else if (type === 'social') {
-            // Social media edit
+        if (e.target.closest('.edit-btn')) {
+            const btn = e.target.closest('.edit-btn');
+            const type = btn.dataset.type;
+            const index = btn.dataset.index;
             const platform = btn.dataset.platform;
-            const url = btn.dataset.url;
-            openSocialModal(platform, url);
-        } else if (type === 'social-view') {
-            // Social media view
+
+            if (type === 'team') {
+                // Team member edit - check first
+                fetch('/.netlify/functions/org-get-team')
+                    .then(res => res.json())
+                    .then(data => {
+                        const member = data[index];
+                        openTeamMemberModal(index, member.name, member.role);
+                    });
+            } else if (type === 'email' || type === 'phone' || type === 'address') {
+                const value = btn.parentElement.previousElementSibling.textContent.trim();
+                openContactItemModal(type, index, value);
+            } else if (type === 'social') {
+                // Social media edit
+                const platform = btn.dataset.platform;
+                const url = btn.dataset.url;
+                openSocialModal(platform, url);
+            } else if (type === 'social-view') {
+                // Social media view
+                const platform = btn.dataset.platform;
+                const url = btn.dataset.url;
+                openViewSocialModal(platform, url);
+            } else if (btn.dataset.id !== undefined) {
+                // FAQ edit
+                openFaqModal(parseInt(btn.dataset.id));
+            } else if (index !== undefined) {
+                // Value edit
+                fetch('/.netlify/functions/org-get-aboutus')
+                    .then(res => res.json())
+                    .then(data => {
+                        openValueEditModal(index, data.values[index]);
+                    });
+            }
+        } else if (e.target.closest('.view-btn[data-type="social-view"]')) {
+            // Social media view button click handler
+            const btn = e.target.closest('.view-btn[data-type="social-view"]');
             const platform = btn.dataset.platform;
             const url = btn.dataset.url;
             openViewSocialModal(platform, url);
-        } else if (btn.dataset.id !== undefined) {
-            // FAQ edit
-            openFaqModal(parseInt(btn.dataset.id));
-        } else if (index !== undefined) {
-            // Value edit
-            fetch('/.netlify/functions/org-get-aboutus')
-                .then(res => res.json())
-                .then(data => {
-                    openValueEditModal(index, data.values[index]);
-                });
-        }
-    } else if (e.target.closest('.delete-btn')) {
-        const btn = e.target.closest('.delete-btn');
-        const type = btn.dataset.type;
-        const index = btn.dataset.index;
-        const platform = btn.dataset.platform;
+        } else if (e.target.closest('.delete-btn')) {
+            const btn = e.target.closest('.delete-btn');
+            const type = btn.dataset.type;
+            const index = btn.dataset.index;
+            const platform = btn.dataset.platform;
 
-        if (type === 'team') {
-            // Team member delete - check first
-            window.deleteItem = { type: 'team', index };
-            showDeleteModal('team', index);
-        } else if (type === 'email' || type === 'phone' || type === 'address') {
-            window.deleteItem = { type, index: btn.parentElement.previousElementSibling.textContent };
-            showDeleteModal(type, btn.parentElement.previousElementSibling.textContent);
-        } else if (type === 'social') {
-            window.deleteItem = { type, platform };
-            showDeleteModal('social', platform);
-        } else if (btn.dataset.id !== undefined) {
-            // FAQ delete
-            window.deleteItem = { type: 'faq', index: btn.dataset.id };
-            showDeleteModal('faq', btn.dataset.id);
-        } else if (index !== undefined) {
-            // Value delete
-            window.deleteItem = { type: 'value', index };
-            showDeleteModal('value', index);
-        }
+            if (type === 'team') {
+                // Team member delete - check first
+                window.deleteItem = { type: 'team', index };
+                showDeleteModal('team', index);
+            } else if (type === 'email' || type === 'phone' || type === 'address') {
+                window.deleteItem = { type, index: btn.parentElement.previousElementSibling.textContent };
+                showDeleteModal(type, btn.parentElement.previousElementSibling.textContent);
+            } else if (type === 'social') {
+                window.deleteItem = { type, platform };
+                showDeleteModal('social', platform);
+            } else if (btn.dataset.id !== undefined) {
+                // FAQ delete
+                window.deleteItem = { type: 'faq', index: btn.dataset.id };
+                showDeleteModal('faq', btn.dataset.id);
+            } else if (index !== undefined) {
+                // Value delete
+                window.deleteItem = { type: 'value', index };
+                showDeleteModal('value', index);
+            }
 
-        document.getElementById('deleteModal').classList.add('show');
-    } else if (e.target.closest('.add-btn[data-type]')) {
-        const btn = e.target.closest('.add-btn');
-        const type = btn.dataset.type;
-        if (type === 'email' || type === 'phone' || type === 'address') {
-            openContactItemModal(type);
-        } else if (type === 'social') {
-            openSocialModal();
+            document.getElementById('deleteModal').classList.add('show');
+        } else if (e.target.closest('.add-btn[data-type]')) {
+            const btn = e.target.closest('.add-btn');
+            const type = btn.dataset.type;
+            if (type === 'email' || type === 'phone' || type === 'address') {
+                openContactItemModal(type);
+            } else if (type === 'social') {
+                openSocialModal();
+            }
+        } else if (e.target.closest('.add-btn-small')) {
+            const btn = e.target.closest('.add-btn-small');
+            const id = btn.id;
+            if (id === 'addEmailBtn') {
+                openContactItemModal('email');
+            } else if (id === 'addPhoneBtn') {
+                openContactItemModal('phone');
+            } else if (id === 'addAddressBtn') {
+                openContactItemModal('address');
+            } else if (id === 'addSocialBtn') {
+                openSocialModal();
+            }
         }
-    } else if (e.target.closest('.add-btn-small')) {
-        const btn = e.target.closest('.add-btn-small');
-        const id = btn.id;
-        if (id === 'addEmailBtn') {
-            openContactItemModal('email');
-        } else if (id === 'addPhoneBtn') {
-            openContactItemModal('phone');
-        } else if (id === 'addAddressBtn') {
-            openContactItemModal('address');
-        } else if (id === 'addSocialBtn') {
-            openSocialModal();
-        }
-    }
-});
+    });
 
 // Function to show delete modal with specific content
 function showDeleteModal(type, identifier, index = null) {

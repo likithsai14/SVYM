@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
+
+const { connectDB } = require('./utils/mongodb');
 const Organization = require('./models/Organization');
 
 exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ message: 'Method not allowed' })
+      body: JSON.stringify({ message: 'Method not allowed' }),
     };
   }
 
@@ -14,23 +15,19 @@ exports.handler = async (event, context) => {
     if (!address || typeof address !== 'string' || address.trim() === '') {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Address is required and must be a non-empty string' })
+        body: JSON.stringify({
+          message: 'Address is required and must be a non-empty string',
+        }),
       };
     }
 
-    await mongoose.connect(process.env.MONGODB_URI);
-    const org = await Organization.findOne();
-    if (!org) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Organization data not found' })
-      };
-    }
+    await connectDB();
+    const org = await Organization.getSingleton();
 
     if (org.contactus.addresses.includes(address.trim())) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Address already exists' })
+        body: JSON.stringify({ message: 'Address already exists' }),
       };
     }
 
@@ -39,13 +36,13 @@ exports.handler = async (event, context) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Address added successfully' })
+      body: JSON.stringify({ message: 'Address added successfully' }),
     };
   } catch (error) {
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Internal server error' })
+      body: JSON.stringify({ message: 'Internal server error' }),
     };
   }
 };

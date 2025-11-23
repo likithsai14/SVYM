@@ -46,6 +46,14 @@ exports.handler = async (event) => {
         };
       }
 
+      // Check if Trainer is active
+      if (!trainerDoc.isActive) {
+        return {
+          statusCode: 403,
+          body: JSON.stringify({ message: "Account deactivated. Please contact admin." }),
+        };
+      }
+
       await Trainer.updateOne({ trainerId: userId }, { $inc: { loginCount: 1 }, lastLoginAt: new Date() });
 
       if (trainerDoc.isFirstLogin) {
@@ -95,6 +103,14 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           body: JSON.stringify({ message: "Invalid User ID or Password." }),
+        };
+      }
+
+      // Check if Field Mobiliser is active
+      if (!fmDoc.isActive) {
+        return {
+          statusCode: 403,
+          body: JSON.stringify({ message: "Account deactivated. Please contact admin." }),
         };
       }
 
