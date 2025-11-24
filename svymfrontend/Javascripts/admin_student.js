@@ -479,14 +479,24 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     function renderStudentsTable() {
         studentTableBody.innerHTML = "";
-        const filtered = getFilteredData();
+    const filtered = getFilteredData();
 
-        totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
-        if (currentPage > totalPages) currentPage = totalPages;
+    totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
 
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        const paginatedStudents = filtered.slice(start, end);
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedStudents = filtered.slice(start, end);
+
+function getFilteredData() {
+    const searchValue = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value.toLowerCase();
+    return studentsData.filter(student => {
+        const matchesSearch = student.candidateName.toLowerCase().includes(searchValue) || student.userId.toLowerCase().includes(searchValue);
+        const matchesStatus = statusValue === '' || student.status.toLowerCase() === statusValue;
+        return matchesSearch && matchesStatus;
+    });
+}
 
         if (paginatedStudents.length === 0) {
             studentTableBody.innerHTML = '<tr><td colspan="8">No students found.</td></tr>';
@@ -496,8 +506,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         paginatedStudents.forEach(student => {
             const hasEnrollments = student.enrollments && student.enrollments.length > 0;
-            const assignBtnDisabled = hasEnrollments ? 'disabled' : '';
-            const assignBtnClass = hasEnrollments ? 'action-btn assign-btn disabled' : 'action-btn assign-btn';
+            const isRejected = student.status && student.status.toLowerCase() === 'rejected';
+            const assignBtnDisabled = hasEnrollments || isRejected ? 'disabled' : '';
+            const assignBtnClass = hasEnrollments || isRejected ? 'action-btn assign-btn disabled' : 'action-btn assign-btn';
             const payBtnDisabled = hasEnrollments ? '' : 'disabled';
             const payBtnClass = hasEnrollments ? 'action-btn paydues-btn' : 'action-btn paydues-btn disabled';
             const tr = document.createElement('tr');
@@ -509,7 +520,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <td>
                     <button class="action-btn view-btn" data-id="${student.userId}"><i class="fas fa-eye"></i> View</button>
                     <button class="action-btn edit-btn" data-id="${student.userId}"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="${payBtnClass}" data-id="${student.userId}" ${payBtnDisabled}><i class="fas fa-credit-card"></i> Pay Dues</button>
+                    <button class="${payBtnClass}" data-id="${student.userId}" ${payBtnDisabled}><i class="fas fa-credit-card"></i> Pay Due</button>
                     <button class="${assignBtnClass}" data-id="${student.userId}" ${assignBtnDisabled}><i class="fas fa-plus"></i> Assign Course</button>
                 </td>
             `;

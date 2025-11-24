@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const searchTerm = searchInput.value.trim().toLowerCase();
     const statusValue = statusFilter.value.toLowerCase();
     filteredData = fieldmobilisersData.filter(f => {
-      const matchesSearch = searchTerm ? f.name.toLowerCase().includes(searchTerm) : true;
+      const matchesSearch = searchTerm ? (f.name.toLowerCase().includes(searchTerm) || f.id.toLowerCase().includes(searchTerm)) : true;
       const matchesStatus = statusValue === '' || f.status.toLowerCase() === statusValue;
       return matchesSearch && matchesStatus;
     });

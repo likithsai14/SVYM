@@ -202,13 +202,13 @@
   }
 
   // Dummy locations
-  const locations = ["Bangalore", "Mysore", "Hyderabad", "Chennai"];
-  locations.forEach(loc => {
-    const option = document.createElement("option");
-    option.value = loc;
-    option.textContent = loc;
-    locationSelect.appendChild(option);
-  });
+  // const locations = ["Bangalore", "Mysore", "Hyderabad", "Chennai"];
+  // locations.forEach(loc => {
+  //   const option = document.createElement("option");
+  //   option.value = loc;
+  //   option.textContent = loc;
+  //   locationSelect.appendChild(option);
+  // });
 
   // Module inputs
   function createModuleInput() {
@@ -490,7 +490,7 @@
     const startDate = startDateInput.value;
     const endDate = endDateInput.value;
     const duration = durationInput.value;
-    const location = locationSelect.value;
+    // const location = locationSelect.value;
     const description = document.getElementById("description").value.trim();
 
     const moduleInputs = document.querySelectorAll(".moduleName");
@@ -542,7 +542,7 @@
         endDate,
         duration,
         moduleNames,
-        location,
+        // location,
         description
       },
       addedBy: sessionStorage.getItem("userId") || "unknown",

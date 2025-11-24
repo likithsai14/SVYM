@@ -8,6 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalTitle = document.getElementById("modalTitle");
   const announcementForm = document.getElementById("announcementForm");
   const announcementTitle = document.getElementById("announcementTitle");
+  
+  // Function to convert to title case (capitalize first letter of every word)
+  function toTitleCase(str) {
+    return str.split(' ').map(word => {
+      if(word.length === 0) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+  }
+
+  // Auto capitalize first letter of each word in announcement title input
+  if (announcementTitle) {
+    announcementTitle.addEventListener('input', function() {
+      this.value = toTitleCase(this.value);
+    });
+  }
   const eventDate = document.getElementById("eventDate");
   const announcementDescription = document.getElementById("announcementDescription");
   const errorMsg = document.getElementById("errorMsg");

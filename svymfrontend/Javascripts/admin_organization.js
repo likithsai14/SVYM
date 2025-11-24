@@ -12,6 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Setup modal close functionality
     setupModalClose();
+
+    // Add input event listener for memberName input to capitalize first letter of each word
+    const memberNameInput = document.getElementById('memberName');
+    if (memberNameInput) {
+        memberNameInput.addEventListener('input', (e) => {
+            let words = e.target.value.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                if (words[i].length > 0) {
+                    words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+                }
+            }
+            e.target.value = words.join(' ');
+        });
+    }
 });
 
 async function loadOrganizationData() {
@@ -54,7 +68,7 @@ function populateContactSection(contactData) {
     emailsContainer.className = 'contact-list-item';
     emailsContainer.innerHTML = `
         <div class="header-container">
-            <h4>Emails</h4>
+            <h4>Email</h4>
             <button id="addEmailBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
         </div>
         <div class="contact-list" id="emailList">
@@ -67,7 +81,7 @@ function populateContactSection(contactData) {
     phonesContainer.className = 'contact-list-item';
     phonesContainer.innerHTML = `
         <div class="header-container">
-            <h4>Phones</h4>
+            <h4>Phone</h4>
             <button id="addPhoneBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
         </div>
         <div class="contact-list" id="phoneList">
@@ -80,7 +94,7 @@ function populateContactSection(contactData) {
     addressesContainer.className = 'contact-list-item';
     addressesContainer.innerHTML = `
         <div class="header-container">
-            <h4>Addresses</h4>
+            <h4>Address</h4>
             <button id="addAddressBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
         </div>
         <div class="contact-list" id="addressList">
@@ -103,24 +117,25 @@ function populateSocialSection(socialData) {
     const socialContainer = document.createElement('div');
     socialContainer.className = 'contact-list-item';
     socialContainer.innerHTML = `
-        <div class="header-container">
-            <h4>Social Media</h4>
-            <button id="addSocialBtn" class="add-btn-small"><i class="fas fa-plus"></i></button>
-        </div>
         <div class="contact-list" id="socialList">
         </div>
     `;
     socialContent.appendChild(socialContainer);
+
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase());
+    }
 
     // Populate social list only
     const socialList = document.getElementById('socialList');
     socialList.innerHTML = '';
     if (socialData.socialMedia) {
         Object.entries(socialData.socialMedia).forEach(([platform, url]) => {
+            const displayPlatform = platform.toLowerCase() === 'twitter' ? 'X' : toTitleCase(platform);
             const item = document.createElement('div');
             item.className = 'contact-item';
             item.innerHTML = `
-                <span>${platform}</span>
+                <span>${displayPlatform}</span>
                 <div class="org-actions">
                     <button class="view-btn" data-type="social-view" data-platform="${platform}" data-url="${url}"><i class="fas fa-eye"></i></button>
                     <button class="edit-btn" data-type="social" data-platform="${platform}" data-url="${url}"><i class="fas fa-edit"></i></button>
@@ -210,24 +225,34 @@ function setupFAQToggle() {
 
 function setupEventListeners() {
     // About section buttons
-    document.getElementById('viewMissionBtn').addEventListener('click', () => openViewMissionModal());
-    document.getElementById('editMissionBtn').addEventListener('click', () => openMissionModal());
-    document.getElementById('viewVisionBtn').addEventListener('click', () => openViewVisionModal());
-    document.getElementById('editVisionBtn').addEventListener('click', () => openVisionModal());
-    document.getElementById('viewValuesBtn').addEventListener('click', () => openViewValuesModal());
-    document.getElementById('editValuesBtn').addEventListener('click', () => openValuesModal());
+    const viewMissionBtn = document.getElementById('viewMissionBtn');
+    if (viewMissionBtn) viewMissionBtn.addEventListener('click', () => openViewMissionModal());
+    const editMissionBtn = document.getElementById('editMissionBtn');
+    if (editMissionBtn) editMissionBtn.addEventListener('click', () => openMissionModal());
+    const viewVisionBtn = document.getElementById('viewVisionBtn');
+    if (viewVisionBtn) viewVisionBtn.addEventListener('click', () => openViewVisionModal());
+    const editVisionBtn = document.getElementById('editVisionBtn');
+    if (editVisionBtn) editVisionBtn.addEventListener('click', () => openVisionModal());
+    const viewValuesBtn = document.getElementById('viewValuesBtn');
+    if (viewValuesBtn) viewValuesBtn.addEventListener('click', () => openViewValuesModal());
+    const editValuesBtn = document.getElementById('editValuesBtn');
+    if (editValuesBtn) editValuesBtn.addEventListener('click', () => openValuesModal());
 
     // Add Contact Add buttons explicitly
-    document.getElementById('addEmailBtn').addEventListener('click', () => openContactItemModal('email'));
-    document.getElementById('addPhoneBtn').addEventListener('click', () => openContactItemModal('phone'));
-    document.getElementById('addAddressBtn').addEventListener('click', () => openContactItemModal('address'));
+    const addEmailBtn = document.getElementById('addEmailBtn');
+    if (addEmailBtn) addEmailBtn.addEventListener('click', () => openContactItemModal('email'));
+    const addPhoneBtn = document.getElementById('addPhoneBtn');
+    if (addPhoneBtn) addPhoneBtn.addEventListener('click', () => openContactItemModal('phone'));
+    const addAddressBtn = document.getElementById('addAddressBtn');
+    if (addAddressBtn) addAddressBtn.addEventListener('click', () => openContactItemModal('address'));
 
     // Help section buttons
-    document.getElementById('addFaqBtn').addEventListener('click', () => openFaqModal());
+    const addFaqBtn = document.getElementById('addFaqBtn');
+    if (addFaqBtn) addFaqBtn.addEventListener('click', () => openFaqModal());
 
     // Team section buttons
-    document.getElementById('addTeamMemberBtn').addEventListener('click', () => openTeamMemberModal());
-    // Removed the reference to addTeamMemberBtnModal since the modal was removed
+    const addTeamMemberBtn = document.getElementById('addTeamMemberBtn');
+    if (addTeamMemberBtn) addTeamMemberBtn.addEventListener('click', () => openTeamMemberModal());
 
     // FAQ view buttons
     document.addEventListener('click', (e) => {
@@ -246,20 +271,29 @@ function setupEventListeners() {
     });
 
     // Modal forms
-    document.getElementById('missionForm').addEventListener('submit', handleMissionSubmit);
-    document.getElementById('visionForm').addEventListener('submit', handleVisionSubmit);
-    document.getElementById('faqForm').addEventListener('submit', handleFaqSubmit);
-    document.getElementById('valueForm').addEventListener('submit', handleValueSubmit);
-    document.getElementById('teamMemberForm').addEventListener('submit', handleTeamMemberSubmit);
-    document.getElementById('contactItemForm').addEventListener('submit', handleContactItemSubmit);
-    document.getElementById('socialForm').addEventListener('submit', handleSocialSubmit); // Add this for social media submit
-
-    // Add buttons
-    document.getElementById('addValueBtn').addEventListener('click', () => openValueEditModal());
-    document.getElementById('addTeamMemberBtn').addEventListener('click', () => openTeamMemberModal());
+    const missionForm = document.getElementById('missionForm');
+    if (missionForm) missionForm.addEventListener('submit', handleMissionSubmit);
+    const visionForm = document.getElementById('visionForm');
+    if (visionForm) visionForm.addEventListener('submit', handleVisionSubmit);
+    const faqForm = document.getElementById('faqForm');
+    if (faqForm) faqForm.addEventListener('submit', handleFaqSubmit);
+    const valueForm = document.getElementById('valueForm');
+    if (valueForm) valueForm.addEventListener('submit', handleValueSubmit);
+    const teamMemberForm = document.getElementById('teamMemberForm');
+    if (teamMemberForm) teamMemberForm.addEventListener('submit', handleTeamMemberSubmit);
+    const contactItemForm = document.getElementById('contactItemForm');
+    if (contactItemForm) contactItemForm.addEventListener('submit', handleContactItemSubmit);
+    const socialForm = document.getElementById('socialForm');
+    if (socialForm) socialForm.addEventListener('submit', handleSocialSubmit); // Add this for social media submit
 }
 
 function openTeamMemberModal(index = null, name = '', role = '') {
+    const header = document.querySelector('#teamMemberModal .modal-header h2');
+    if (index !== null && index !== undefined) {
+        if (header) header.textContent = 'Edit Member';
+    } else {
+        if (header) header.textContent = 'Add Member';
+    }
     document.getElementById('memberName').value = name;
     document.getElementById('memberRole').value = role;
     document.getElementById('teamMemberForm').dataset.index = index;
@@ -316,27 +350,50 @@ function openVisionModal() {
 }
 
 function openValuesModal() {
-    // Load current values
     fetch('/.netlify/functions/org-get-aboutus')
         .then(res => res.json())
         .then(data => {
-            const valuesList = document.getElementById('valuesList');
-            valuesList.innerHTML = '';
-            data.values.forEach((value, index) => {
-                const valueItem = document.createElement('div');
-                valueItem.className = 'value-item';
-                valueItem.innerHTML = `
-                    <span>${value}</span>
-                    <div class="org-actions">
-                        <button class="edit-btn" data-index="${index}"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                `;
-                valuesList.appendChild(valueItem);
-            });
+            const valuesTextarea = document.getElementById('valuesTextarea');
+            valuesTextarea.value = data.values.join('\n');
             document.getElementById('valuesModal').classList.add('show');
         });
 }
+
+async function handleValuesSubmit(event) {
+    event.preventDefault();
+    const textarea = document.getElementById('valuesTextarea');
+    const valuesArray = textarea.value
+        .split('\n')
+        .map(v => v.trim())
+        .filter(v => v.length > 0);
+
+    try {
+        const response = await fetch('/.netlify/functions/org-update-values-bulk', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ values: valuesArray })
+        });
+
+        if (response.ok) {
+            // Close modal and reload data
+            closeModal('valuesModal');
+            loadOrganizationData();
+        } else {
+            alert('Error updating values');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating values');
+    }
+}
+
+// Add event listener for values form submit
+document.addEventListener('DOMContentLoaded', () => {
+    const valuesForm = document.getElementById('valuesForm');
+    if (valuesForm) {
+        valuesForm.addEventListener('submit', handleValuesSubmit);
+    }
+});
 
 
 
@@ -348,6 +405,7 @@ function openValueEditModal(index = null, value = '') {
 }
 
 function openFaqModal(index = null) {
+    const header = document.querySelector('#faqModal .modal-header h2');
     if (index !== null) {
         // Edit mode
         fetch('/.netlify/functions/org-get-help-faqs')
@@ -357,12 +415,14 @@ function openFaqModal(index = null) {
                 document.getElementById('faqQuestion').value = faq.qtn;
                 document.getElementById('faqAnswer').value = faq.answer;
                 document.getElementById('faqForm').dataset.index = index;
+                if (header) header.textContent = 'Edit FAQ';
             });
     } else {
         // Add mode
         document.getElementById('faqQuestion').value = '';
         document.getElementById('faqAnswer').value = '';
         document.getElementById('faqForm').dataset.index = '';
+        if (header) header.textContent = "Add FAQ";
     }
     document.getElementById('faqModal').classList.add('show');
 }
@@ -436,10 +496,11 @@ function populateContactLists(data) {
     const socialList = document.getElementById('socialList');
         if (data.socialMedia) {
             Object.entries(data.socialMedia).forEach(([platform, url]) => {
+                const displayPlatform = platform.toLowerCase() === 'twitter' ? 'X' : platform;
                 const item = document.createElement('div');
                 item.className = 'contact-item';
                 item.innerHTML = `
-                    <span><a href="${url}" target="_blank">${platform}</a></span>
+                    <span><a href="${url}" target="_blank">${displayPlatform}</a></span>
                     <div class="org-actions">
                         <button class="view-btn" data-type="social-view" data-platform="${platform}" data-url="${url}"><i class="fas fa-eye"></i></button>
                         <button class="edit-btn" data-type="social" data-platform="${platform}" data-url="${url}"><i class="fas fa-edit"></i></button>
@@ -518,7 +579,21 @@ function openContactItemModal(type, index = null, value = '') {
 
 function openSocialModal(platform = '', url = '') {
     console.log("openSocialModal called with platform:", platform, "url:", url);
-    document.getElementById('socialPlatform').value = platform;
+    const header = document.querySelector('#socialModal .modal-header h2');
+    const socialPlatformInput = document.getElementById('socialPlatform');
+    if (platform) {
+        if (header) header.textContent = 'Edit Social Media';
+        if (socialPlatformInput) {
+            socialPlatformInput.value = platform;
+            socialPlatformInput.disabled = true;  // make platform non-editable in edit mode
+        }
+    } else {
+        if (header) header.textContent = 'Add Social Media';
+        if (socialPlatformInput) {
+            socialPlatformInput.value = '';
+            socialPlatformInput.disabled = false;  // editable in add mode
+        }
+    }
     document.getElementById('socialUrl').value = url;
     document.getElementById('socialForm').dataset.platform = platform; // store original platform for edit
     document.getElementById('socialModal').classList.add('show');
@@ -533,7 +608,6 @@ function closeModal(modalId) {
     }
 }
 
-// Add modal close functionality
 function setupModalClose() {
     // Close modal on close button click
     document.addEventListener('click', (e) => {
@@ -554,13 +628,24 @@ function setupModalClose() {
         }
     });
 
+    // Add support for cancel buttons inside modals to close modal
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('cancel-btn') || e.target.closest('.cancel-btn')) {
+            const modal = e.target.closest('.modal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+    });
+
     // Prevent body scroll when modal is open and stop propagation for inputs inside modals
     document.addEventListener('click', (e) => {
         const openModals = document.querySelectorAll('.modal.show');
         document.body.style.overflow = openModals.length > 0 ? 'hidden' : '';
 
-        // If the click is inside a modal and not on a close button, stop propagation to prevent global handlers
-        if (e.target.closest('.modal.show') && !e.target.classList.contains('close-btn') && !e.target.closest('.close-btn')) {
+        // If the click is inside a modal and not on a close or cancel button, stop propagation to prevent global handlers
+        if (e.target.closest('.modal.show') && !e.target.classList.contains('close-btn') && !e.target.closest('.close-btn') && !e.target.classList.contains('cancel-btn') && !e.target.closest('.cancel-btn')) {
             e.stopPropagation();
         }
     });
@@ -851,13 +936,20 @@ async function handleSocialSubmit(e) {
     let platform = document.getElementById('socialPlatform').value.trim();
     const url = document.getElementById('socialUrl').value.trim();
     platform = platform.toLowerCase();
-    console.log("Submitting social media:", { platform, url });
+
+    // Get original platform before editing
+    const originalPlatform = document.getElementById('socialForm').dataset.platform;
+
+    console.log("Submitting social media:", { originalPlatform, platform, url });
 
     try {
+        // Send originalPlatform for update requests to identify which entry to update
+        // For adding new platform, originalPlatform will be empty string
         const response = await fetch('/.netlify/functions/org-social-update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
+                originalPlatform: originalPlatform ? originalPlatform.toLowerCase() : '',
                 platform,
                 url 
             })
@@ -928,9 +1020,6 @@ async function handleDeleteConfirm() {
 
     // Event delegation for dynamic buttons
     document.addEventListener('click', (e) => {
-        // Ignore clicks inside open modals to prevent interference
-        if (e.target.closest('.modal.show')) return;
-
         if (e.target.closest('.edit-btn')) {
             const btn = e.target.closest('.edit-btn');
             const type = btn.dataset.type;
@@ -950,12 +1039,10 @@ async function handleDeleteConfirm() {
                 openContactItemModal(type, index, value);
             } else if (type === 'social') {
                 // Social media edit
-                const platform = btn.dataset.platform;
-                const url = btn.dataset.url;
+                const url = btn.dataset.url;  // Fix: used btn.dataset.url without shadowing variable
                 openSocialModal(platform, url);
             } else if (type === 'social-view') {
                 // Social media view
-                const platform = btn.dataset.platform;
                 const url = btn.dataset.url;
                 openViewSocialModal(platform, url);
             } else if (btn.dataset.id !== undefined) {
@@ -970,7 +1057,6 @@ async function handleDeleteConfirm() {
                     });
             }
         } else if (e.target.closest('.view-btn[data-type="social-view"]')) {
-            // Social media view button click handler
             const btn = e.target.closest('.view-btn[data-type="social-view"]');
             const platform = btn.dataset.platform;
             const url = btn.dataset.url;
@@ -982,7 +1068,6 @@ async function handleDeleteConfirm() {
             const platform = btn.dataset.platform;
 
             if (type === 'team') {
-                // Team member delete - check first
                 window.deleteItem = { type: 'team', index };
                 showDeleteModal('team', index);
             } else if (type === 'email' || type === 'phone' || type === 'address') {
@@ -992,11 +1077,9 @@ async function handleDeleteConfirm() {
                 window.deleteItem = { type, platform };
                 showDeleteModal('social', platform);
             } else if (btn.dataset.id !== undefined) {
-                // FAQ delete
                 window.deleteItem = { type: 'faq', index: btn.dataset.id };
                 showDeleteModal('faq', btn.dataset.id);
             } else if (index !== undefined) {
-                // Value delete
                 window.deleteItem = { type: 'value', index };
                 showDeleteModal('value', index);
             }

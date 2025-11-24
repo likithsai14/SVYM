@@ -47,7 +47,7 @@ exports.handler = async (event) => {
       }
 
       // Check if Trainer is active
-      if (!trainerDoc.isActive) {
+      if (trainerDoc.status !== "Active") {
         return {
           statusCode: 403,
           body: JSON.stringify({ message: "Account deactivated. Please contact admin." }),
@@ -107,7 +107,7 @@ exports.handler = async (event) => {
       }
 
       // Check if Field Mobiliser is active
-      if (!fmDoc.isActive) {
+      if (fmDoc.accountStatus !== "active") {
         return {
           statusCode: 403,
           body: JSON.stringify({ message: "Account deactivated. Please contact admin." }),

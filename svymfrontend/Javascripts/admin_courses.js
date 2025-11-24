@@ -89,7 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <p class="full-width"><strong>Start Date : </strong> ${formatDate(course.startDate)}</p>
             <p class="full-width"><strong>End Date : </strong> ${formatDate(course.endDate)}</p>
             <p class="full-width"><strong>Duration : </strong> ${course.durationMonths} days</p>
-            <p class="full-width"><strong>Center : </strong> ${course.location}</p>
+          <!-- Removed Center display line as per request -->
+          <!-- <p class="full-width"><strong>Center : </strong> ${course.location}</p> -->
           </div>
           <div style="margin-top: 10px; padding: 8px; background-color: #f0f8ff; border-radius: 4px; display: flex; align-items: center;">
             <i class="fas fa-user" style="margin-right: 8px;"></i>
@@ -255,10 +256,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("endDate").value = course.endDate.split("T")[0];
     document.getElementById("duration").value = course.durationMonths;
     document.getElementById("description").value = course.description;
-    document.getElementById("location").value = course.location;
+    // document.getElementById("location").value = course.location;
 
     // Disable non-editable fields
-    document.getElementById("location").disabled = true;
+    // document.getElementById("location").disabled = true;
 
     // Trainer
     const trainerSelect = document.getElementById("trainerSelect");

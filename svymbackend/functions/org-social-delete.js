@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    org.contactus.socialMedia.set(platform.trim().toLowerCase(), '');
+    org.contactus.socialMedia.delete(platform.trim().toLowerCase());
     await org.save();
 
     return {

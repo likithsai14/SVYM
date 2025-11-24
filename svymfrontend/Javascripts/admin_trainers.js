@@ -536,11 +536,11 @@ document.addEventListener("DOMContentLoaded", function () {
   function updatePaginationInfo() {
     const searchValue = searchInput.value.toLowerCase();
     const statusValue = statusFilter.value.toLowerCase();
-    const filtered = allTrainers.filter((t) => {
-      const matchesSearch = t.name.toLowerCase().includes(searchValue);
-      const matchesStatus = statusValue === "" || t.status.toLowerCase() === statusValue;
-      return matchesSearch && matchesStatus;
-    });
+  const filtered = allTrainers.filter((t) => {
+    const matchesSearch = t.name.toLowerCase().includes(searchValue) || t.trainerId.toLowerCase().includes(searchValue);
+    const matchesStatus = statusValue === "" || t.status.toLowerCase() === statusValue;
+    return matchesSearch && matchesStatus;
+  });
     const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
     document.getElementById("page-info").textContent = `Page ${currentPage} of ${totalPages}`;
     document.getElementById("prevBtn").disabled = currentPage === 1;
@@ -572,7 +572,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchValue = searchInput.value.toLowerCase();
   const statusValue = statusFilter.value.toLowerCase();
   const filtered = allTrainers.filter(trainer => {
-    const matchesSearch = trainer.name.toLowerCase().includes(searchValue);
+    const matchesSearch = trainer.name.toLowerCase().includes(searchValue) || trainer.trainerId.toLowerCase().includes(searchValue);
     const matchesStatus = statusValue === "" || trainer.status.toLowerCase() === statusValue;
     return matchesSearch && matchesStatus;
   });
