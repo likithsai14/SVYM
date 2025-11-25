@@ -13,11 +13,53 @@ document.addEventListener("DOMContentLoaded", () => {
     // Setup modal close functionality
     setupModalClose();
 
-    // Add input event listener for memberName input to capitalize first letter of each word
+    // Add input event listener for memberName input to prevent digits and capitalize first letter of each word
     const memberNameInput = document.getElementById('memberName');
     if (memberNameInput) {
+
+        // Prevent digit entry on keypress
+        memberNameInput.addEventListener('keypress', (e) => {
+            const char = String.fromCharCode(e.which);
+            if (/\d/.test(char)) {
+                e.preventDefault();
+            }
+        });
+
+        // Sanitize input on input event, remove digits and unwanted characters, then capitalize words
         memberNameInput.addEventListener('input', (e) => {
-            let words = e.target.value.split(' ');
+            // Remove digits and other non-alphabetic characters except spaces
+            let sanitized = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+
+            // Capitalize first letter of each word
+            let words = sanitized.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                if (words[i].length > 0) {
+                    words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+                }
+            }
+            e.target.value = words.join(' ');
+        });
+    }
+
+    // Add input event listener for memberRole input to prevent digits and capitalize first letter of each word
+    const memberRoleInput = document.getElementById('memberRole');
+    if (memberRoleInput) {
+
+        // Prevent digit entry on keypress
+        memberRoleInput.addEventListener('keypress', (e) => {
+            const char = String.fromCharCode(e.which);
+            if (/\d/.test(char)) {
+                e.preventDefault();
+            }
+        });
+
+        // Sanitize input on input event, remove digits and unwanted characters, then capitalize words
+        memberRoleInput.addEventListener('input', (e) => {
+            // Remove digits and other non-alphabetic characters except spaces
+            let sanitized = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+
+            // Capitalize first letter of each word
+            let words = sanitized.split(' ');
             for (let i = 0; i < words.length; i++) {
                 if (words[i].length > 0) {
                     words[i] = words[i][0].toUpperCase() + words[i].substr(1);
@@ -818,6 +860,13 @@ async function handleFaqSubmit(e) {
     const answer = document.getElementById('faqAnswer').value.trim();
     const index = e.target.dataset.index;
 
+    // Validation for digits only input
+    const digitOnlyRegex = /^\d+$/;
+    if (digitOnlyRegex.test(question) || digitOnlyRegex.test(answer)) {
+        alert('Please enter valid details');
+        return;
+    }
+
     try {
         let response;
         if (index !== '') {
@@ -877,6 +926,10 @@ async function handleContactItemSubmit(e) {
         if (value.length < 5) {
             isValid = false;
             errorMessage = 'Please enter a valid address (at least 5 characters).';
+        } else if (/^\d+$/.test(value)) {
+            // If address is digits only, invalid
+            isValid = false;
+            errorMessage = 'Please enter valid address';
         }
     }
 

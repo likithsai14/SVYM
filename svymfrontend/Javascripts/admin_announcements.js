@@ -232,6 +232,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Updated validation to allow alphabets and numbers in title (alphanumeric) but must contain at least one alphabet
+    if (!/^[a-zA-Z0-9\s]+$/.test(title) || !/[a-zA-Z]/.test(title)) {
+      errorMsg.textContent = "Title must contain alphabets and can include numbers and spaces.";
+      return;
+    }
+
     if (title.length < 3) {
       errorMsg.textContent = "Title must be at least 3 characters.";
       return;

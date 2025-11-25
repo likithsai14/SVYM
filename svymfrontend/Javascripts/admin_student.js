@@ -771,20 +771,20 @@ function getFilteredData() {
             requestsBadge.textContent = requests.length;
             requestsTableBody.innerHTML = '';
 
-            requests.forEach(req => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${req.userId}</td>
-                    <td>${req.candidateName}</td>
-                    <td>${req.email}</td>
-                    <td>${formatDate(req.createdAt)}</td>
-                    <td>
-                        <button class="approve-btn" data-id="${req.userId}">Approve</button>
-                        <button class="reject-btn" data-id="${req.userId}">Reject</button>
-                    </td>
-                `;
-                requestsTableBody.appendChild(tr);
-            });
+                requests.forEach(req => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${req.userId}</td>
+                        <td>${req.candidateName}</td>
+                        <td>${req.email}</td>
+                        <td title="Date Of Request">${formatDate(req.createdAt)}</td>
+                        <td>
+                            <button class="approve-btn" data-id="${req.userId}">Approve</button>
+                            <button class="reject-btn" data-id="${req.userId}">Reject</button>
+                        </td>
+                    `;
+                    requestsTableBody.appendChild(tr);
+                });
 
             document.querySelectorAll('.approve-btn').forEach(btn => {
                 btn.addEventListener('click', () => updateRequest(btn.dataset.id, 'approved'));
