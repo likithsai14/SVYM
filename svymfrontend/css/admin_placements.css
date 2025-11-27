@@ -7,10 +7,19 @@ body {
 }
 
 .main-content {
+  flex-grow: 1;
   background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
   padding: 30px;
-  max-width: 1200px;
-  width: 90%;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  height: calc(100vh - 50px);
 }
 
 .header-row {
