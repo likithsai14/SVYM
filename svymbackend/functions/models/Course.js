@@ -53,10 +53,6 @@ const courseSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  location: {
-    type: String,
-    required: true,
-  },
   description: {
     type: String,
     trim: true,

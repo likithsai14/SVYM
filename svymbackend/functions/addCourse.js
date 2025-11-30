@@ -11,11 +11,11 @@ exports.handler = async (event) => {
     await connectDB();
 
     const body = JSON.parse(event.body);
-    const { courseName, price, startDate, endDate, duration, moduleNames, location, description, addedBy } = body;
+    const { courseName, price, startDate, endDate, duration, moduleNames, description, addedBy } = body;
 
     // Validation
     if (!courseName || !price || !startDate || !endDate || !moduleNames || moduleNames.length === 0 ||
-        !location || !description || !addedBy || !duration) {
+        !description || !addedBy || !duration) {
       return { statusCode: 400, body: JSON.stringify({ message: "All fields are required" }) };
     }
 
@@ -51,11 +51,10 @@ exports.handler = async (event) => {
       endDate,
       durationMonths: duration,
       moduleNames,
-      location,
       description,
       addedBy,
       courseStatus,
-      trainerId: null,  
+      trainerId: null,
       trainerName: null,       // initially unassigned
       studentsEnrolled: 0,     // initially 0
     });

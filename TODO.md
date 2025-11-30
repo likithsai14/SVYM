@@ -1,13 +1,22 @@
-# TODO: Enhance Responsiveness for Desktop and Mobile Compatibility
+## Plan to Remove Location Field from Course
 
-## Tasks
-- [ ] Update svymfrontend/css/style.css to add media queries for layout responsiveness (stack sections vertically on mobile)
-- [ ] Review and enhance media queries in other CSS files for consistency (use 768px as tablet breakpoint, 480px for mobile)
-- [ ] Ensure tables and grids are responsive across all pages
-- [ ] Test responsiveness on various screen sizes (simulate via browser dev tools)
-- [ ] Verify all HTML files have proper viewport meta tag (already confirmed for some)
+### Information Gathered
+- Course model in `svymbackend/functions/models/Course.js` has `location` field set to `required: true`.
+- `svymbackend/functions/addCourse.js` destructures `location` from request body, validates it as required, and passes it to the Course constructor.
+- `svymbackend/functions/updateCourse.js` does not handle `location` field.
+- Frontend in `svymfrontend/Javascripts/add_course.js` has `location` commented out in the payload.
+- HTML form in `svymfrontend/admin_courses.html` does not include a location input field.
 
-## Notes
-- The application is web-based and already partially responsive.
-- Focus on improving layout stacking and element sizing for mobile devices.
-- Use consistent breakpoints: 480px (mobile), 768px (tablet), 1024px+ (desktop).
+### Plan
+1. [x] Remove `location` field from Course schema in `svymbackend/functions/models/Course.js`.
+2. [x] Remove `location` from destructuring in `svymbackend/functions/addCourse.js`.
+3. [x] Remove `location` from validation check in `addCourse.js`.
+4. [x] Remove `location` from Course constructor in `addCourse.js`.
+
+### Dependent Files to Edit
+- `svymbackend/functions/models/Course.js`
+- `svymbackend/functions/addCourse.js`
+
+### Followup Steps
+- Test adding a course to ensure no validation error for location.
+- Check if any other backend functions or frontend code references location that needs updating.
